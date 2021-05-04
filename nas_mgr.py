@@ -5,7 +5,7 @@ import os
 import subprocess
 import logging
 import logging.config
-#import driver
+import driver
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
@@ -41,7 +41,7 @@ class NasManager(object):
         :return:
         """
 
-        #driver_to_use = driver.get_plot_drive_to_use()
+        driver_to_use = driver.get_plot_drive_to_use()
         #plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
         plot_path = '%s/%s' % ('/mnt/dst/00', plot_name)
         nc_cmd = 'nc -l -q5 -p 4040 > "%s" < /dev/null' % plot_path
