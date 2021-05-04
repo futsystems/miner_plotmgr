@@ -31,6 +31,8 @@ def get_list_of_plot_drives():
 
 if __name__ == '__main__':
     p = get_drive_by_mountpoint('/')
+    d = get_list_of_plot_drives
+    print d
 
 
 
