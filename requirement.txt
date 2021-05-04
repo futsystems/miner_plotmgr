@@ -1,2 +1,5 @@
 zmq
 psutil
+pySMART
+natsort
+shutil
