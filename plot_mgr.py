@@ -47,7 +47,7 @@ class PlotManager(object):
                 except subprocess.CalledProcessError as e:
                     logger.warning(e.output)
                 finally:
-                    response = requests.get(url_start)
+                    response = requests.get(url_stop)
                     if response.status_code != 200:
                         return (False, 'NAS Server response error')
                     else:
