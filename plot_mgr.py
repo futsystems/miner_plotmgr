@@ -62,7 +62,7 @@ class PlotManager(object):
                             #return [False, result['msg']]
 
                     #2. check file and remove local
-                    url_check = 'http://%s:8080/plot/info?path=$s' % (nas_server, remoe_path)
+                    url_check = 'http://%s:8080/plot/info?path=%s' % (nas_server, remoe_path)
                     response = requests.get(url_stop)
                     if response.status_code != 200:
                         logger.warn('NAS Server response error')
@@ -75,7 +75,7 @@ class PlotManager(object):
                             local_size = os.path.getsize(plot_file)
                             if remote_size == local_size:
                                 logger.warn('Plot Size math,delete local file')
-                
+
 
 if __name__ == '__main__':
     logging.config.fileConfig('logging.conf')
