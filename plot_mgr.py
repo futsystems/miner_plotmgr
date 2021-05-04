@@ -44,7 +44,7 @@ class PlotManager(object):
                     #nc_cmd = '%s | nc -q2 %s 4040' % (plot_file, nas_server)
                     remoe_path = '%s/%s' % (result['data']['path'], file_name)
                     #subprocess.call(['send_plot.sh', plot_file])
-                    subprocess.call(['/opt/plot_mgr/send_plot.sh', file_name])
+                    subprocess.call(['%s/send_plot.sh' % os.path.abspath(__file__), file_name])
                     #os.system(nc_cmd)
                 except subprocess.CalledProcessError as e:
                     logger.warning(e.output)
