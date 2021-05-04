@@ -40,9 +40,9 @@ class NasManager(object):
         :param plot_name:
         :return:
         """
-        driver_to_user = driver.get_plot_drive_to_use()
+        driver_to_use = driver.get_plot_drive_to_use()
         plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
-        plot_path = '%s/%s' % (driver_to_user[0], plot_name)
+        plot_path = '%s/%s' % (driver_to_use[0], plot_name)
         nc_cmd = 'nc -l -q5 -p 4040 > "%s" < /dev/null' % plot_path
         screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
         logger.info('Nas server start nc to receive plot file:%s,CMD:%s' % (plot_name, nc_cmd))
