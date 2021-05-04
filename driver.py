@@ -30,7 +30,7 @@ def get_list_of_plot_drives():
     return mountpoint
 
 if __name__ == '__main__':
-    d = get_list_of_plot_drives
+    d = get_list_of_plot_drives()
     print(d)
 
 
