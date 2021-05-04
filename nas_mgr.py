@@ -30,7 +30,7 @@ class NasManager(object):
         plot_path= '/mnt/dst/00/%s' % plot_name
         nc_cmd = 'nc -l -q5 -p 4040 > "%s" < /dev/null' % plot_path
         screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
-        logger.info('Nas server start nc to receive plotfile:%s,cmd:%s' % plot_name,screen_cmd)
+        logger.info('Nas server start nc to receive plotfile:%s,cmd:%s' % (plot_name,screen_cmd))
         os.spawnl(os.P_DETACH, screen_cmd)
 
 
