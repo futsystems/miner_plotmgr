@@ -62,6 +62,7 @@ class PlotManager(object):
                             #return [False, result['msg']]
 
                     #2. check file and remove local
+                    logger.info('check remote plot file:%s / %s' % (remoe_path, nas_server))
                     url_check = 'http://%s:8080/plot/info?path=%s' % (nas_server, remoe_path)
                     response = requests.get(url_stop)
                     if response.status_code != 200:
