@@ -52,7 +52,7 @@ class NasManager(object):
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         logger.info('NC started,pid:%s' % process.pid)
 
-        return  Response(0,'nc start success',{
+        return Response(0,'nc start success',{
             'pid': process.pid,
             'plot_path': plot_path,
         })
@@ -66,6 +66,8 @@ class NasManager(object):
         logger.info('Nas server stop nc')
         nc_cmd='/usr/bin/killall -9 nc >/dev/null 2>&1'
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+
+        return Response(0, 'nc stop success')
 
 if __name__ == '__main__':
     #df_cmd = "screen -d -m -S nc bash -c 'nc -l -q5 -p 4040 >/mnt/dst/00/test.file'"
