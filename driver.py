@@ -1,12 +1,8 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
 import psutil
 
-from pySMART import Device, DeviceList
-from natsort import natsorted
-import shutil
 
 def get_driver_info():
     print("test driver info")
@@ -69,6 +65,9 @@ def get_device_info(action, device):
     a word of caution, use the TrueNAS versions linked to above, the PiPy
     version has a bug!
     """
+    import shutil
+    from pySMART import Device, DeviceList
+
     mountpoint = get_mountpoint_by_device(device)
 
     if action == 'temperature':
@@ -103,6 +102,7 @@ def get_plot_drive_to_use():
          to make sure the drive selected has not been marked as "offline".
         #TODO incorporate in get_plot_drive_with_available_space()
         """
+    from natsort import natsorted
     #with open('offlined_drives', 'r') as offlined_drives_list:
     #    offlined_drives = [current_drives.rstrip() for current_drives in offlined_drives_list.readlines()]
     available_drives = []
