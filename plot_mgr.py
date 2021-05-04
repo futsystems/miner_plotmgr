@@ -39,14 +39,14 @@ class PlotManager(object):
                 logger.warn('Start NC eror:%s' % result['msg'])
                 return [False, result['msg']]
             else:
-                logger.info('Send %s to NAS Server[%s] :%s' %(plot_file, nas_server, result['data']['path']))
+                logger.info('Try send [%s] to NAS Server %s@%s ' %(plot_file, result['data']['path'], nas_server))
                 try:
                     #nc_cmd = '%s | nc -q2 %s 4040' % (plot_file, nas_server)
                     cmd_path = os.path.split(os.path.abspath(__file__))[0]
                     cmd_send_plot = '%s/send_plot.sh' % cmd_path
                     remoe_path = '%s/%s' % (result['data']['path'], file_name)
                     #subprocess.call(['send_plot.sh', plot_file])
-                    logger.info('execut cmd:%s arg1:%s arg2:%s' % (cmd_send_plot, plot_file, nas_server))
+                    logger.info('Execute cmd:%s arg1:%s arg2:%s' % (cmd_send_plot, plot_file, nas_server))
                     subprocess.call([cmd_send_plot, plot_file, nas_server])
                     #os.system(nc_cmd)
                 except subprocess.CalledProcessError as e:
@@ -65,9 +65,9 @@ class PlotManager(object):
                             #return [False, result['msg']]
 
                     #2. check file and remove local
-                    logger.info('check remote plot file:%s / %s' % (remoe_path, nas_server))
+                    logger.info('Check remote file:%s@%s' % (remoe_path, nas_server))
                     url_check = 'http://%s:8080/plot/info?path=%s' % (nas_server, remoe_path)
-                    response = requests.get(url_stop)
+                    response = requests.get(url_check)
                     if response.status_code != 200:
                         logger.warn('NAS Server response error')
                     else:
