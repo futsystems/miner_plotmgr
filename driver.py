@@ -40,7 +40,27 @@ def bytesto(bytes, to, bsize=1024):
     r = float(bytes)
     return bytes / (bsize ** a[to])
 
-def get_drive_info(action, drive):
+
+def get_device_by_mountpoint(mountpoint):
+    """
+        This accepts a mountpoint and returns the device assignment: /dev/sda1 and mountpoint
+        """
+    partitions = psutil.disk_partitions(all=False)
+    for p in partitions:
+        if p.device.startswith('/dev/sd') and p.mountpoint.startswith(mountpoint):
+            return p.device
+
+def get_mountpoint_by_device(device):
+    """
+        This accepts a mountpoint and returns the device assignment: /dev/sda1 and mountpoint
+        """
+    partitions = psutil.disk_partitions(all=False)
+    for p in partitions:
+        if p.device.startswith(device):
+            return p.mountpoint
+
+
+def get_device_info(action, device):
     """
     This allows us to query specific information about our drives including
     temperatures, smart assessments, and space available to use for plots.
@@ -49,30 +69,28 @@ def get_drive_info(action, drive):
     a word of caution, use the TrueNAS versions linked to above, the PiPy
     version has a bug!
     """
+    mountpoint = get_mountpoint_by_device(device)
+
     if action == 'temperature':
-        return Device(drive).temperature
+        return Device(device).temperature
     if action == 'capacity':
-        return Device(drive).capacity
+        return Device(device).capacity
     if action == 'health':
-        return Device(drive).assessment
+        return Device(device).assessment
     if action == 'name':
-        return Device(drive).name
+        return Device(device).name
     if action == 'serial':
-        return Device(drive).serial
+        return Device(device).serial
     if action == 'space_total':
-        return int(bytesto(shutil.disk_usage(drive)[0], 'g'))
+        return int(bytesto(shutil.disk_usage(mountpoint)[0], 'g'))
     if action == 'space_used':
-        return int(bytesto(shutil.disk_usage(drive)[1], 'g'))
+        return int(bytesto(shutil.disk_usage(mountpoint)[1], 'g'))
     if action == 'space_free':
-        return int(bytesto(shutil.disk_usage(drive)[2], 'g'))
+        return int(bytesto(shutil.disk_usage(mountpoint)[2], 'g'))
     if action == 'space_free_plots':
-        return int(bytesto(shutil.disk_usage(drive)[2], 'g') / plot_size_g)
-    if action == 'space_free_plots_by_mountpoint':
-        return int(bytesto(shutil.disk_usage(drive)[2], 'g') / plot_size_g)
+        return int(bytesto(shutil.disk_usage(mountpoint)[2], 'g') / plot_size_g)
     if action == 'total_current_plots':
-        return int(bytesto(shutil.disk_usage(drive[0])[1], 'g') / plot_size_g)
-    if action == 'total_current_plots_by_mountpoint':
-        return int(bytesto(shutil.disk_usage(drive)[1], 'g') / plot_size_g)
+        return int(bytesto(shutil.disk_usage(mountpoint)[1], 'g') / plot_size_g)
 
 def get_plot_drive_to_use():
     """
