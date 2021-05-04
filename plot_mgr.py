@@ -46,7 +46,8 @@ class PlotManager(object):
                     cmd_send_plot = '%s/send_plot.sh' % cmd_path
                     remoe_path = '%s/%s' % (result['data']['path'], file_name)
                     #subprocess.call(['send_plot.sh', plot_file])
-                    subprocess.call([cmd_path, plot_file, nas_server])
+                    logger.info('execut cmd:%s arg1:%s arg2:%s' % (cmd_send_plot, plot_file, nas_server))
+                    subprocess.call([cmd_send_plot, plot_file, nas_server])
                     #os.system(nc_cmd)
                 except subprocess.CalledProcessError as e:
                     logger.warning(e.output)
