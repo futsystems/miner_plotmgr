@@ -21,6 +21,7 @@ def plot_upload():
 
     return res.to_json()
 
+
 if __name__ == '__main__':
     app.run(host='127.0.0.1', port=5000)
 
