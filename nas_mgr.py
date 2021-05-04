@@ -64,11 +64,11 @@ if __name__ == '__main__':
     #process = subprocess.Popen(df_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     #err = process.stderr.read()
     nas = NasManager()
-    #nas.start_nc('file1')
-    driver_to_use = driver.get_plot_drive_to_use()
+    nas.start_nc('file1')
+    #driver_to_use = driver.get_plot_drive_to_use()
     #logger.info('driver to use:%s' % driver_to_use[1])
-    plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
-    logger.info('plots left:%s' % plots_left)
+    #plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
+    #logger.info('plots left:%s' % plots_left)
 
 
 
