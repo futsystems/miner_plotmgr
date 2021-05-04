@@ -61,6 +61,15 @@ class NasManager(object):
 
         return Response(0, 'nc start success', self.__current_nc)
 
+    def get_plot_info(self,plot_file):
+        size = 0
+        if not os.path.isfile(plot_file):
+            size = 0
+        else:
+            size=os.path.getsize(plot_file)
+
+        return {'size': size}
+
 
     def stop_nc(self):
         """

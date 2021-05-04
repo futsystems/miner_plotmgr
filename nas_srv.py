@@ -65,6 +65,18 @@ def current_nc():
     return Response(0, '', nc).to_json()
 
 
+@app.route('/plot/info')
+def plot_info():
+    """
+    stop nc
+    :return:
+    """
+    path = request.args.get('path')
+    if path is None or path == '':
+        return Response(100, 'path args is empty').to_json()
+    info = nas.get_plot_info(path)
+    return Response(0, '',info).to_json()
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
 

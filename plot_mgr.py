@@ -38,7 +38,7 @@ class PlotManager(object):
                 logger.warn('Start NC eror:%s' % result['msg'])
                 return [False, result['msg']]
             else:
-                logger.info('Send %s to NAS Server :%s' %(plot_file, result['data']['path']))
+                logger.info('Send %s to NAS Server[%s] :%s' %(plot_file, nas_server, result['data']['path']))
                 try:
                     nc_cmd = '%s | nc -q2 %s 4040' % (plot_file, nas_server)
                     #subprocess.call(['send_plot.sh', plot_file])
