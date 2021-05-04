@@ -65,9 +65,9 @@ if __name__ == '__main__':
     #err = process.stderr.read()
     nas = NasManager()
     #nas.start_nc('file1')
-    driver_to_user = driver.get_plot_drive_to_use()
-    plots_left = driver_to_user.get_drive_info("space_free_plots", driver_to_user)
-    logger.info('driver to use:%s current:%s' % (driver_to_user, nas.__current_driver))
+    driver_to_use = driver.get_plot_drive_to_use()
+    plots_left = driver.get_driver_info("space_free_plots", driver_to_use)
+    logger.info('driver to use:%s current:%s' % (driver_to_use, nas.__current_driver))
 
 
 
