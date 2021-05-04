@@ -21,7 +21,7 @@ class UploadProcess(object):
 
 class NasManager(object):
     def __init__(self):
-        self.__upload_process = {}
+        self.__current_nc = None
         self.__current_driver = None
 
 
@@ -33,7 +33,6 @@ class NasManager(object):
         return driver.get_plot_drive_to_use()
 
 
-
     def start_nc(self, plot_name):
         """
         start nc to receive plot file
@@ -41,6 +40,8 @@ class NasManager(object):
         :param plot_name:
         :return:
         """
+        if self.__current_nc is not None:
+            return Response(101, 'nc is already started', self.__current_nc)
 
         driver_to_use = driver.get_plot_drive_to_use()
         plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
@@ -50,12 +51,14 @@ class NasManager(object):
         screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
         logger.info('Nas server start nc to receive plot file:%s,CMD:%s' % (plot_name, nc_cmd))
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        logger.info('NC started,pid:%s' % process.pid)
 
-        return Response(0,'nc start success',{
+        self.__current_nc = {
             'pid': process.pid,
             'plot_path': plot_path,
-        })
+        }
+        logger.info('NC started,pid:%s' % process.pid)
+
+        return Response(0, 'nc start success', self.__current_nc)
 
 
     def stop_nc(self):
@@ -66,7 +69,7 @@ class NasManager(object):
         logger.info('Nas server stop nc')
         nc_cmd='/usr/bin/killall -9 nc >/dev/null 2>&1'
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
+        self.__current_nc = None
         return Response(0, 'nc stop success')
 
 if __name__ == '__main__':
