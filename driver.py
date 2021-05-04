@@ -3,9 +3,10 @@
 
 
 import psutil
-import shutil
+
 from pySMART import Device, DeviceList
 from natsort import natsorted
+import shutil
 
 def get_driver_info():
     print("test driver info")
@@ -91,7 +92,7 @@ def get_plot_drive_to_use():
         if part.device.startswith('/dev/sd') \
                 and part.mountpoint.startswith('/mnt/dst') \
                 and get_drive_info('space_free_plots_by_mountpoint', part.mountpoint) >= 1 \
-                and get_drive_by_mountpoint(part.mountpoint) # not in offlined_drives:
+                and get_drive_by_mountpoint(part.mountpoint):
             drive = get_drive_by_mountpoint(part.mountpoint)
             available_drives.append((part.mountpoint, part.device))
     return (natsorted(available_drives)[0][0])
