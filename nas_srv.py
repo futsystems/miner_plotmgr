@@ -51,6 +51,15 @@ def stop_nc():
     res = nas.stop_nc()
     return res.to_json()
 
+@app.route('/nc/current')
+def stop_nc():
+    """
+    stop nc
+    :return:
+    """
+    nc = nas.get_current_nc()
+    return Response(0, '', nc).to_json()
+
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

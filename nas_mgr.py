@@ -54,7 +54,8 @@ class NasManager(object):
 
         self.__current_nc = {
             'pid': process.pid,
-            'plot_path': plot_path,
+            'plot_file': plot_name,
+            'path': driver_to_use[0],
         }
         logger.info('NC started,pid:%s' % process.pid)
 
@@ -71,6 +72,9 @@ class NasManager(object):
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.__current_nc = None
         return Response(0, 'nc stop success')
+
+    def get_current_nc(self):
+        return self.__current_nc
 
 if __name__ == '__main__':
     #df_cmd = "screen -d -m -S nc bash -c 'nc -l -q5 -p 4040 >/mnt/dst/00/test.file'"
