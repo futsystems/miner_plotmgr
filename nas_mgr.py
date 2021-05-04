@@ -5,9 +5,11 @@ import os
 import subprocess
 import logging
 import logging.config
+import driver
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
+
 
 
 class UploadProcess(object):
@@ -18,7 +20,17 @@ class UploadProcess(object):
 
 class NasManager(object):
     def __init__(self):
-        self.__upload_process = { }
+        self.__upload_process = {}
+        self.__current_driver = None
+
+
+    def get_next_driver(self):
+        """
+        get next driver used to store plot
+        :return:
+        """
+        return driver.get_plot_drive_to_use()
+
 
 
     def start_nc(self, plot_name):
@@ -28,12 +40,15 @@ class NasManager(object):
         :param plot_name:
         :return:
         """
-        plot_path= '/mnt/dst/00/%s' % plot_name
+        driver_to_user = driver.get_plot_drive_to_use()
+        logger.info('')
+        plot_path = '/mnt/dst/00/%s' % plot_name
         nc_cmd = 'nc -l -q5 -p 4040 > "%s" < /dev/null' % plot_path
         screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
-        logger.info('Nas server start nc to receive plotfile:%s,CMD:%s' % (plot_name, nc_cmd))
+        logger.info('Nas server start nc to receive plot file:%s,CMD:%s' % (plot_name, nc_cmd))
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         logger.info('NC started,pid:%s' % process.pid)
+
 
     def stop_nc(self):
         """
@@ -49,6 +64,16 @@ if __name__ == '__main__':
     #process = subprocess.Popen(df_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     #err = process.stderr.read()
     nas = NasManager()
-    nas.start_nc('file1')
+    #nas.start_nc('file1')
+    driver_to_user = driver.get_plot_drive_to_use()
+    plots_left = driver_to_user.get_drive_info("space_free_plots", driver_to_user)
+    logger.info('driver to use:%s current:%s' % (driver_to_user, nas.__current_driver))
+
+
+
+
+
+
+
 
 
