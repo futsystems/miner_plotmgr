@@ -2,4 +2,4 @@ zmq
 psutil
 pySMART
 natsort
-shutil
+flask
