@@ -52,7 +52,7 @@ def stop_nc():
     return res.to_json()
 
 @app.route('/nc/current')
-def stop_nc():
+def current_nc():
     """
     stop nc
     :return:
