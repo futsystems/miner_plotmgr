@@ -41,11 +41,11 @@ class PlotManager(object):
             else:
                 logger.info('Send %s to NAS Server[%s] :%s' %(plot_file, nas_server, result['data']['path']))
                 try:
-                    nc_cmd = '%s | nc -q2 %s 4040' % (plot_file, nas_server)
+                    #nc_cmd = '%s | nc -q2 %s 4040' % (plot_file, nas_server)
                     remoe_path = '%s/%s' % (result['data']['path'], file_name)
                     #subprocess.call(['send_plot.sh', plot_file])
-                    #subprocess.call(['/home/chia/plot_manager/send_plot.sh', plot_path, plot_to_process])
-                    os.system(nc_cmd)
+                    subprocess.call(['/opt/plot_mgr/send_plot.sh', file_name])
+                    #os.system(nc_cmd)
                 except subprocess.CalledProcessError as e:
                     logger.warning(e.output)
                 finally:
