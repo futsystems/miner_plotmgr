@@ -5,6 +5,8 @@
 from flask import Flask
 from flask import request
 from nas_mgr import NasManager
+from plot_mgr import PlotManager
+
 from message import Response
 
 import logging
@@ -15,7 +17,7 @@ logger = logging.getLogger('nas')
 
 app = Flask(__name__)
 nas = NasManager()
-
+plotter = PlotManager()
 
 @app.route('/')
 def hello_world():
@@ -23,6 +25,8 @@ def hello_world():
 
 @app.route('/debug')
 def debug():
+    plot_file = request.args.get('file')
+    plotter.send_plot(plot_file,'192.168.1.11')
     return 'debug'
 
 

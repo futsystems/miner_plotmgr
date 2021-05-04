@@ -2,4 +2,5 @@ zmq
 psutil
 pySMART
 natsort
+requests
 flask
