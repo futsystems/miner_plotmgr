@@ -25,6 +25,9 @@ class PlotManager(object):
         :param plot_file:
         :return:
         """
+        if not os.path.isfile(plot_file):
+            return (False, 'File:%s do not exist' % plot_file)
+        
         file_name = plot_file.split('/')[-1]
         url_start = 'http://%s:8080/nc/start?file=%s' % (nas_server, file_name)
         url_stop = 'http://%s:8080/nc/stop' % (nas_server)
