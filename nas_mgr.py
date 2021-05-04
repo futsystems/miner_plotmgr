@@ -6,7 +6,8 @@ import subprocess
 import logging
 import logging.config
 
-logger = logging.getLogger(__name__)
+logging.config.fileConfig('logging.conf')
+logger = logging.getLogger('nas')
 
 
 class UploadProcess(object):
@@ -30,14 +31,11 @@ class NasManager(object):
         plot_path= '/mnt/dst/00/%s' % plot_name
         nc_cmd = 'nc -l -q5 -p 4040 > "%s" < /dev/null' % plot_path
         screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
-        logger.info('Nas server start nc to receive plotfile:%s,cmd:%s' % (plot_name,screen_cmd))
+        logger.info('Nas server start nc to receive plotfile:%s,CMD:%s' % (plot_name, nc_cmd))
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
+        logger.info('NC started,pid:%s' % process.pid)
 
 if __name__ == '__main__':
-    logging.config.fileConfig("logging.conf")
-    logger = logging.getLogger(__name__)
-
     #df_cmd = "screen -d -m -S nc bash -c 'nc -l -q5 -p 4040 >/mnt/dst/00/test.file'"
     #process = subprocess.Popen(df_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     #err = process.stderr.read()
