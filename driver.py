@@ -111,7 +111,7 @@ def get_plot_drive_to_use():
                 and part.mountpoint.startswith('/mnt/dst') \
                 and get_device_info('space_free_plots', part.device) >= 1:
             available_drives.append((part.mountpoint, part.device))
-    return (natsorted(available_drives)[0][0])
+    return natsorted(available_drives)[0]
 
 if __name__ == '__main__':
     d = get_list_of_plot_drives()
