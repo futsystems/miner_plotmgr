@@ -16,7 +16,7 @@ def get_plotter_setting():
     config=ConfigParser.ConfigParser()
 
     if sys.version_info.major == 2:  # Python 2
-        config.read('config.conf')
+        config.read('../config/plotmgr.conf')
     else:  # Python 3
         config.read('config.conf', encoding="utf-8")
 

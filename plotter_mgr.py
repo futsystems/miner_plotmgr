@@ -22,7 +22,7 @@ import json
 logger = logging.getLogger('nas')
 
 
-class PlotManager(object):
+class PlotterManager(object):
     def __init__(self):
         self.config = config.get_plotter_setting()
         self.nas_server = None
