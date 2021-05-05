@@ -124,14 +124,15 @@ def get_plot_dst_device_list(dst_path):
     Get dst info of plotter
     :return:
     """
-    logger.info('path:%s'% dst_path)
+    #logger.info('path:%s'% dst_path)
     dst_device_list = []
     for sub_path in os.listdir(dst_path):
         path = '%s/%s' % (dst_path, sub_path)
-        logger.info('full_path:%s' % path)
-        info = get_dst_device_info(path)
-        if info is not None:
-            dst_device_list.append(info)
+        logger.info('mount_path:%s' % path)
+        if os.path.isdir(path):
+            info = get_dst_device_info(path)
+            if info is not None:
+                dst_device_list.append(info)
 
     return dst_device_list
 
