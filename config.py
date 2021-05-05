@@ -2,12 +2,16 @@
 
 import sys,os
 
+if sys.version_info.major == 2:   # Python 2
+    import ConfigParser
+else:                             # Python 3
+    import _configparser as ConfigParser
+
 
 def get_plotter_setting():
     """
 
     """
-    import ConfigParser
     config=ConfigParser.ConfigParser()
     with open('./config.conf', 'rb') as cfgfile:
         config.readfp(cfgfile)
