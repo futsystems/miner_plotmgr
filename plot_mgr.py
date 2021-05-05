@@ -94,7 +94,8 @@ class PlotManager(object):
                     #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
                     if plot_file.endswith(".test"):
                         logger.info('Will send plot:%s from dst:%s to nas:%s' % (plot_file, device['mount_path'], self.nas_server))
-                        self.send_plot(plot_file, self.nas_server)
+                        plot_full_name = '%s/%s' % (device['mount_path'], plot_file)
+                        self.send_plot(plot_full_name, self.nas_server)
                         break
 
             time.sleep(10)
