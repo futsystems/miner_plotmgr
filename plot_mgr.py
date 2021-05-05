@@ -95,6 +95,7 @@ class PlotManager(object):
                     if plot_file.endswith(".plot"):
                         logger.info('Will send plot:%s to nas:%s' % (plot_file, self.nas_server))
                         #self.send_plot(file, self.nas_server)
+                        break;
 
             time.sleep(10)
 
