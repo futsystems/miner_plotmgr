@@ -5,7 +5,8 @@ import sys,os
 if sys.version_info.major == 2:   # Python 2
     import ConfigParser
 else:                             # Python 3
-    import _configparser as ConfigParser
+    import configparser as ConfigParser
+
 
 
 def get_plotter_setting():
