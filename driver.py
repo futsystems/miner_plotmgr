@@ -3,7 +3,7 @@
 
 import os
 import psutil
-
+import config
 import logging
 import logging.config
 logger = logging.getLogger('nas')
@@ -11,8 +11,18 @@ logger = logging.getLogger('nas')
 def get_driver_info():
     print("test driver info")
 
+#/mnt/plots/driver0 mount_prefix is /mnt/plots/driver
+nas_driver_mount_preifx = config.get_nas_driver_mount_prefix()
+plotter_driver_mount_prefix = config.get_plotter_driver_mount_prefix()
+
 plot_size_k = 108995911228
 plot_size_g = 101.3623551
+
+
+def bytesto(bytes, to, bsize=1024):
+    a = {'k': 1, 'm': 2, 'g': 3, 't': 4, 'p': 5, 'e': 6}
+    r = float(bytes)
+    return bytes / (bsize ** a[to])
 
 
 def get_drive_by_mountpoint(mountpoint):
@@ -25,26 +35,22 @@ def get_drive_by_mountpoint(mountpoint):
 
 def get_list_of_plot_drives():
     """
+    获得NAS服务器上可以储存plot文件的设备列表
     Return list of tuples of all available plot drives on the system and the device assignment
     [('/mnt/enclosure0/front/column0/drive3', '/dev/sde1')]
     """
     partitions = psutil.disk_partitions(all=False)
     mountpoint = []
     for p in partitions:
-        if p.device.startswith('/dev/sd') and p.mountpoint.startswith('/mnt/dst'):
+        if p.device.startswith('/dev/sd') and p.mountpoint.startswith(nas_driver_mount_preifx):
             mountpoint.append((p.mountpoint, p.device, p.fstype))
     return mountpoint
 
-def bytesto(bytes, to, bsize=1024):
-    a = {'k': 1, 'm': 2, 'g': 3, 't': 4, 'p': 5, 'e': 6}
-    r = float(bytes)
-    return bytes / (bsize ** a[to])
-
-
 def get_device_by_mountpoint(mountpoint):
     """
-        This accepts a mountpoint and returns the device assignment: /dev/sda1 and mountpoint
-        """
+    通过挂载点获得对应磁盘设备
+    This accepts a mountpoint and returns the device assignment: /dev/sda1 and mountpoint
+    """
     partitions = psutil.disk_partitions(all=False)
     for p in partitions:
         if p.device.startswith('/dev/sd') and p.mountpoint.startswith(mountpoint):
@@ -53,8 +59,9 @@ def get_device_by_mountpoint(mountpoint):
 
 def get_mountpoint_by_device(device):
     """
-        This accepts a mountpoint and returns the device assignment: /dev/sda1 and mountpoint
-        """
+    通过磁盘设备文件获得对应的挂载点
+    This accepts a mountpoint and returns the device assignment: /dev/sda1 and mountpoint
+    """
     partitions = psutil.disk_partitions(all=False)
     for p in partitions:
         if p.device.startswith(device):
@@ -63,6 +70,7 @@ def get_mountpoint_by_device(device):
 
 def get_device_info(action, device):
     """
+    获得某个磁盘设备的信息
     This allows us to query specific information about our drives including
     temperatures, smart assessments, and space available to use for plots.
     It allows us to simply hand it a drive number (drive0, drive22, etc)
@@ -98,6 +106,7 @@ def get_device_info(action, device):
 
 def get_plot_drive_to_use():
     """
+    用于获得NAS服务器可用于储存Plot的磁盘，通过排序法获得
         This looks at all available plot drives that start with /dev/sd and include
         /mnt/enclosure in the mount path (this covers all of my plot drives), it then
         looks for any drive that has enough space for at least one plot (k32), sorts
@@ -119,15 +128,16 @@ def get_plot_drive_to_use():
     return natsorted(available_drives)[0]
 
 
-def get_plot_dst_device_list(dst_path):
+def get_plotter_driver_list():
     """
-    Get dst info of plotter
+    用于获得P盘目标文件储存设备列表
+    /mnt/dst/00 /mnt/dst/01 分别挂载到不同磁盘，或者组成raid0后挂载到/mnt/dst/00
     :return:
     """
     #logger.info('path:%s'% dst_path)
     dst_device_list = []
-    for sub_path in os.listdir(dst_path):
-        path = '%s/%s' % (dst_path, sub_path)
+    for sub_path in os.listdir(plotter_driver_mount_prefix):
+        path = '%s/%s' % (plotter_driver_mount_prefix, sub_path)
         if os.path.isdir(path):
             #logger.info('mount_path:%s' % path)
             info = get_dst_device_info(path)
@@ -138,6 +148,11 @@ def get_plot_dst_device_list(dst_path):
 
 
 def get_dst_device_info(mount_path):
+    """
+    用于通过挂载点获得对应磁盘设备信息
+    :param mount_path:
+    :return:
+    """
     device = get_device_by_mountpoint(mount_path)
     if device is None:
         return None

@@ -34,11 +34,11 @@ class PlotterManager(object):
         检查plot储存目录，将生成的plot发送到远端NAS
         :return:
         """
-        mount_path = self.config['mount_path']
-        if (not os.path.exists(mount_path)) or (not os.path.isdir(mount_path)):
-            return None
+        #mount_path = self.config['mount_path']
+        #if (not os.path.exists(mount_path)) or (not os.path.isdir(mount_path)):
+        #    return None
 
-        dst_device_list = driver.get_plot_dst_device_list(self.config['mount_path'])
+        dst_device_list = driver.get_plotter_driver_list()
         #logger.info('dst_device_list:%s' % dst_device_list)
         current_device = None
         current_ratio = 1
