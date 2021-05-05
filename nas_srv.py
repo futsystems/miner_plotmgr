@@ -70,7 +70,7 @@ def plot_info():
 
 
 @app.route('/driver/list')
-def plot_info():
+def driver_list():
     """
     stop nc
     :return:
