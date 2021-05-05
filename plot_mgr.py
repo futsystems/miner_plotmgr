@@ -39,7 +39,7 @@ class PlotManager(object):
             return None
 
         dst_device_list = driver.get_plot_dst_device_list(self.config['mount_path'])
-        logger.info('dst_device_list:%s' % dst_device_list)
+        #logger.info('dst_device_list:%s' % dst_device_list)
         current_device = None
         current_ratio = 1
         #找出剩余空间最小的
