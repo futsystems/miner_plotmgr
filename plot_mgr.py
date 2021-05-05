@@ -2,11 +2,18 @@
 # -*- coding: utf-8 -*-
 
 import os
+import sys
+import time
 import subprocess
 import logging
 import logging.config
 import driver
 from message import Response
+
+if sys.version_info.major == 2:   # Python 2
+    import thread
+else:                             # Python 3
+    import _thread as thread
 import requests
 import config
 
@@ -18,6 +25,76 @@ logger = logging.getLogger('nas')
 class PlotManager(object):
     def __init__(self):
         self.config = config.get_plotter_setting()
+        self.nas_server = None
+        self._send_to_nas = False
+        self._sending_thread = None
+
+    def get_plot_dst_decive_to_send(self):
+        """
+        检查plot储存目录，将生成的plot发送到远端NAS
+        :return:
+        """
+        mount_path = self.config['mount_path']
+        if (not os.path.exists(mount_path)) or (not os.path.isdir(mount_path)):
+            return None
+
+        dst_device_list = driver.get_plot_dst_device_list(self.config['mount_path'])
+        current_device = None
+        current_ratio = 1
+        #找出剩余空间最小的
+        for device in dst_device_list:
+            ratio = device['space_free']/float(device['space_total'])
+            if ratio < current_ratio:
+                current_ratio = ratio
+                current_device = device
+
+        return current_device
+
+    def set_nas_server(self,nas_server):
+        self.nas_server = nas_server
+
+    @property
+    def is_sending_live(self):
+        return self._send_to_nas
+
+
+    def start_sending_process(self):
+        if self.nas_server is None:
+            logger.info('Please set nas server first')
+            return (False, 'Please set nas server first')
+
+        if self._send_to_nas:
+            logger.info('Sending process already started')
+            return (False, 'Sending process already started')
+
+        logger.info('Start sending process')
+        self._send_to_nas = True
+        self._sending_thread = thread.start_new_thread(self.sending_process, (1,))
+        return (True, '')
+
+
+    def stop_sending_process(self):
+        if self._send_to_nas:
+            logger.info('Stop sending process')
+            self._send_to_nas = False
+            return (True, '')
+        return (False, 'Sending process is not started')
+
+
+    def sending_process(self, obj):
+        while True:
+            if not self._send_to_nas:
+                logger.info("Sending Process Thread Exit")
+                thread.exit_thread()
+            device = self.get_plot_dst_decive_to_send()
+            if device is not None:
+                for plot_file in os.listdir(device['mount_path']):
+                    if file.plot_file(".plot"):
+                        logger.info('Will send plot:%s to nas:%s' % (plot_file, self.nas_server))
+                        #self.send_plot(file, self.nas_server)
+
+            time.sleep(10)
+
 
 
 

@@ -141,12 +141,12 @@ def get_dst_device_info(mount_path):
         return None
     return {
         'mount_path':mount_path,
-        'device': device[1],
-        'space_total': get_device_info('space_total', device[1]),
-        'space_used': get_device_info('space_used', device[1]),
-        'space_free': get_device_info('space_free', device[1]),
-        'space_free_plots': get_device_info('space_free_plots', device[1]),
-        'total_current_plots': get_device_info('total_current_plots', device[1]),
+        'device': device,
+        'space_total': get_device_info('space_total', device),
+        'space_used': get_device_info('space_used', device),
+        'space_free': get_device_info('space_free', device),
+        'space_free_plots': get_device_info('space_free_plots', device),
+        'total_current_plots': get_device_info('total_current_plots', device),
 
     }
 

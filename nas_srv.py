@@ -77,6 +77,39 @@ def plot_info():
     info = nas.get_plot_info(path)
     return Response(0, '',info).to_json()
 
+
+
+@app.route('/plot/sending/nas/set')
+def plot_sending_set_nas():
+    """
+    start nc server to receive plot file
+    :return:
+    """
+    nas_ip = request.args.get('nas_ip')
+    if nas_ip is None or nas_ip == '':
+        return Response(100, 'nas ip is empty').to_json()
+    plotter.set_nas_server(nas_ip)
+    return Response(0, '').to_json()
+
+@app.route('/plot/sending/start')
+def start_plot_sending():
+    """
+    start nc server to receive plot file
+    :return:
+    """
+    res = plotter.start_sending_process()
+    return Response(0 if res[0] else 1,res[1]).to_json()
+
+
+@app.route('/plot/sending/stop')
+def stop_plot_sending():
+    """
+    stop nc
+    :return:
+    """
+    res = plotter.stop_sending_process()
+    return Response(0 if res[0] else 1, res[1]).to_json()
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
 
