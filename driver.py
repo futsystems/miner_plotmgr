@@ -1,8 +1,12 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 import psutil
 
+import logging
+import logging.config
+logger = logging.getLogger('nas')
 
 def get_driver_info():
     print("test driver info")
@@ -45,6 +49,7 @@ def get_device_by_mountpoint(mountpoint):
     for p in partitions:
         if p.device.startswith('/dev/sd') and p.mountpoint.startswith(mountpoint):
             return p.device
+    return None
 
 def get_mountpoint_by_device(device):
     """
@@ -112,6 +117,40 @@ def get_plot_drive_to_use():
                 and get_device_info('space_free_plots', part.device) >= 1:
             available_drives.append((part.mountpoint, part.device))
     return natsorted(available_drives)[0]
+
+
+def get_plot_dst_device_list(dst_path):
+    """
+    Get dst info of plotter
+    :return:
+    """
+    logger.info('path:%s'% dst_path)
+    dst_device_list = []
+    for sub_path in os.listdir(dst_path):
+        path = '%s/%s' % (dst_path, sub_path)
+        info = get_dst_device_info(path)
+        if info is not None:
+            dst_device_list.append(info)
+
+    return dst_device_list
+
+
+def get_dst_device_info(mount_path):
+    device = get_device_by_mountpoint(mount_path)
+    if device is None:
+        return None
+    return {
+        'mount_path':mount_path,
+        'device': device[1],
+        'space_total': get_device_info('space_total', device[1]),
+        'space_used': get_device_info('space_used', device[1]),
+        'space_free': get_device_info('space_free', device[1]),
+        'space_free_plots': get_device_info('space_free_plots', device[1]),
+        'total_current_plots': get_device_info('total_current_plots', device[1]),
+
+    }
+
+
 
 if __name__ == '__main__':
     d = get_list_of_plot_drives()
