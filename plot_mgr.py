@@ -97,7 +97,7 @@ class PlotManager(object):
                         logger.info('====> Will send plot:%s from dst:%s to nas:%s <====' % (plot_file, device['mount_path'], self.nas_server))
                         plot_full_name = '%s/%s' % (device['mount_path'], plot_file)
                         res = self.send_plot(plot_full_name, self.nas_server)
-                        logger.info('====> Send plot %s [%s]' % ('success' if res[0] else 'fail', res[1]))
+                        logger.info('====> Send plot %s [%s]' % ( ('success' if res[0] else 'fail'), res[1]))
                         break
             else:
                 logger.info("There is no plot dst device")
@@ -162,6 +162,7 @@ class PlotManager(object):
                     response = requests.get(url_check)
                     if response.status_code != 200:
                         logger.warn('NAS Server response error')
+                        return [False, result['msg']]
                     else:
                         result = response.json()
                         if result['code'] != 0:
@@ -175,7 +176,7 @@ class PlotManager(object):
                                 return [True, result['msg']]
                             else:
                                 logger.warn('Plot size dismatch, will send file later')
-                                return [False, result['msg']]
+                        return [False, result['msg']]
 
 
 if __name__ == '__main__':
