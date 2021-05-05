@@ -69,6 +69,17 @@ def plot_info():
     return Response(0, '', info).to_json()
 
 
+@app.route('/driver/list')
+def plot_info():
+    """
+    stop nc
+    :return:
+    """
+    import driver
+    list = driver.get_nas_driver_list()
+    return Response(0,'',list).to_json()
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
 

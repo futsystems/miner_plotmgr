@@ -33,18 +33,29 @@ def get_drive_by_mountpoint(mountpoint):
     return (mountpoint.split("/")[5])
 
 
-def get_list_of_plot_drives():
+def get_nas_driver_list():
     """
     获得NAS服务器上可以储存plot文件的设备列表
     Return list of tuples of all available plot drives on the system and the device assignment
     [('/mnt/enclosure0/front/column0/drive3', '/dev/sde1')]
     """
-    partitions = psutil.disk_partitions(all=False)
-    mountpoint = []
-    for p in partitions:
-        if p.device.startswith('/dev/sd') and p.mountpoint.startswith(nas_driver_mount_preifx):
-            mountpoint.append((p.mountpoint, p.device, p.fstype))
-    return mountpoint
+    #partitions = psutil.disk_partitions(all=False)
+    #mountpoint = []
+    #for p in partitions:
+    #    if p.device.startswith('/dev/sd') and p.mountpoint.startswith(nas_driver_mount_preifx):
+    #        mountpoint.append((p.mountpoint, p.device, p.fstype))
+    #return mountpoint
+
+    driver_list = []
+    for sub_path in os.listdir(nas_driver_mount_preifx):
+        path = '%s/%s' % (nas_driver_mount_preifx, sub_path)
+        if os.path.isdir(path):
+            info = get_dst_device_info(path)
+            if info is not None:
+                driver_list.append(info)
+
+    return driver_list
+
 
 def get_device_by_mountpoint(mountpoint):
     """
