@@ -129,7 +129,7 @@ def get_plot_dst_device_list(dst_path):
     for sub_path in os.listdir(dst_path):
         path = '%s/%s' % (dst_path, sub_path)
         if os.path.isdir(path):
-            logger.info('mount_path:%s' % path)
+            #logger.info('mount_path:%s' % path)
             info = get_dst_device_info(path)
             if info is not None:
                 dst_device_list.append(info)

@@ -93,10 +93,14 @@ class PlotManager(object):
                 for plot_file in os.listdir(device['mount_path']):
                     #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
                     if plot_file.endswith(".test"):
-                        logger.info('Will send plot:%s from dst:%s to nas:%s' % (plot_file, device['mount_path'], self.nas_server))
+
+                        logger.info('====> Will send plot:%s from dst:%s to nas:%s <====' % (plot_file, device['mount_path'], self.nas_server))
                         plot_full_name = '%s/%s' % (device['mount_path'], plot_file)
-                        self.send_plot(plot_full_name, self.nas_server)
+                        res = self.send_plot(plot_full_name, self.nas_server)
+                        logger.info('send plot %s [%s]' % ('success' if res[0] else 'fail', res[1]))
                         break
+            else:
+                logger.info("There is no plot dst device")
 
             time.sleep(10)
 
@@ -113,7 +117,7 @@ class PlotManager(object):
 
         file_name = plot_file.split('/')[-1]
         url_start = 'http://%s:8080/nc/start?file=%s' % (nas_server, file_name)
-        url_stop = 'http://%s:8080/nc/stop' % (nas_server)
+        url_stop = 'http://%s:8080/nc/stop' % nas_server
 
         response = requests.get(url_start)
         if response.status_code != 200:
@@ -122,10 +126,10 @@ class PlotManager(object):
         else:
             result = response.json()
             if result['code'] != 0:
-                logger.warn('Start NC eror:%s' % result['msg'])
+                logger.warn('Start NC error:%s' % result['msg'])
                 return [False, result['msg']]
             else:
-                logger.info('Try send [%s] to NAS Server %s@%s ' %(plot_file, result['data']['path'], nas_server))
+                logger.info('Start remote nc service success,sending plot:%s to NAS Server:%s Path:%s' % (plot_file, nas_server, result['data']['path']))
                 try:
                     #nc_cmd = '%s | nc -q2 %s 4040' % (plot_file, nas_server)
                     cmd_path = os.path.split(os.path.abspath(__file__))[0]
@@ -149,9 +153,11 @@ class PlotManager(object):
                         if result['code'] != 0:
                             logger.warn('NAS Server stop nc error:%s' % result['msg'])
                             #return [False, result['msg']]
+                        else:
+                            logger.info('Stop remote nc service success')
 
                     #2. check file and remove local
-                    logger.info('Check remote file:%s@%s' % (remoe_path, nas_server))
+                    logger.info('Check remote file:%s from NAS %s' % (remoe_path, nas_server))
                     url_check = 'http://%s:8080/plot/info?path=%s' % (nas_server, remoe_path)
                     response = requests.get(url_check)
                     if response.status_code != 200:
@@ -164,7 +170,11 @@ class PlotManager(object):
                             remote_size = result['data']['size']
                             local_size = os.path.getsize(plot_file)
                             if remote_size == local_size:
-                                logger.warn('Plot Size math,delete local file')
+                                logger.info('Plot size match,delete local file')
+                                os.remove(plot_file)
+
+                            else:
+                                logger.warn('Plot size dismatch, will send file later')
 
 
 if __name__ == '__main__':
