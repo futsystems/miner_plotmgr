@@ -17,7 +17,7 @@ plotter = PlotterManager()
 
 @app.route('/')
 def hello_world():
-    return 'hello world'
+    return 'plotter server'
 
 
 
