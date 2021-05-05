@@ -75,7 +75,7 @@ def plot_info():
     if path is None or path == '':
         return Response(100, 'path args is empty').to_json()
     info = nas.get_plot_info(path)
-    return Response(0, '',info).to_json()
+    return Response(0, '', info).to_json()
 
 
 
