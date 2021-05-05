@@ -44,8 +44,8 @@ class PlotManager(object):
         current_ratio = 1
         #找出剩余空间最小的
         for device in dst_device_list:
-            logger.info('device:%s' % device)
             ratio = device['space_free']/float(device['space_total'])
+            logger.info('device:%s free ratio:%s' % (device, ratio))
             if ratio < current_ratio:
                 current_ratio = ratio
                 current_device = device
