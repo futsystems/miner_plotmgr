@@ -16,15 +16,13 @@ def get_plotter_setting():
     config=ConfigParser.ConfigParser()
 
     if sys.version_info.major == 2:  # Python 2
-        with open('./config.conf', 'rb') as cfgfile:
-            config.readfp(cfgfile)
+        config.read('config.conf')
     else:  # Python 3
-        config.read_file(open('config.conf', 'rb'))
+        config.read('config.conf', encoding="utf-8")
 
 
     mount_path=config.get('plotter', 'mount_path')
 
     return {
         'mount_path': mount_path
-
     }
