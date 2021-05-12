@@ -21,9 +21,12 @@ object Host "{{ data['name'] }}" {
 {% endfor %}]
   }
 
-  vars.nvme_devices["nvme-1"]={
-    device_name = "/dev/nvme0n1"
+[{% for cache in data['cache_list']%}
+ vars.nvme_devices["nvme-{{loop.index}}"]={
+    device_name = "{{cache['device']}}"
   }
+{% endfor %}]
+
 
   vars.dst_disks["/Dst"] = {
     disk_partitions =  [{% for driver in data['driver_list']%}
