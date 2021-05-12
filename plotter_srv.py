@@ -1,17 +1,25 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
+import os
 
 from flask import Flask
 from flask import request
+from flask import render_template
 from plotter_mgr import PlotterManager
 from message import Response
+import driver
 import logging.config
 
 logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('plotter')
+logger = logging.getLogger('nas')
 
-app = Flask(__name__)
+template_dir = os.path.dirname(os.path.realpath(__file__))
+template_dir = os.path.join(template_dir, 'templates')
+
+logger.info('template dir:%s' % template_dir)
+
+app = Flask(__name__, template_folder=template_dir)
 
 plotter = PlotterManager()
 
@@ -19,6 +27,18 @@ plotter = PlotterManager()
 def hello_world():
     return 'plotter server'
 
+
+@app.route('/nagios/config')
+def nagios_config():
+    driver_list = driver.get_plotter_driver_list()
+    data={'name': 'plotter-002',
+          'driver_list': driver_list
+
+          }
+
+
+
+    return render_template('plotter.nagios.html', data=data)
 
 
 @app.route('/plot/sending/nas/set')
