@@ -36,4 +36,6 @@ object Host "{{ data['name'] }}" {
   }
  }
 
-{{ data['driver_list'] }}
+ {% for driver in data %}
+    driver['mount_path']
+{% endfor %}
