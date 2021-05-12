@@ -2,5 +2,6 @@
 
 git pull
 
-supervisorctl restart srv.nas
+supervisorctl restart api.plotter
+supervisorctl restart api.nas
 
