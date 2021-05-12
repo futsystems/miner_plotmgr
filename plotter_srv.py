@@ -32,7 +32,8 @@ def hello_world():
 def nagios_config():
     driver_list = driver.get_plotter_driver_list()
     data={'name': 'plotter-002',
-          'driver_list': driver_list
+          'dst_list': driver_list,
+          'dst_cnt': len(driver_list),
 
           }
 

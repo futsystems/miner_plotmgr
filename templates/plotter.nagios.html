@@ -37,7 +37,7 @@ object Host "{{ data['name'] }}" {
  }
 
 --------------------------------
- [{% for driver in data['driver_list']%}
-
-    "{{ driver['mount_path'] }}",
+ [{% for dst in data['dst_list']%}
+    {{loop.counter}}}
+    "{{ dst['mount_path'] }}"{% if loop.counter != data['dst_cnt'] %},{% endif %}
 {% endfor %}]
