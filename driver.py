@@ -66,7 +66,8 @@ def get_device_by_mountpoint(mountpoint):
     """
     partitions = psutil.disk_partitions(all=False)
     for p in partitions:
-        if p.device.startswith('/dev/sd') and p.mountpoint.startswith(mountpoint):
+        #if p.device.startswith('/dev/sd') and p.mountpoint.startswith(mountpoint):
+        if p.mountpoint.startswith(mountpoint):
             return p.device
     return None
 
