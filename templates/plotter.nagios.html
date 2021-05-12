@@ -28,13 +28,13 @@ object Host "{{ data['name'] }}" {
 }
 
   vars.load_cfg={
-    load_wload1 = data['vcpu_cnt']*0.8
-    load_wload5 = data['vcpu_cnt']*0.8
-    load_wload15 = data['vcpu_cnt']*0.8
+    load_wload1 = {{data['vcpu_cnt']*0.8}}
+    load_wload5 = {{data['vcpu_cnt']*0.8}}
+    load_wload15 = {{data['vcpu_cnt']*0.8}}
 
-    load_cload1 = data['vcpu_cnt']*0.9
-    load_cload5 = data['vcpu_cnt']*0.9
-    load_cload15 = data['vcpu_cnt']*0.9
+    load_cload1 = {{data['vcpu_cnt']*0.9}}
+    load_cload5 = {{data['vcpu_cnt']*0.9}}
+    load_cload15 = {{data['vcpu_cnt']*0.9}}
   }
  }
 
