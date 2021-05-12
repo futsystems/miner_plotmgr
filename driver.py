@@ -173,7 +173,7 @@ def get_plotter_cache_list():
     for sub_path in os.listdir(plotter_cache_mount_prefix):
         path = '%s/%s' % (plotter_cache_mount_prefix, sub_path)
         if os.path.isdir(path):
-            #logger.info('mount_path:%s' % path)
+            logger.info('mount_path:%s' % path)
             info = get_dst_device_info(path)
             if info is not None:
                 dst_device_list.append(info)
