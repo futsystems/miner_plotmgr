@@ -21,11 +21,16 @@ object Host "{{ data['name'] }}" {
 {% endfor %}]
   }
 
+  vars.nvme_devices["nvme-1"]={
+    device_name = "/dev/nvme0n1"
+  }
+
   vars.dst_disks["/Dst"] = {
     disk_partitions =  [{% for driver in data['driver_list']%}
     "{{ driver['mount_path'] }}"{% if loop.index != data['driver_cnt'] %},{% endif %}
 {% endfor %}]
 }
+
 
   vars.load_cfg={
     load_wload1 = {{data['vcpu_cnt']*0.85}}
