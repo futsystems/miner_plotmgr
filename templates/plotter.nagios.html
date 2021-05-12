@@ -13,7 +13,6 @@ object Zone "{{ data['name'] }}" {
 object Host "{{ data['name'] }}" {
   check_command = "hostalive" //check is executed on the master
   address = "nagios.futsystems.com"
-  vars.disks="/dev/nvme0n1"
   vars.client_endpoint = name //follows the convention that host name == endpoint name
 
   vars.cache_disks["/Cache"] = {
@@ -26,17 +25,16 @@ object Host "{{ data['name'] }}" {
     disk_partitions =  [{% for driver in data['driver_list']%}
     "{{ driver['mount_path'] }}"{% if loop.index != data['driver_cnt'] %},{% endif %}
 {% endfor %}]
-  }
+}
 
   vars.load_cfg={
-    load_wload1 = 20
-    load_wload5 = 20
-    load_wload15 = 20
+    load_wload1 = data['vcpu_cnt']*0.8
+    load_wload5 = data['vcpu_cnt']*0.8
+    load_wload15 = data['vcpu_cnt']*0.8
 
-    load_cload1 = 22
-    load_cload5 = 22
-    load_cload15 = 22
-
+    load_cload1 = data['vcpu_cnt']*0.9
+    load_cload5 = data['vcpu_cnt']*0.9
+    load_cload15 = data['vcpu_cnt']*0.9
   }
  }
 
