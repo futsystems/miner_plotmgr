@@ -38,6 +38,6 @@ object Host "{{ data['name'] }}" {
 
 --------------------------------
  [{% for dst in data['dst_list']%}
-    {{loop.counter}}
+    {{loop.index}}
     "{{ dst['mount_path'] }}"{% if loop.counter != data['dst_cnt'] %},{% endif %}
 {% endfor %}]
