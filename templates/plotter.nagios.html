@@ -17,12 +17,14 @@ object Host "{{ data['name'] }}" {
   vars.client_endpoint = name //follows the convention that host name == endpoint name
 
   vars.cache_disks["/Cache"] = {
-    disk_partitions = ["/mnt/cache/00","/mnt/cache/01"]
+    disk_partitions =  [{% for cache in data['cache_list']%}
+    "{{ cache['mount_path'] }}"{% if loop.index != data['cache_cnt'] %},{% endif %}
+{% endfor %}]
   }
 
   vars.dst_disks["/Dst"] = {
-    disk_partitions =  [{% for dst in data['dst_list']%}
-    "{{ dst['mount_path'] }}"{% if loop.index != data['dst_cnt'] %},{% endif %}
+    disk_partitions =  [{% for driver in data['driver_list']%}
+    "{{ driver['mount_path'] }}"{% if loop.index != data['driver_cnt'] %},{% endif %}
 {% endfor %}]
   }
 

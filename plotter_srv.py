@@ -31,9 +31,12 @@ def hello_world():
 @app.route('/nagios/config')
 def nagios_config():
     driver_list = driver.get_plotter_driver_list()
+    cache_list = driver.get_plotter_cache_list()
     data={'name': 'plotter-002',
-          'dst_list': driver_list,
-          'dst_cnt': len(driver_list),
+          'driver_list': driver_list,
+          'driver_cnt': len(driver_list),
+          'cache_list': cache_list,
+          'cache_cnt': len(cache_list)
 
           }
 

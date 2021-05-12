@@ -28,18 +28,19 @@ def get_plotter_setting():
 
 
 def get_plotter_driver_mount_prefix():
-    config = ConfigParser.ConfigParser()
-
-    if sys.version_info.major == 2:  # Python 2
-        config.read('../config/plotmgr.conf')
-    else:  # Python 3
-        config.read('../config/plotmgr.conf', encoding="utf-8")
-
-    prefix = config.get('plotter', 'driver_mount_prefix')
+    prefix = get_config().get('plotter', 'driver_mount_prefix')
     return prefix
 
+def get_plotter_cache_mount_prefix():
+    prefix = get_config().get('plotter', 'cache_mount_prefix')
+    return prefix
 
 def get_nas_driver_mount_prefix():
+    prefix = get_config().get('nas', 'driver_mount_prefix')
+    return prefix
+
+
+def get_config():
     config = ConfigParser.ConfigParser()
 
     if sys.version_info.major == 2:  # Python 2
@@ -47,5 +48,4 @@ def get_nas_driver_mount_prefix():
     else:  # Python 3
         config.read('../config/plotmgr.conf', encoding="utf-8")
 
-    prefix = config.get('nas', 'driver_mount_prefix')
-    return prefix
+    return config

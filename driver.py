@@ -14,6 +14,8 @@ def get_driver_info():
 #/mnt/plots/driver0 mount_prefix is /mnt/plots/driver
 nas_driver_mount_preifx = config.get_nas_driver_mount_prefix()
 plotter_driver_mount_prefix = config.get_plotter_driver_mount_prefix()
+plotter_cache_mount_prefix = config.get_plotter_cache_mount_prefix()
+
 
 plot_size_k = 108995911228
 plot_size_g = 101.3623551
@@ -157,6 +159,26 @@ def get_plotter_driver_list():
 
     return dst_device_list
 
+
+
+def get_plotter_cache_list():
+    """
+    用于获得P盘缓存设备列表
+    /mnt/dst/00 /mnt/dst/01 分别挂载到不同磁盘，或者组成raid0后挂载到/mnt/dst/00
+    :return:
+    """
+    #logger.info('path:%s'% dst_path)
+
+    dst_device_list = []
+    for sub_path in os.listdir(plotter_cache_mount_prefix):
+        path = '%s/%s' % (plotter_cache_mount_prefix, sub_path)
+        if os.path.isdir(path):
+            #logger.info('mount_path:%s' % path)
+            info = get_dst_device_info(path)
+            if info is not None:
+                dst_device_list.append(info)
+
+    return dst_device_list
 
 def get_dst_device_info(mount_path):
     """
