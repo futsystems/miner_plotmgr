@@ -71,7 +71,7 @@ def config_client():
           'cache_cnt': len(cache_list),
 
           }
-    return render_template('plotter.frpc.html', data=data)
+    return render_template('plotter.plotman.yaml', data=data)
 
 
 
