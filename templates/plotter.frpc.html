@@ -1,0 +1,16 @@
+[common]
+server_addr = 121.40.43.131
+server_port = 7000
+
+[ssh_plotter-{{data['server_id']}}]
+type = tcp
+local_ip = 127.0.0.1
+local_port = 22
+remote_port = 22007
+
+
+[api_plotter-{{data['server_id']}}]
+type = http
+local_ip = 127.0.0.1
+local_port = 8080
+custom_domains = {{data['server_id']}}.gateway.marvelsystem.net

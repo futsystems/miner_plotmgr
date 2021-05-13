@@ -28,7 +28,7 @@ def hello_world():
     return 'plotter server'
 
 
-@app.route('/nagios/config')
+@app.route('/config/nagios')
 def nagios_config():
     import socket
     driver_list = driver.get_plotter_driver_list()
@@ -42,10 +42,20 @@ def nagios_config():
           'vcpu_cnt': vcpu_count,
 
           }
-
-
-
     return render_template('plotter.nagios.html', data=data)
+
+
+@app.route('/config/frpc')
+def nagios_config():
+    import socket
+    hostname = socket.gethostname()
+    server_id = hostname.split('-')[1]
+    data={'name': socket.gethostname(),
+          'server_id': id
+
+          }
+    return render_template('plotter.nagios.html', data=data)
+
 
 
 @app.route('/plot/sending/nas/set')
