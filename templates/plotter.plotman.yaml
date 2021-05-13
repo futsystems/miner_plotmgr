@@ -48,9 +48,8 @@ directories:
         # These again are presumed to be on independent physical devices,
         # so writes (plot jobs) and reads (archivals) can be scheduled
         # to minimize IO contention.
-        dst:
-                - /mnt/dst/00
-                - /mnt/dst/01
+        dst:{% for driver in data['driver_list']%}
+                - {{driver['mount_path']}}{% endfor %}
 
         # Archival configuration.  Optional; if you do not wish to run the
         # archiving operation, comment this section out.
