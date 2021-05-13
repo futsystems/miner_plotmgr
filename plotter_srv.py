@@ -51,7 +51,7 @@ def config_frpc():
     hostname = socket.gethostname()
     server_id = hostname.split('-')[1]
     data={'name': socket.gethostname(),
-          'server_id': id
+          'server_id': server_id
 
           }
     return render_template('plotter.frpc.html', data=data)
