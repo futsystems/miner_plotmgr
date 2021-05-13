@@ -54,7 +54,7 @@ def config_frpc():
           'server_id': id
 
           }
-    return render_template('plotter.nagios.html', data=data)
+    return render_template('plotter.frpc.html', data=data)
 
 
 
