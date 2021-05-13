@@ -57,7 +57,7 @@ def config_frpc():
     return render_template('plotter.frpc.html', data=data)
 
 @app.route('/config/plotman')
-def config_client():
+def config_plotman():
     import socket
     hostname = socket.gethostname()
     server_id = hostname.split('-')[1]
