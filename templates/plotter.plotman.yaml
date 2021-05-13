@@ -24,10 +24,8 @@ directories:
         #
         # If multiple directories share a common prefix, reports will
         # abbreviate and show just the uniquely identifying suffix.
-        tmp:
-{% for cache in data['cache_list']%}
-                - {{cache['mount_path']}}
-{% endfor %}
+        tmp:{% for cache in data['cache_list']%}
+                - {{cache['mount_path']}}{% endfor %}
 
         # Optional: Allows overriding some characteristics of certain tmp
         # directories. This contains a map of tmp directory names to
