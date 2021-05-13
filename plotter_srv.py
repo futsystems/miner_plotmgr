@@ -29,7 +29,7 @@ def hello_world():
 
 
 @app.route('/config/nagios')
-def nagios_config():
+def config_nagios():
     import socket
     driver_list = driver.get_plotter_driver_list()
     cache_list = driver.get_plotter_cache_list()
@@ -46,7 +46,7 @@ def nagios_config():
 
 
 @app.route('/config/frpc')
-def nagios_config():
+def config_frpc():
     import socket
     hostname = socket.gethostname()
     server_id = hostname.split('-')[1]
