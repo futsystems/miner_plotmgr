@@ -56,6 +56,23 @@ def config_frpc():
           }
     return render_template('plotter.frpc.html', data=data)
 
+@app.route('/config/plotman')
+def config_client():
+    import socket
+    hostname = socket.gethostname()
+    server_id = hostname.split('-')[1]
+    driver_list = driver.get_plotter_driver_list()
+    cache_list = driver.get_plotter_cache_list()
+    data={'name': socket.gethostname(),
+          'server_id': server_id,
+          'driver_list': driver_list,
+          'driver_cnt': len(driver_list),
+          'cache_list': cache_list,
+          'cache_cnt': len(cache_list),
+
+          }
+    return render_template('plotter.frpc.html', data=data)
+
 
 
 @app.route('/plot/sending/nas/set')
