@@ -109,7 +109,7 @@ def restart_service():
     return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
 
 
-@app.route('/config/apply/plotman')
+@app.route('/config/plotman/apply')
 def apply_plotman_config():
     result = subprocess.check_call(["/opt/src/scripts/apply_plotman_config.sh"])
     return Response(result,'apply plotman  %s' % ('success' if result == 0 else 'failed')).to_json()
