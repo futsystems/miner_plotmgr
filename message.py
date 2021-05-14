@@ -3,7 +3,7 @@
 
 
 import json
-
+from flask import jsonify
 
 class Response(object):
     def __init__(self, code, msg, data=None):
@@ -13,7 +13,7 @@ class Response(object):
 
 
     def to_json(self):
-        return json.dumps(
+        return jsonify(
             {
                 'code' : self._code,
                 'msg' : self._msg,
