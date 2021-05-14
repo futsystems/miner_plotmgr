@@ -10,6 +10,8 @@ from plotter_mgr import PlotterManager
 from message import Response
 import driver
 import logging.config
+import subprocess
+
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
@@ -55,6 +57,14 @@ def config_frpc():
 
           }
     return render_template('plotter.frpc.html', data=data)
+
+
+@app.route('/service/restart')
+def restart_service():
+    service_name = request.args.get('service_name')
+    result = subprocess.check_call(["supervisorctl", "restart", service_name])
+    return Response(result,'restart service %s' % ('success' if result == 0 else 'failed'))
+
 
 @app.route('/config/plotman')
 def config_plotman():
