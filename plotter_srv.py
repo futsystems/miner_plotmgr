@@ -71,13 +71,6 @@ def config_hpool():
     return render_template('plotter.hpool.yaml', data=data)
 
 
-@app.route('/service/restart')
-def restart_service():
-    service_name = request.args.get('service_name')
-    result = subprocess.check_call(["supervisorctl", "restart", service_name])
-    return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
-
-
 @app.route('/config/plotman')
 def config_plotman():
     import socket
@@ -93,8 +86,19 @@ def config_plotman():
           'cache_cnt': len(cache_list),
 
           }
+
+    import requests
+    query = {'id': server_id}
+    response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
+    logger.info('plot config data:%s' % response.json())
     return render_template('plotter.plotman.yaml', data=data)
 
+
+@app.route('/service/restart')
+def restart_service():
+    service_name = request.args.get('service_name')
+    result = subprocess.check_call(["supervisorctl", "restart", service_name])
+    return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
 
 
 @app.route('/plot/sending/nas/set')
