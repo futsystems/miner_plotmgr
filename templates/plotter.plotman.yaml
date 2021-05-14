@@ -105,7 +105,7 @@ scheduling:
 # https://github.com/Chia-Network/chia-blockchain/wiki/CLI-Commands-Reference#create
 plotting:
         k: {{config['k']}}
-        e: True             # Use -e plotting option
+        e: {{config['e']}}             # Use -e plotting option
         n_threads: {{config['n_threads']}}         # Threads per job
         n_buckets: {{config['n_buckets']}}          # Number of buckets to split data into
         job_buffer: {{config['job_buffer']}}        # Per job memory
