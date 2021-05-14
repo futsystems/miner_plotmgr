@@ -95,6 +95,7 @@ def config_plotman():
     logger.info('plot config data:%s' % data2)
 
     data = data.update(data2)
+    logger.info('data:%s' % data)
     #{'k': '32', 'e': True, 'n_threads': 3, 'n_buckets': 128, 'job_buffer': 4200, 'global_max_jobs': 10,
     # 'global_stagger_m': 48, 'tmpdir_max_jobs': 10, 'tmpdir_stagger_phase_major': 2, 'tmpdir_stagger_phase_minor': 1,
     # 'tmpdir_stagger_phase_limit': 5}
