@@ -109,6 +109,12 @@ def restart_service():
     return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
 
 
+@app.route('/config/apply/plotman')
+def apply_plotman_config():
+    result = subprocess.check_call(["/opt/src/scripts/apply_plotman_config.sh"])
+    return Response(result,'apply plotman  %s' % ('success' if result == 0 else 'failed')).to_json()
+
+
 @app.route('/plot/sending/nas/set')
 def plot_sending_set_nas():
     """
