@@ -91,15 +91,15 @@ def config_plotman():
     query = {'id': server_id}
     # get plot config from config center, if not setted, will return default value
     response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
-    data2 = response.json()
-    logger.info('plot config data:%s' % data2)
+    config = response.json()
+    logger.info('plot config data:%s' % config)
 
-    data = data.update(data2)
+    #data = data.update(data2)
     logger.info('data:%s' % data)
     #{'k': '32', 'e': True, 'n_threads': 3, 'n_buckets': 128, 'job_buffer': 4200, 'global_max_jobs': 10,
     # 'global_stagger_m': 48, 'tmpdir_max_jobs': 10, 'tmpdir_stagger_phase_major': 2, 'tmpdir_stagger_phase_minor': 1,
     # 'tmpdir_stagger_phase_limit': 5}
-    return render_template('plotter.plotman.yaml', data=data)
+    return render_template('plotter.plotman.yaml', data=data, config=config)
 
 
 @app.route('/service/restart')
