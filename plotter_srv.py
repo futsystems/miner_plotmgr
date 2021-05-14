@@ -63,7 +63,7 @@ def config_frpc():
 def restart_service():
     service_name = request.args.get('service_name')
     result = subprocess.check_call(["supervisorctl", "restart", service_name])
-    return Response(result,'restart service %s' % ('success' if result == 0 else 'failed'))
+    return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
 
 
 @app.route('/config/plotman')
