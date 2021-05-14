@@ -1,0 +1,20 @@
+token: ""
+path:{% for cache in data['cache_list']%}
+- {{cache['mount_path']}}{% endfor %}
+minerName: {{ data['name'] }}
+apiKey: 80d7e99d-2459-4887-97d2-b5e6120f0a6e
+cachePath: ""
+deviceId: ""
+extraParams: {}
+log:
+  lv: debug
+  path: ./log
+  name: miner.log
+url:
+  info: ""
+  submit: ""
+  line: ""
+scanPath: true
+scanMinute: 60
+debug: ""
+language: ""

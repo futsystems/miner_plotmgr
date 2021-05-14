@@ -59,6 +59,18 @@ def config_frpc():
     return render_template('plotter.frpc.html', data=data)
 
 
+@app.route('/config/hpool')
+def config_hpool():
+    import socket
+    driver_list = driver.get_plotter_driver_list()
+    cache_list = driver.get_plotter_cache_list()
+    data={'name': socket.gethostname(),
+          'driver_list': driver_list,
+          'cache_list': cache_list,
+          }
+    return render_template('plotter.hpool.yaml', data=data)
+
+
 @app.route('/service/restart')
 def restart_service():
     service_name = request.args.get('service_name')
