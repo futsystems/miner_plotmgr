@@ -24,7 +24,7 @@ def get_file_list(file_path):
 
 def get_plot_statistic():
     import re
-    from datetime import datetime
+    from datetime import datetime, timedelta
     plot_logs =  get_file_list('/opt/chia/logs')
     #logger.info('plot logs:%s' % plot_logs)
     plotting_cnt = 0
@@ -32,7 +32,11 @@ def get_plot_statistic():
     coppied_cnt = 0
     plot_time_sum = 0
     copy_time_sum = 0
-
+    now = datetime.now()
+    last_24_hours_dt = now - timedelta(days=1)
+    last_day_plotted_cnt = 0
+    last_day_plotted_time_sum =0
+    out_day = False
     for log in plot_logs:
         file = '/opt/chia/logs/%s' % log
         #logger.info('file:%s' % file)
@@ -48,12 +52,22 @@ def get_plot_statistic():
             plot_time=0
             copy_time=0
             if len(rows) >= 2:
-                plotted_cnt = plotted_cnt + 1
                 plot_time = re.findall(r"Total time = (.+?) seconds", rows[0])[0]
-                plot_time_sum = plot_time_sum + float(plot_time)
                 date_time_str = rows[0].split(') ')[1]
                 dt = datetime.strptime(date_time_str, '%a %b %d  %H:%M:%S %Y')
-                logger.info('plotted time:%s dt:%s' % (date_time_str, dt.strftime('%Y-%m-%d %H:%M:%S %Y')))
+                logger.info('plotted time:%s dt:%s' % (date_time_str, dt.strftime('%Y-%m-%d %H:%M:%S')))
+
+                if dt >= last_24_hours_dt:
+                    last_day_plotted_cnt = last_day_plotted_cnt+1
+                    last_day_plotted_time_sum = last_day_plotted_time_sum + float(plot_time)
+                else:
+                    out_day = True
+
+                #采样最近5个平均值
+                if plotted_cnt < 5:
+                    plotted_cnt = plotted_cnt + 1
+                    plot_time_sum = plot_time_sum + float(plot_time)
+
             if len(rows) >= 3:
                 coppied_cnt = coppied_cnt + 1
                 copy_time = re.findall(r"Copy time = (.+?) seconds", rows[1])[0]
@@ -61,13 +75,14 @@ def get_plot_statistic():
 
 
             #logger.info('plot time:%s copy time:%s' % (plot_time, copy_time))
-        if plotted_cnt >= 5:
+        if out_day and plotted_cnt >= 5:
             break
     #logger.info('plotting:%s plot time sum:%s plotted:%s avg time:%s' % (plotting_cnt, plot_time_sum, plotted_cnt, plot_time_sum/plotted_cnt))
     return {
         'plotting_cnt': plotting_cnt,
         'avg_plot_time': plot_time_sum/plotted_cnt,
         'avg_copy_time': copy_time_sum/coppied_cnt,
+        'last_day_plotted_cnt': last_day_plotted_cnt,
     }
 
 
