@@ -31,6 +31,7 @@ def get_plot_statistic():
     coppied_cnt = 0
     plot_time_sum = 0
     copy_time_sum = 0
+
     for log in plot_logs:
         file = '/opt/chia/logs/%s' % log
         #logger.info('file:%s' % file)
