@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os
+import subprocess
 
 import logging.config
 
@@ -22,7 +23,13 @@ def get_file_list(file_path):
         return dir_list
 
 def get_plot_logs():
-    return get_file_list('/opt/chia/logs')
+    plot_logs =  get_file_list('/opt/chia/logs')
+    for log in plot_logs:
+        file = '/opt/chia/logs/%s' % log
+        result = subprocess.check_output(['/opt/src/scripts/log_cat.sh', '/opt/chia/logs/2021-05-14-10:34:44.log'])
+        logger.info(result)
+        
+
 
 
 
