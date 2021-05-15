@@ -32,6 +32,10 @@ def hello_world():
 
 @app.route('/config/nagios')
 def config_nagios():
+    """
+    get nagios node config file
+    :return:
+    """
     import socket
     driver_list = driver.get_plotter_driver_list()
     cache_list = driver.get_plotter_cache_list()
@@ -49,6 +53,10 @@ def config_nagios():
 
 @app.route('/config/frpc')
 def config_frpc():
+    """
+    get frpc config file base on server name, server number
+    :return:
+    """
     import socket
     hostname = socket.gethostname()
     server_id = hostname.split('-')[1]
@@ -61,6 +69,10 @@ def config_frpc():
 
 @app.route('/config/hpool')
 def config_hpool():
+    """
+    get hpool config file, depend on plot driver
+    :return:
+    """
     import socket
     driver_list = driver.get_plotter_driver_list()
     cache_list = driver.get_plotter_cache_list()
@@ -73,6 +85,12 @@ def config_hpool():
 
 @app.route('/config/plotman')
 def config_plotman():
+    """
+    get plotman config file
+    1.get cache/dst device base on lcoal system
+    2.get plotting/scheduling config from management system
+    :return:
+    """
     import socket
     hostname = socket.gethostname()
     server_id = hostname.split('-')[1]
@@ -104,6 +122,10 @@ def config_plotman():
 
 @app.route('/service/restart')
 def restart_service():
+    """
+    restart service base on service name
+    :return:
+    """
     service_name = request.args.get('service_name')
     result = subprocess.check_call(["supervisorctl", "restart", service_name])
     return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
@@ -111,8 +133,25 @@ def restart_service():
 
 @app.route('/config/plotman/apply')
 def apply_plotman_config():
+    """
+    generate plotman config and apply
+    :return:
+    """
     result = subprocess.check_call(["/opt/src/scripts/apply_plotman_config.sh"])
     return Response(result,'apply plotman  %s' % ('success' if result == 0 else 'failed')).to_json()
+
+
+@app.route('/update')
+def update_system():
+    """
+    update system
+    1. /opt/src
+    2. /opt/plotter/bin
+    3. /opt/nas/bin
+    :return:
+    """
+    result = subprocess.check_call(["/opt/src/update.sh"])
+    return Response(result, 'update system  %s' % ('success' if result == 0 else 'failed')).to_json()
 
 
 @app.route('/plot/sending/nas/set')
