@@ -25,11 +25,19 @@ def get_file_list(file_path):
 def get_plot_logs():
     plot_logs =  get_file_list('/opt/chia/logs')
     logger.info('plot logs:%s' % plot_logs)
+    plotting_cnt = 0
+    plotted_cnt = 0
     for log in plot_logs:
         file = '/opt/chia/logs/%s' % log
         logger.info('file:%s' % file)
         result = subprocess.check_output(['/opt/src/scripts/log_cat.sh', file])
+        if result != '':
+            plotted_cnt = plotted_cnt + 1
+        else:
+            plotting_cnt = plotting_cnt + 1
         logger.info(result)
+
+    logger.info('plotting:%s plotted:%s' % (plotting_cnt, plotted_cnt))
 
 
 
