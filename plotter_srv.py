@@ -150,8 +150,12 @@ def update_system():
     3. /opt/nas/bin
     :return:
     """
-    result = subprocess.check_call(["/opt/src/update.sh"])
-    return Response(result, 'update system  %s' % ('success' if result == 0 else 'failed')).to_json()
+
+    command = ['sleep', '10', '&&', '/opt/src/update.sh']
+    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+
+    #result = subprocess.check_call(["/opt/src/update.sh"])
+    return Response(0, 'update system in background').to_json()
 
 
 @app.route('/plot/sending/nas/set')
