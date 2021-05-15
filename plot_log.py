@@ -50,6 +50,8 @@ def get_plot_statistic():
                 plotted_cnt = plotted_cnt + 1
                 plot_time = re.findall(r"Total time = (.+?) seconds", rows[0])[0]
                 plot_time_sum = plot_time_sum + float(plot_time)
+                date_time_str = rows[0].split(') ')[1]
+                logger.info('plotted time:%s' % date_time_str)
             if len(rows) >= 3:
                 coppied_cnt = coppied_cnt + 1
                 copy_time = re.findall(r"Copy time = (.+?) seconds", rows[1])[0]
