@@ -24,6 +24,7 @@ def get_file_list(file_path):
 
 def get_plot_statistic():
     import re
+    from datetime import datetime
     plot_logs =  get_file_list('/opt/chia/logs')
     #logger.info('plot logs:%s' % plot_logs)
     plotting_cnt = 0
@@ -51,7 +52,8 @@ def get_plot_statistic():
                 plot_time = re.findall(r"Total time = (.+?) seconds", rows[0])[0]
                 plot_time_sum = plot_time_sum + float(plot_time)
                 date_time_str = rows[0].split(') ')[1]
-                logger.info('plotted time:%s' % date_time_str)
+                dt = datetime.strptime(date_time_str, '%a %b %d  %H:%M:%S %Y')
+                logger.info('plotted time:%s dt:%s' % (date_time_str, dt.strftime('%Y-%m-%d %H:%M:%S %Y')))
             if len(rows) >= 3:
                 coppied_cnt = coppied_cnt + 1
                 copy_time = re.findall(r"Copy time = (.+?) seconds", rows[1])[0]
