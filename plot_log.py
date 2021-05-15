@@ -55,7 +55,7 @@ def get_plot_statistic():
                 plot_time = re.findall(r"Total time = (.+?) seconds", rows[0])[0]
                 date_time_str = rows[0].split(') ')[1]
                 dt = datetime.strptime(date_time_str, '%a %b %d  %H:%M:%S %Y')
-                logger.info('plotted time:%s dt:%s' % (date_time_str, dt.strftime('%Y-%m-%d %H:%M:%S')))
+                #logger.info('plotted time:%s dt:%s' % (date_time_str, dt.strftime('%Y-%m-%d %H:%M:%S')))
 
                 if dt >= last_24_hours_dt:
                     last_day_plotted_cnt = last_day_plotted_cnt+1
