@@ -31,10 +31,10 @@ def get_plot_logs():
         file = '/opt/chia/logs/%s' % log
         logger.info('file:%s' % file)
         result = subprocess.check_output(['/opt/src/scripts/log_cat.sh', file])
-        if result == '':
-            plotting_cnt = plotting_cnt + 1
-        else:
-            plotted_cnt = plotted_cnt + 1
+        #if result == '':
+        #    plotting_cnt = plotting_cnt + 1
+        #else:
+        #    plotted_cnt = plotted_cnt + 1
 
         logger.info(result)
 
