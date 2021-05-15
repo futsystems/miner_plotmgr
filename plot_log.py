@@ -25,7 +25,7 @@ def get_file_list(file_path):
 def get_plot_statistic():
     import re
     plot_logs =  get_file_list('/opt/chia/logs')
-    logger.info('plot logs:%s' % plot_logs)
+    #logger.info('plot logs:%s' % plot_logs)
     plotting_cnt = 0
     plotted_cnt = 0
     coppied_cnt = 0
@@ -36,7 +36,7 @@ def get_plot_statistic():
         file = '/opt/chia/logs/%s' % log
         #logger.info('file:%s' % file)
         result = subprocess.check_output(['/opt/src/scripts/log_cat.sh', file])
-        logger.info(result)
+        #logger.info(result)
 
         if result == b'':
             plotting_cnt = plotting_cnt + 1
