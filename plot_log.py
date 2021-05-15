@@ -54,7 +54,7 @@ def get_plot_logs():
         if plotted_cnt >= 5:
             break
 
-    logger.info('plotting:%s plotted:%s avg time:%s' % (plotting_cnt, plotted_cnt, plot_time_sum/plotted_cnt))
+    logger.info('plotting:%s plot time sum:%s plotted:%s avg time:%s' % (plotting_cnt, plot_time_sum, plotted_cnt, plot_time_sum/plotted_cnt))
 
 
 
