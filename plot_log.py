@@ -26,6 +26,7 @@ def get_plot_logs():
     plot_logs =  get_file_list('/opt/chia/logs')
     for log in plot_logs:
         file = '/opt/chia/logs/%s' % log
+        logger.info('file:%s' % file)
         result = subprocess.check_output(['/opt/src/scripts/log_cat.sh', file])
         logger.info(result)
 
