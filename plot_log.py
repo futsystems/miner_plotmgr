@@ -37,4 +37,4 @@ def get_plot_logs():
 
 if __name__ == '__main__':
     logger.info('get plot log list')
-    logger.info(get_plot_logs())
+    get_plot_logs()
