@@ -27,7 +27,7 @@ plotter = PlotterManager()
 
 @app.route('/')
 def hello_world():
-    return 'plotter server'
+    return 'plotter server v1.0'
 
 
 @app.route('/config/nagios')
