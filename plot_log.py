@@ -32,6 +32,8 @@ def get_plot_logs():
         file = '/opt/chia/logs/%s' % log
         logger.info('file:%s' % file)
         result = subprocess.check_output(['/opt/src/scripts/log_cat.sh', file])
+        logger.info(result)
+
         if result == b'':
             plotting_cnt = plotting_cnt + 1
         else:
@@ -42,11 +44,11 @@ def get_plot_logs():
             copy_time=0
             if len(rows) >= 2:
                 plot_time = re.findall(r"Total time = (.+?) seconds", rows[0])[0]
-            if len(rows) >=3:
-                copy_time = re.findall(r"Copy time = (.+?) seconds", rows[0])[0]
+            if len(rows) >= 3:
+                copy_time = re.findall(r"Copy time = (.+?) seconds", rows[1])[0]
 
             logger.info('plot time:%s copy time:%s' % (plot_time, copy_time))
-        logger.info(result)
+
 
         if plotted_cnt >= 5:
             break
