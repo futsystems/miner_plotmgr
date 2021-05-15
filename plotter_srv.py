@@ -151,10 +151,8 @@ def update_system():
     :return:
     """
 
-    command = ['sleep', '10', '&&', '/opt/src/update.sh']
-    p = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-
-    #result = subprocess.check_call(["/opt/src/update.sh"])
+    command = ['/opt/src/update.sh']
+    subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return Response(0, 'update system in background').to_json()
 
 
