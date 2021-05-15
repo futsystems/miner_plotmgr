@@ -23,6 +23,7 @@ def get_file_list(file_path):
         return dir_list
 
 def get_plot_logs():
+    import re
     plot_logs =  get_file_list('/opt/chia/logs')
     logger.info('plot logs:%s' % plot_logs)
     plotting_cnt = 0
@@ -35,7 +36,16 @@ def get_plot_logs():
             plotting_cnt = plotting_cnt + 1
         else:
             plotted_cnt = plotted_cnt + 1
+            result_str = result.decode("utf-8")
+            rows = result_str.split('\n')
+            plot_time=0
+            copy_time=0
+            if len(rows) >= 2:
+                plot_time = re.findall(r"Total time = (.+?) seconds", rows[0])[0]
+            if len(rows) >=3:
+                copy_time = re.findall(r"Copy time = (.+?) seconds", rows[0])[0]
 
+            logger.info('plot time:%s copy time:%s' % (plot_time, copy_time))
         logger.info(result)
 
         if plotted_cnt >= 5:
