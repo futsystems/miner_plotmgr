@@ -28,12 +28,13 @@ def get_plot_logs():
     logger.info('plot logs:%s' % plot_logs)
     plotting_cnt = 0
     plotted_cnt = 0
+    plot_time_sum = 0
     for log in plot_logs:
         file = '/opt/chia/logs/%s' % log
         logger.info('file:%s' % file)
         result = subprocess.check_output(['/opt/src/scripts/log_cat.sh', file])
         logger.info(result)
-        plot_time_sum = 0
+
         if result == b'':
             plotting_cnt = plotting_cnt + 1
         else:
