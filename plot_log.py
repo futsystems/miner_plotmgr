@@ -24,6 +24,7 @@ def get_file_list(file_path):
 
 def get_plot_logs():
     plot_logs =  get_file_list('/opt/chia/logs')
+    logger.info('plot logs:%s' % plot_logs)
     for log in plot_logs:
         file = '/opt/chia/logs/%s' % log
         logger.info('file:%s' % file)
