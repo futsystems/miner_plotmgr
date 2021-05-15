@@ -33,7 +33,7 @@ def get_plot_logs():
         logger.info('file:%s' % file)
         result = subprocess.check_output(['/opt/src/scripts/log_cat.sh', file])
         logger.info(result)
-
+        plot_time_sum = 0
         if result == b'':
             plotting_cnt = plotting_cnt + 1
         else:
@@ -44,6 +44,7 @@ def get_plot_logs():
             copy_time=0
             if len(rows) >= 2:
                 plot_time = re.findall(r"Total time = (.+?) seconds", rows[0])[0]
+                plot_time_sum = plot_time_sum + float(plot_time)
             if len(rows) >= 3:
                 copy_time = re.findall(r"Copy time = (.+?) seconds", rows[1])[0]
 
@@ -53,7 +54,7 @@ def get_plot_logs():
         if plotted_cnt >= 5:
             break
 
-    logger.info('plotting:%s plotted:%s' % (plotting_cnt, plotted_cnt))
+    logger.info('plotting:%s plotted:%s avg time:%s' % (plotting_cnt, plotted_cnt, plot_time_sum/plotted_cnt))
 
 
 
