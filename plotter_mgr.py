@@ -83,7 +83,7 @@ class PlotterManager(object):
 
     def _start_update_statistic_process(self):
         logger.info('start update statistic process')
-        self._update_statistic_thread = thread.start_new_thread(self.update_statistic_process)
+        self._update_statistic_thread = thread.start_new_thread(self.update_statistic_process, None)
 
 
 
@@ -95,7 +95,7 @@ class PlotterManager(object):
         return (False, 'Sending process is not started')
 
 
-    def sending_process(self, obj):
+    def sending_process(self, args):
         while True:
             if not self._send_to_nas:
                 logger.info("Sending Process Thread Exit")
@@ -120,7 +120,7 @@ class PlotterManager(object):
 
             time.sleep(10)
 
-    def update_statistic_process(self):
+    def update_statistic_process(self, args):
         while True:
             try:
                 statistic = plot_log.get_plot_statistic()
