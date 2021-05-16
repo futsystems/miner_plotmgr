@@ -112,7 +112,7 @@ class PlotterManager(object):
             if device is not None:
                 for plot_file in os.listdir(device['mount_path']):
                     #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
-                    if plot_file.endswith(".test"):
+                    if plot_file.endswith('.plot'):
 
                         logger.info('====> Will send plot:%s from dst:%s to nas:%s' % (plot_file, device['mount_path'], self.nas_server))
                         plot_full_name = '%s/%s' % (device['mount_path'], plot_file)
