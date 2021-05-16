@@ -69,16 +69,17 @@ class PlotterManager(object):
         return self._send_to_nas
 
 
-    def start_sending_process(self):
-        if self.nas_server is None:
-            logger.info('Please set nas server first')
-            return (False, 'Please set nas server first')
-
+    def start_sending_process(self, nas_ip):
+        #if self.nas_server is None:
+        #    logger.info('Please set nas server first')
+        #    return (False, 'Please set nas server first')
+        #
         if self._send_to_nas:
             logger.info('Sending process already started')
             return (False, 'Sending process already started')
 
         logger.info('Start sending process')
+        self.nas_server = nas_ip
         self._send_to_nas = True
         self._sending_thread = thread.start_new_thread(self.sending_process, (1,))
         return (True, '')

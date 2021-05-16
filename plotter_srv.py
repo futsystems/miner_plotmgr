@@ -174,7 +174,10 @@ def start_plot_sending():
     start sending plot to nas server
     :return:
     """
-    res = plotter.start_sending_process()
+    nas_ip = request.args.get('nas_ip')
+    if nas_ip is None or nas_ip == '':
+        return Response(100, 'nas ip is empty').to_json()
+    res = plotter.start_sending_process(nas_ip)
     return Response(0 if res[0] else 1,res[1]).to_json()
 
 
