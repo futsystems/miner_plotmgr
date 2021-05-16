@@ -83,7 +83,7 @@ class PlotterManager(object):
 
     def _start_update_statistic_process(self):
         logger.info('start update statistic process')
-        self._update_statistic_thread = thread.start_new_thread(self.update_statistic_process, None)
+        self._update_statistic_thread = thread.start_new_thread(self.update_statistic_process, (1,))
 
 
 
