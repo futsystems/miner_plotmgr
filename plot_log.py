@@ -83,8 +83,8 @@ def get_plot_statistic():
     return {
         'plot_process_cnt': get_plot_process_count(),
         'plotting_cnt': plotting_cnt,
-        'avg_plot_time': round(plot_time_sum/plotted_cnt,2),
-        'avg_copy_time': round(copy_time_sum/coppied_cnt,2),
+        'avg_plot_time': round(plot_time_sum/plotted_cnt, 2) if plotted_cnt > 0 else 0,
+        'avg_copy_time': round(copy_time_sum/coppied_cnt, 2) if coppied_cnt > 0 else 0,
         'plot_output': last_day_plotted_cnt,
     }
 
