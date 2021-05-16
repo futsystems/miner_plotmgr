@@ -136,7 +136,7 @@ def get_plot_drive_to_use():
     available_drives = []
     for part in psutil.disk_partitions(all=False):
         if part.device.startswith('/dev/sd') \
-                and part.mountpoint.startswith('/mnt/dst') \
+                and part.mountpoint.startswith(nas_driver_mount_preifx) \
                 and get_device_info('space_free_plots', part.device) >= 1:
             available_drives.append((part.mountpoint, part.device))
     return natsorted(available_drives)[0]
