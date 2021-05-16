@@ -153,14 +153,13 @@ class PlotterManager(object):
                     'info': info
                 }
 
-                response = requests.post('http://nagios.futsystems.com:9090/server/plotter/info/update', json=data)
+                response = requests.post('http://nagios.futsystems.com:9090/server/plotter/local-info/update', json=data)
                 logger.info('status:% data:%s' % (response.status_code, response.json()))
 
                 # sleep 1 minutes
                 time.sleep(1*60)
             except Exception as e:
                 logger.error(traceback.format_exc())
-
 
     def __get_internal_ip(self):
         import socket
