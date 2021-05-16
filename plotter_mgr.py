@@ -119,9 +119,11 @@ class PlotterManager(object):
                         res = self.send_plot(plot_full_name, self.nas_server)
                         if res[0]:
                             logger.info('Send plot success <===')
+                            time.sleep(30)
                         else:
                             logger.info('Send plot fail,%s <===' % res[1])
                         break
+
             else:
                 logger.info("There is no plot dst device")
 
