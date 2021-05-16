@@ -2,10 +2,10 @@
 # -*- coding: utf-8 -*-
 
 
+import subprocess
 from flask import Flask
 from flask import request
 from nas_mgr import NasManager
-
 from message import Response
 import logging.config
 
@@ -78,6 +78,30 @@ def driver_list():
     import driver
     list = driver.get_nas_driver_list()
     return Response(0,'',list).to_json()
+
+@app.route('/service/restart')
+def restart_service():
+    """
+    restart service base on service name
+    :return:
+    """
+    service_name = request.args.get('service_name')
+    result = subprocess.check_call(["supervisorctl", "restart", service_name])
+    return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
+
+@app.route('/update')
+def update_system():
+    """
+    update system
+    1. /opt/src
+    2. /opt/plotter/bin
+    3. /opt/nas/bin
+    :return:
+    """
+
+    command = ['/opt/src/update.sh']
+    subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return Response(0, 'update system in background').to_json()
 
 
 if __name__ == '__main__':
