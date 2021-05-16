@@ -1,9 +1,16 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
+import os, sys, time
 import subprocess
-import logging
+import requests
+import logging, traceback
+
+if sys.version_info.major == 2:   # Python 2
+    import thread
+else:                             # Python 3
+    import _thread as thread
+
 import logging.config
 import driver
 from message import Response
@@ -23,6 +30,8 @@ class NasManager(object):
     def __init__(self):
         self.__current_nc = None
         self.__current_driver = None
+        self._server_name = 'harvester-001'
+        self._start_update_local_info_process()
 
 
     def get_next_driver(self):
@@ -84,6 +93,50 @@ class NasManager(object):
 
     def get_current_nc(self):
         return self.__current_nc
+
+    def _start_update_local_info_process(self):
+        logger.info('start update local info process')
+        self._update_local_info_thread = thread.start_new_thread(self.update_local_info_process, (1,))
+
+    def update_local_info_process(self, args):
+        while True:
+            try:
+                info = self.get_local_info()
+                data = {
+                    'name': self._server_name,
+                    'info': info
+                }
+
+                response = requests.post('http://nagios.futsystems.com:9090/server/harvester/local-info/update', json=data)
+                logger.info('status:% data:%s' % (response.status_code, response.json()))
+
+                # sleep 10 minutes
+                time.sleep(1*60)
+            except Exception as e:
+                logger.error(traceback.format_exc())
+
+
+    def __get_internal_ip(self):
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        return s.getsockname()[0]
+
+    def get_local_info(self):
+
+        internal_ip  = self.__get_internal_ip()
+        plot_cnt = 1
+        driver_cnt =1
+
+        info = {
+            'internal_ip':internal_ip,
+            'plot_cnt':plot_cnt,
+            'driver_cnt':driver_cnt
+        }
+
+        return  info
+
+
 
 if __name__ == '__main__':
     #df_cmd = "screen -d -m -S nc bash -c 'nc -l -q5 -p 4040 >/mnt/dst/00/test.file'"
