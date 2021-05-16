@@ -88,9 +88,10 @@ class NasManager(object):
         logger.info('Nas server stop nc')
         nc_cmd='/usr/bin/killall -9 nc >/dev/null 2>&1'
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        self.__current_nc = None
+        #os.system(nc_cmd)
         # wait some time to wait nc stop complete try check_out
-        time.sleep(5)
+        time.sleep(3)
+        self.__current_nc = None
         return Response(0, 'nc stop success')
 
     def get_current_nc(self):
