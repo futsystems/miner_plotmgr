@@ -133,7 +133,8 @@ class PlotterManager(object):
 
                 logger.info('status:% data:%s' % (response.status_code, response.json()))
 
-                time.sleep(10)
+                # sleep 10 minutes
+                time.sleep(10*60)
             except Exception as e:
                 logger.error(traceback.format_exc())
 
