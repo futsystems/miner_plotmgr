@@ -85,7 +85,7 @@ def get_plot_statistic():
         'plotting_cnt': plotting_cnt,
         'avg_plot_time': plot_time_sum/plotted_cnt,
         'avg_copy_time': copy_time_sum/coppied_cnt,
-        'last_day_plotted_cnt': last_day_plotted_cnt,
+        'plot_output': last_day_plotted_cnt,
     }
 
 

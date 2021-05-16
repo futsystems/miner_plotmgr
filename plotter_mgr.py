@@ -5,10 +5,11 @@ import os
 import sys
 import time
 import subprocess
-import logging
+import logging, traceback
 import logging.config
 import driver
 from message import Response
+import plot_log
 
 if sys.version_info.major == 2:   # Python 2
     import thread
@@ -16,7 +17,8 @@ else:                             # Python 3
     import _thread as thread
 import requests
 import config
-
+import socket
+import requests
 import json
 
 logger = logging.getLogger('nas')
@@ -28,6 +30,10 @@ class PlotterManager(object):
         self.nas_server = None
         self._send_to_nas = False
         self._sending_thread = None
+        self._server_name = socket.gethostname()
+
+        self._start_update_statistic_process()
+
 
     def get_plot_dst_decive_to_send(self):
         """
@@ -74,6 +80,11 @@ class PlotterManager(object):
         return (True, '')
 
 
+    def _start_update_statistic_process(self):
+        self._update_statistic_thread = thread.start_new_thread(self.update_statistic_process, (1,))
+
+
+
     def stop_sending_process(self):
         if self._send_to_nas:
             logger.info('Stop sending process')
@@ -106,6 +117,27 @@ class PlotterManager(object):
                 logger.info("There is no plot dst device")
 
             time.sleep(10)
+
+    def update_statistic_process(self):
+        while True:
+            try:
+                statistic = plot_log.get_plot_statistic()
+                data = {
+                    'name': self._server_name,
+                    'statistic': statistic
+                }
+
+                response = requests.post('http://nagios.futsystems.com:9090/server/plotter/statistic/update', json=data)
+
+                logger.info('status:% data:%s' % (response.status_code, response.json()))
+
+                time.sleep(10)
+            except Exception as e:
+                logger.error(traceback.format_exc())
+
+
+
+
 
 
     def send_plot(self, plot_file, nas_server):
