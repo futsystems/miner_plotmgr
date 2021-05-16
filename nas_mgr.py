@@ -56,7 +56,7 @@ class NasManager(object):
         plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
 
         plot_path = '%s/%s' % (driver_to_use[0], plot_name)
-        nc_cmd = 'nc -l -q5 -p 4040 > "%s" < /dev/null' % plot_path
+        nc_cmd = 'nc -l -q3 -p 4040 > "%s" < /dev/null' % plot_path
         screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
         logger.info('Nas server start nc to receive plot file:%s,CMD:%s' % (plot_name, nc_cmd))
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
@@ -89,6 +89,8 @@ class NasManager(object):
         nc_cmd='/usr/bin/killall -9 nc >/dev/null 2>&1'
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         self.__current_nc = None
+        # wait some time to wait nc stop complete try check_out
+        time.sleep(5)
         return Response(0, 'nc stop success')
 
     def get_current_nc(self):
