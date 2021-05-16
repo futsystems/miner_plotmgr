@@ -3,6 +3,8 @@
 
 import os
 import subprocess
+import psutil
+
 
 import logging.config
 
@@ -79,6 +81,7 @@ def get_plot_statistic():
             break
     #logger.info('plotting:%s plot time sum:%s plotted:%s avg time:%s' % (plotting_cnt, plot_time_sum, plotted_cnt, plot_time_sum/plotted_cnt))
     return {
+        'plot_process_cnt': get_plot_process_count(),
         'plotting_cnt': plotting_cnt,
         'avg_plot_time': plot_time_sum/plotted_cnt,
         'avg_copy_time': copy_time_sum/coppied_cnt,
@@ -86,6 +89,17 @@ def get_plot_statistic():
     }
 
 
+def get_plot_process_count():
+    pids = psutil.pids()
+    plotting_cnt = 0
+    for pid in pids:
+        p = psutil.Process(pid)
+        # get process name according to pid
+        process_name = p.name()
+        if process_name.startswith('chia'):
+            plotting_cnt = plotting_cnt +1
+
+    return plotting_cnt
 
 
 if __name__ == '__main__':
