@@ -32,6 +32,7 @@ class PlotterManager(object):
         self._sending_thread = None
         self._server_name = socket.gethostname()
 
+        logger.info('will start statistic process')
         self._start_update_statistic_process()
 
 
@@ -81,6 +82,7 @@ class PlotterManager(object):
 
 
     def _start_update_statistic_process(self):
+        logger.info('start update statistic process')
         self._update_statistic_thread = thread.start_new_thread(self.update_statistic_process, (1,))
 
 
