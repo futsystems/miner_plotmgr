@@ -35,6 +35,9 @@ class PlotterManager(object):
         logger.info('will start statistic process')
         self._start_update_statistic_process()
 
+        logger.info('will start local info process')
+        self._start_update_local_info_process()
+
 
     def get_plot_dst_decive_to_send(self):
         """
@@ -85,6 +88,9 @@ class PlotterManager(object):
         logger.info('start update statistic process')
         self._update_statistic_thread = thread.start_new_thread(self.update_statistic_process, (1,))
 
+    def _start_update_local_info_process(self):
+        logger.info('start update local info process')
+        self._update_local_info_thread = thread.start_new_thread(self.update_local_info_process, (1,))
 
 
     def stop_sending_process(self):
@@ -138,8 +144,44 @@ class PlotterManager(object):
             except Exception as e:
                 logger.error(traceback.format_exc())
 
+    def update_local_info_process(self,args):
+        while True:
+            try:
+                info = self.get_local_info()
+                data = {
+                    'name': self._server_name,
+                    'info': info
+                }
+
+                response = requests.post('http://nagios.futsystems.com:9090/server/plotter/info/update', json=data)
+                logger.info('status:% data:%s' % (response.status_code, response.json()))
+
+                # sleep 1 minutes
+                time.sleep(1*60)
+            except Exception as e:
+                logger.error(traceback.format_exc())
 
 
+    def __get_internal_ip(self):
+        import socket
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(('8.8.8.8', 80))
+        return s.getsockname()[0]
+
+    def get_local_info(self):
+
+        internal_ip = self.__get_internal_ip()
+        plot_cnt = 1
+        driver_cnt = 1
+
+        info = {
+            'internal_ip': internal_ip,
+            'plot_cnt': plot_cnt,
+            'driver_cnt': driver_cnt,
+            'is_sending_run': self._send_to_nas
+        }
+
+        return info
 
 
 
