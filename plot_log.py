@@ -13,6 +13,9 @@ logger = logging.getLogger('nas')
 
 
 def get_file_list(file_path):
+    if not os.path.exists('/opt/chia/logs'):
+        return []
+
     dir_list = os.listdir(file_path)
     if len(dir_list) > 0:
         # 注意，这里使用lambda表达式，将文件按照最后修改时间顺序升序排列
@@ -25,7 +28,7 @@ def get_file_list(file_path):
 def get_plot_statistic():
     import re
     from datetime import datetime, timedelta
-    plot_logs =  get_file_list('/opt/chia/logs')
+    plot_logs = get_file_list('/opt/chia/logs')
     #logger.info('plot logs:%s' % plot_logs)
     plotting_cnt = 0
     plotted_cnt = 0

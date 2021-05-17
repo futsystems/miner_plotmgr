@@ -109,6 +109,8 @@ def config_plotman():
     query = {'id': server_id}
     # get plot config from config center, if not setted, will return default value
     response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
+    logger.info('response:%s' % response)
+    
     config = response.json()
     logger.info('plot config data:%s' % config)
 
