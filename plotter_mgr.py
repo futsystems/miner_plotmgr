@@ -196,7 +196,7 @@ class PlotterManager(object):
             }
 
             response = requests.post('http://nagios.futsystems.com:9090/server/transfer/stop', json=data)
-            logger.info('status:% data:%s' % (response.status_code, response.json()))
+            #logger.debug('start plot transfer ')
         except Exception as e:
             logger.error(traceback.format_exc())
 
@@ -215,7 +215,7 @@ class PlotterManager(object):
             }
 
             response = requests.post('http://nagios.futsystems.com:9090/server/transfer/start', json=data)
-            logger.info('status:% data:%s' % (response.status_code, response.json()))
+            #logger.info('status:% data:%s' % (response.status_code, response.json()))
         except Exception as e:
             logger.error(traceback.format_exc())
 
