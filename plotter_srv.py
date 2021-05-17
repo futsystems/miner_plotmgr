@@ -198,7 +198,7 @@ def start_plot_sending():
     if nas_name is None or nas_name == '':
         return Response(100, 'nas_name ip is empty').to_json()
 
-    res = plotter.start_sending_process(nas_ip)
+    res = plotter.start_sending_process(nas_name, nas_ip)
     return Response(0 if res[0] else 1,res[1]).to_json()
 
 

@@ -68,8 +68,7 @@ class PlotterManager(object):
     def is_sending_live(self):
         return self._send_to_nas
 
-
-    def start_sending_process(self, nas_name,nas_ip):
+    def start_sending_process(self, nas_name, nas_ip):
         #if self.nas_server is None:
         #    logger.info('Please set nas server first')
         #    return (False, 'Please set nas server first')
