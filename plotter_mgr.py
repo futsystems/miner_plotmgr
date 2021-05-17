@@ -108,25 +108,23 @@ class PlotterManager(object):
                 logger.info("Sending Process Thread Exit")
                 thread.exit_thread()
             device = self.get_plot_dst_decive_to_send()
+            files = os.listdir(device['mount_path'])
             logger.info('device:%s which need to send plot' % device)
             if device is not None:
-                for plot_file in os.listdir(device['mount_path']):
+                for plot_file in files:
                     #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
                     if plot_file.endswith('.plot'):
-
                         logger.info('====> Will send plot:%s from dst:%s to nas:%s' % (plot_file, device['mount_path'], self.nas_server))
                         plot_full_name = '%s/%s' % (device['mount_path'], plot_file)
                         res = self.send_plot(plot_full_name, self.nas_server)
                         if res[0]:
                             logger.info('Send plot success <===')
-                            time.sleep(30)
                         else:
                             logger.info('Send plot fail,%s <===' % res[1])
-                        break
-
+                        time.sleep(10)
+                    break
             else:
                 logger.info("There is no plot dst device")
-
             time.sleep(10)
 
     def update_statistic_process(self, args):
