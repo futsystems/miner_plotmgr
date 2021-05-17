@@ -254,7 +254,7 @@ class PlotterManager(object):
                             local_size = os.path.getsize(plot_file)
                             if remote_size == local_size:
                                 logger.info('Remote Size:%s Local Size:%s Plot size match,delete local file' % (remote_size, local_size))
-                                #os.remove(plot_file)
+                                os.remove(plot_file)
                                 return [True, result['msg']]
                             else:
                                 logger.warn('Plot size dismatch, will send file later')

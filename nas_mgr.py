@@ -57,17 +57,16 @@ class NasManager(object):
 
         plot_path = '%s/%s' % (driver_to_use[0], plot_name)
         nc_cmd = 'nc -l -q3 -p 4040 > "%s" < /dev/null' % plot_path
-        screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
+        #screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
         logger.info('Nas server start nc to receive plot file:%s,CMD:%s' % (plot_name, nc_cmd))
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-
+        process.wait()
         self.__current_nc = {
             'pid': process.pid,
             'plot_file': plot_name,
             'path': driver_to_use[0],
         }
         logger.info('NC started,pid:%s' % process.pid)
-
         return Response(0, 'nc start success', self.__current_nc)
 
     def get_plot_info(self,plot_file):
@@ -75,7 +74,7 @@ class NasManager(object):
         if not os.path.isfile(plot_file):
             size = 0
         else:
-            size=os.path.getsize(plot_file)
+            size = os.path.getsize(plot_file)
 
         return {'size': size}
 
@@ -87,10 +86,12 @@ class NasManager(object):
         """
         logger.info('Nas server stop nc')
         nc_cmd='/usr/bin/killall -9 nc >/dev/null 2>&1'
+        #Popen创建进程后直接返回 需要执行wait确保执行完毕
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.wait()
         #os.system(nc_cmd)
         # wait some time to wait nc stop complete try check_out
-        time.sleep(3)
+        time.sleep(2)
         self.__current_nc = None
         return Response(0, 'nc stop success')
 
