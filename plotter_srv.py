@@ -185,18 +185,6 @@ def update_system():
     return Response(0, 'update system in background').to_json()
 
 
-@app.route('/plot/sending/nas/set')
-def plot_sending_set_nas():
-    """
-    set nas ip address, plotter will send plot to
-    :return:
-    """
-    nas_ip = request.args.get('nas_ip')
-    if nas_ip is None or nas_ip == '':
-        return Response(100, 'nas ip is empty').to_json()
-    plotter.set_nas_server(nas_ip)
-    return Response(0, '').to_json()
-
 @app.route('/plot/sending/start')
 def start_plot_sending():
     """
@@ -206,6 +194,10 @@ def start_plot_sending():
     nas_ip = request.args.get('nas_ip')
     if nas_ip is None or nas_ip == '':
         return Response(100, 'nas ip is empty').to_json()
+    nas_name = request.args.get('nas_name')
+    if nas_name is None or nas_name == '':
+        return Response(100, 'nas_name ip is empty').to_json()
+
     res = plotter.start_sending_process(nas_ip)
     return Response(0 if res[0] else 1,res[1]).to_json()
 

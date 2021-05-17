@@ -27,7 +27,9 @@ logger = logging.getLogger('nas')
 class PlotterManager(object):
     def __init__(self):
         self.config = config.get_plotter_setting()
-        self.nas_server = None
+        self.nas_ip = None
+        self.nas_name = 'nas'
+
         self._send_to_nas = False
         self._sending_thread = None
         self._server_name = socket.gethostname()
@@ -62,15 +64,12 @@ class PlotterManager(object):
 
         return current_device
 
-    def set_nas_server(self,nas_server):
-        self.nas_server = nas_server
-
     @property
     def is_sending_live(self):
         return self._send_to_nas
 
 
-    def start_sending_process(self, nas_ip):
+    def start_sending_process(self, nas_name,nas_ip):
         #if self.nas_server is None:
         #    logger.info('Please set nas server first')
         #    return (False, 'Please set nas server first')
@@ -80,7 +79,8 @@ class PlotterManager(object):
             return (False, 'Sending process already started')
 
         logger.info('Start sending process')
-        self.nas_server = nas_ip
+        self.nas_ip = nas_ip
+        self.nas_name = nas_name
         self._send_to_nas = True
         self._sending_thread = thread.start_new_thread(self.sending_process, (1,))
         return (True, '')
@@ -116,9 +116,9 @@ class PlotterManager(object):
                 for plot_file in files:
                     #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
                     if plot_file.endswith('.plot'):
-                        logger.info('====> Will send plot:%s from dst:%s to nas:%s' % (plot_file, device['mount_path'], self.nas_server))
+                        logger.info('====> Will send plot:%s from dst:%s to nas:%s(%s)' % (plot_file, device['mount_path'],self.nas_name, self.nas_ip))
                         plot_full_name = '%s/%s' % (device['mount_path'], plot_file)
-                        res = self.send_plot(device['mount_path'], plot_file,self.nas_server)
+                        res = self.send_plot(device['mount_path'], plot_file)
                         if res[0]:
                             logger.info('Send plot success <===')
                             cnt = cnt+1
@@ -219,7 +219,7 @@ class PlotterManager(object):
         except Exception as e:
             logger.error(traceback.format_exc())
 
-    def send_plot(self, path, filename, nas_server):
+    def send_plot(self, path, filename):
         """
         send plot file to remote nas server
         :param nas_server:
@@ -231,13 +231,13 @@ class PlotterManager(object):
             return (False, 'File:%s do not exist' % plot_file)
 
         #file_name = plot_file.split('/')[-1]
-        url_start = 'http://%s:8080/nc/start?file=%s' % (nas_server, filename)
-        url_stop = 'http://%s:8080/nc/stop' % nas_server
+        url_start = 'http://%s:8080/nc/start?file=%s' % (self.nas_ip, filename)
+        url_stop = 'http://%s:8080/nc/stop' % self.nas_ip
         logger.debug('Request Url Start:%s Stop:%s' % (url_start, url_stop))
         response = requests.get(url_start)
         logger.debug('response:%s' % response)
         if response.status_code != 200:
-            logger.warn('NAS Server:%s response error' % nas_server)
+            logger.warn('NAS Server:%s response error' % self.nas_ip)
             return (False, 'NAS Server response error')
         else:
             result = response.json()
@@ -245,16 +245,16 @@ class PlotterManager(object):
                 logger.warn('Start NC error:%s' % result['msg'])
                 return [False, result['msg']]
             else:
-                self.start_plot_transfer(filename,path,nas_server,nas_server,result['data']['path'],result['data']['pid'],result['data']['port'])
-                logger.info('Start remote nc service success,sending plot:%s to NAS Server:%s Path:%s' % (plot_file, nas_server, result['data']['path']))
+                self.start_plot_transfer(filename,path,self.nas_name,self.nas_ip,result['data']['path'],result['data']['pid'],result['data']['port'])
+                logger.info('Start remote nc service success,sending plot:%s to NAS Server:%s Path:%s' % (plot_file, self.nas_ip, result['data']['path']))
                 try:
                     #nc_cmd = '%s | nc -q2 %s 4040' % (plot_file, nas_server)
                     cmd_path = os.path.split(os.path.abspath(__file__))[0]
                     cmd_send_plot = '%s/send_plot.sh' % cmd_path
-                    remoe_path = '%s/%s' % (result['data']['path'], filename)
+                    remote_path = '%s/%s' % (result['data']['path'], filename)
                     #subprocess.call(['send_plot.sh', plot_file])
-                    logger.info('Execute cmd:%s arg1:%s arg2:%s' % (cmd_send_plot, plot_file, nas_server))
-                    subprocess.call([cmd_send_plot, plot_file, nas_server])
+                    logger.info('Execute cmd:%s arg1:%s arg2:%s' % (cmd_send_plot, plot_file, self.nas_ip))
+                    subprocess.call([cmd_send_plot, plot_file, self.nas_ip])
                     #os.system(nc_cmd)
                 except subprocess.CalledProcessError as e:
                     logger.warning(e.output)
@@ -273,8 +273,8 @@ class PlotterManager(object):
                             logger.info('Stop remote nc service success')
 
                     #2. check file and remove local
-                    logger.info('Check remote file:%s from NAS %s' % (remoe_path, nas_server))
-                    url_check = 'http://%s:8080/plot/info?path=%s' % (nas_server, remoe_path)
+                    logger.info('Check remote file:%s from NAS %s' % (remote_path, self.nas_ip))
+                    url_check = 'http://%s:8080/plot/info?path=%s' % (self.nas_ip, remote_path)
                     response = requests.get(url_check)
                     if response.status_code != 200:
                         logger.warn('NAS Server response error')
