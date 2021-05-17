@@ -2,14 +2,14 @@
 # -*- coding: utf-8 -*-
 
 import os
-
+import requests, socket
 from flask import Flask
 from flask import request
 from flask import render_template
 from plotter_mgr import PlotterManager
 from message import Response
 import driver
-import logging.config
+import logging.config,traceback
 import subprocess
 
 
@@ -110,7 +110,7 @@ def config_plotman():
     # get plot config from config center, if not setted, will return default value
     response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
     logger.info('response:%s' % response)
-    
+
     config = response.json()
     logger.info('plot config data:%s' % config)
 
@@ -120,6 +120,33 @@ def config_plotman():
     # 'global_stagger_m': 48, 'tmpdir_max_jobs': 10, 'tmpdir_stagger_phase_major': 2, 'tmpdir_stagger_phase_minor': 1,
     # 'tmpdir_stagger_phase_limit': 5}
     return render_template('plotter.plotman.yaml', data=data, config=config)
+
+@app.route('/config/plotman/is_plotting_run')
+def config_plotman():
+    """
+    get plot config is_plotting_run
+    如果设置为False则srv.plot重启后就不会执行plot程序，直到该参数设置为True
+    :return:
+    """
+    try:
+        hostname = socket.gethostname()
+        server_id = hostname.split('-')[1]
+        query = {'id': server_id}
+        # get plot config from config center, if not setted, will return default value
+        response = requests.get('http://114.215.171.108:9090/server/plotter/info', params=query)
+        config = response.json()
+        if config['code'] == 0:
+            logger.info('response:%s plot info data:%s' % (response, config))
+
+            return config['data']['is_plotting_run']
+    except Exception as e:
+        logger.error(traceback.format_exc())
+    finally:
+        return False
+
+
+
+
 
 
 @app.route('/service/restart')
@@ -191,6 +218,7 @@ def stop_plot_sending():
     """
     res = plotter.stop_sending_process()
     return Response(0 if res[0] else 1, res[1]).to_json()
+
 
 
 if __name__ == '__main__':
