@@ -187,6 +187,19 @@ class PlotterManager(object):
 
         return info
 
+    def stop_plot_transfer(self,plot_file_name,result,reason):
+        try:
+            data = {
+                'plot_file_name': plot_file_name,
+                'plot_check': result,
+                'plot_check_fail_reason': reason,
+            }
+
+            response = requests.post('http://nagios.futsystems.com:9090/server/transfer/stop', json=data)
+            logger.info('status:% data:%s' % (response.status_code, response.json()))
+        except Exception as e:
+            logger.error(traceback.format_exc())
+
     def start_plot_transfer(self,plot_file_name,plotter_path,harvester_server,harvester_ip,harvester_path,nc_pid,nc_port):
         try:
             data = {
@@ -246,7 +259,6 @@ class PlotterManager(object):
                 except subprocess.CalledProcessError as e:
                     logger.warning(e.output)
                 finally:
-
                     #1. stop nc server
                     response = requests.get(url_stop)
                     if response.status_code != 200:
@@ -266,20 +278,24 @@ class PlotterManager(object):
                     response = requests.get(url_check)
                     if response.status_code != 200:
                         logger.warn('NAS Server response error')
+                        self.stop_plot_transfer(filename, False, 'Check File Response Error(Http)')
                         return [False, result['msg']]
                     else:
                         result = response.json()
                         if result['code'] != 0:
                             logger.warn('NAS Server get plot info error:%s' % result['msg'])
+                            self.stop_plot_transfer(filename, False, result['msg'])
                         else:
                             remote_size = result['data']['size']
                             local_size = os.path.getsize(plot_file)
                             if remote_size == local_size:
                                 logger.info('Remote Size:%s Local Size:%s Plot size match,delete local file' % (remote_size, local_size))
                                 os.remove(plot_file)
+                                self.stop_plot_transfer(filename, True, '')
                                 return [True, result['msg']]
                             else:
                                 logger.warn('Plot size dismatch, will send file later')
+                                self.stop_plot_transfer(filename, True, 'Plot File Size Dismatch')
                         return [False, result['msg']]
 
 
