@@ -111,6 +111,7 @@ class PlotterManager(object):
             device = self.get_plot_dst_decive_to_send()
             files = os.listdir(device['mount_path'])
             logger.info('device:%s which need to send plot' % device)
+            cnt = 0
             if device is not None:
                 for plot_file in files:
                     #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
@@ -120,10 +121,12 @@ class PlotterManager(object):
                         res = self.send_plot(device['mount_path'], plot_file,self.nas_server)
                         if res[0]:
                             logger.info('Send plot success <===')
+                            cnt = cnt+1
                         else:
                             logger.info('Send plot fail,%s <===' % res[1])
                         time.sleep(10)
-                    break
+                    if cnt > 5:
+                        break
             else:
                 logger.info("There is no plot dst device")
             time.sleep(10)
