@@ -122,7 +122,7 @@ def config_plotman():
     return render_template('plotter.plotman.yaml', data=data, config=config)
 
 @app.route('/config/plotman/is_plotting_run')
-def config_plotman():
+def config_plotman_ISPLOTTINGRUN():
     """
     get plot config is_plotting_run
     如果设置为False则srv.plot重启后就不会执行plot程序，直到该参数设置为True
