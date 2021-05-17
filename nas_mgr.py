@@ -66,6 +66,7 @@ class NasManager(object):
             'pid': process.pid,
             'plot_file': plot_name,
             'path': driver_to_use[0],
+            'port': 4040,
         }
         logger.info('NC started,pid:%s' % process.pid)
         return Response(0, 'nc start success', self.__current_nc)
