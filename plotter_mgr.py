@@ -200,6 +200,7 @@ class PlotterManager(object):
         url_stop = 'http://%s:8080/nc/stop' % nas_server
         logger.debug('Request Url Start:%s Stop:%s' % (url_start, url_stop))
         response = requests.get(url_start)
+        logger.debug('response:%s' % response)
         if response.status_code != 200:
             logger.warn('NAS Server:%s response error' % nas_server)
             return (False, 'NAS Server response error')
