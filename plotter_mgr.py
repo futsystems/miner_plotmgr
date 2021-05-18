@@ -112,6 +112,7 @@ class PlotterManager(object):
             logger.info('device:%s which need to send plot' % device)
             cnt = 0
             if device is not None:
+                logger.debug('files:%s' % files)
                 for plot_file in files:
                     #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
                     if plot_file.endswith('.plot'):
