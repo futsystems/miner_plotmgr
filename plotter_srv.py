@@ -138,11 +138,11 @@ def config_plotman_ISPLOTTINGRUN():
         if config['code'] == 0:
             logger.info('response:%s plot info data:%s' % (response, config))
             logger.debug('is_plotting_run:%s value:%s' % (config['data']['is_plotting_run'], (1 if config['data']['is_plotting_run'] else 0)))
-            return (1 if config['data']['is_plotting_run'] else 0)
-        return 0
+            return '%' % (1 if config['data']['is_plotting_run'] else 0)
+        return '0'
     except Exception as e:
         logger.error(traceback.format_exc())
-        return 0
+        return '0'
 
 
 
