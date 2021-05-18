@@ -231,6 +231,7 @@ class PlotterManager(object):
             return (False, 'File:%s do not exist' % plot_file)
         local_size = os.path.getsize(plot_file)
         if local_size == 0:
+            os.remove(plot_file)
             return (False, 'File:%s size is 0' % plot_file )
 
         url_start = 'http://%s:8080/nc/start?file=%s' % (self.nas_ip, filename)
@@ -291,7 +292,7 @@ class PlotterManager(object):
 
                             if remote_size == local_size:
                                 logger.info('Remote Size:%s Local Size:%s Plot size match,delete local file' % (remote_size, local_size))
-                                #os.remove(plot_file)
+                                os.remove(plot_file)
                                 delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_file
                                 process = subprocess.Popen(delte_file_cmd, shell=True, stdout=subprocess.PIPE,
                                                            stderr=subprocess.PIPE)
