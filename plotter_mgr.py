@@ -287,7 +287,12 @@ class PlotterManager(object):
                             local_size = os.path.getsize(plot_file)
                             if remote_size == local_size:
                                 logger.info('Remote Size:%s Local Size:%s Plot size match,delete local file' % (remote_size, local_size))
-                                os.remove(plot_file)
+                                #os.remove(plot_file)
+                                delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_file
+                                process = subprocess.Popen(delte_file_cmd, shell=True, stdout=subprocess.PIPE,
+                                                           stderr=subprocess.PIPE)
+                                process.wait()
+
                                 self.stop_plot_transfer(filename, True, '')
                                 return [True, result['msg']]
                             else:
