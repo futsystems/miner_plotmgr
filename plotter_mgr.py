@@ -116,7 +116,7 @@ class PlotterManager(object):
                 for plot_file in files:
                     #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
                     if plot_file.endswith('.plot'):
-                        logger.info('====> Will send plot:%s from dst:%s to nas:%s(%s)' % (plot_file, device['mount_path'],self.nas_name, self.nas_ip))
+                        logger.info('====> Will send %s/%s to harvester:%s(%s)' % (device['mount_path'],plot_file, self.nas_name, self.nas_ip))
                         plot_full_name = '%s/%s' % (device['mount_path'], plot_file)
                         res = self.send_plot(device['mount_path'], plot_file)
                         if res[0]:
@@ -232,7 +232,7 @@ class PlotterManager(object):
 
         url_start = 'http://%s:8080/nc/start?file=%s' % (self.nas_ip, filename)
         url_stop = 'http://%s:8080/nc/stop' % self.nas_ip
-        logger.debug('Request Url Start:%s Stop:%s' % (url_start, url_stop))
+        #logger.debug('Request Url Start:%s Stop:%s' % (url_start, url_stop))
         response = requests.get(url_start)
         #logger.debug('response:%s' % response)
         if response.status_code != 200:
@@ -244,8 +244,8 @@ class PlotterManager(object):
                 logger.warn('Start NC error:%s' % result['msg'])
                 return [False, result['msg']]
             else:
-                self.start_plot_transfer(filename,path,result['data']['path'],result['data']['pid'],result['data']['port'])
-                logger.info('Start remote nc service success,sending plot:%s to NAS Server:%s Path:%s' % (plot_file, self.nas_ip, result['data']['path']))
+                self.start_plot_transfer(filename, path, result['data']['path'], result['data']['pid'], result['data']['port'])
+                logger.info('Start remote nc service success,sending plot to %s:%s' % (self.nas_ip,result['data']['path']))
                 try:
                     cmd_path = os.path.split(os.path.abspath(__file__))[0]
                     cmd_send_plot = '%s/send_plot.sh' % cmd_path
