@@ -229,6 +229,9 @@ class PlotterManager(object):
         plot_file = '%s/%s' % (path, filename)
         if not os.path.isfile(plot_file):
             return (False, 'File:%s do not exist' % plot_file)
+        local_size = os.path.getsize(plot_file)
+        if local_size == 0:
+            return (False, 'File:%s size is 0' % plot_file )
 
         url_start = 'http://%s:8080/nc/start?file=%s' % (self.nas_ip, filename)
         url_stop = 'http://%s:8080/nc/stop' % self.nas_ip
@@ -285,7 +288,7 @@ class PlotterManager(object):
                             return [False, result['msg']]
                         else:
                             remote_size = result['data']['size']
-                            local_size = os.path.getsize(plot_file)
+
                             if remote_size == local_size:
                                 logger.info('Remote Size:%s Local Size:%s Plot size match,delete local file' % (remote_size, local_size))
                                 #os.remove(plot_file)
