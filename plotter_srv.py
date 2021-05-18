@@ -141,8 +141,7 @@ def config_plotman_ISPLOTTINGRUN():
             return 1 if config['data']['is_plotting_run'] else 0
     except Exception as e:
         logger.error(traceback.format_exc())
-    finally:
-        return '0'
+        return 0
 
 
 
