@@ -124,8 +124,8 @@ class PlotterManager(object):
                         else:
                             logger.info('Send plot fail,%s <===' % res[1])
                         time.sleep(10)
-                    if cnt > 5:
-                        break
+                    #if cnt > 5:
+                    #    break
             else:
                 logger.info("There is no plot dst device")
             time.sleep(10)
