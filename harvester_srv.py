@@ -37,7 +37,7 @@ def config_frpc():
           'server_id': server_id
 
           }
-    return render_template('plotter.frpc.html', data=data)
+    return render_template('harvester.frpc.html', data=data)
 
 
 @app.route('/config/hpool')
