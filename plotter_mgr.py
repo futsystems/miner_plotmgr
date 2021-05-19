@@ -78,8 +78,8 @@ class PlotterManager(object):
         time.sleep(5)
         logger.info('register to manager node')
         hostname = socket.gethostname()
-        query = {'name': hostname}
-        response = requests.get('http://nagios.futsystems.com:9090/server/plotter/register', params=query)
+        payload = {'name': hostname}
+        response = requests.post('http://nagios.futsystems.com:9090/server/plotter/register', data=payload)
         logger.info('status:%s data:%s' % (response.status_code, response.json()))
 
 
