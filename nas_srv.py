@@ -5,9 +5,12 @@
 import subprocess
 from flask import Flask
 from flask import request
+from flask import render_template
 from nas_mgr import NasManager
 from message import Response
 import logging.config
+
+import driver
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
@@ -20,6 +23,35 @@ nas = NasManager()
 def hello_world():
     return 'nas server'
 
+
+@app.route('/config/frpc')
+def config_frpc():
+    """
+    get frpc config file base on server name, server number
+    :return:
+    """
+    import socket
+    hostname = socket.gethostname()
+    server_id = hostname.split('-')[1]
+    data={'name': socket.gethostname(),
+          'server_id': server_id
+
+          }
+    return render_template('plotter.frpc.html', data=data)
+
+
+@app.route('/config/hpool')
+def config_hpool():
+    """
+    get hpool config file, depend on plot driver
+    :return:
+    """
+    import socket
+    driver_list = driver.get_nas_driver_list()
+    data={'name': socket.gethostname(),
+          'driver_list': driver_list,
+          }
+    return render_template('plotter.hpool.yaml', data=data)
 
 @app.route('/nc/start')
 def start_nc():
