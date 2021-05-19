@@ -7,6 +7,7 @@ import time
 import subprocess
 import logging, traceback
 import logging.config
+import psutil
 import driver
 from message import Response
 import plot_log
@@ -19,6 +20,7 @@ import requests
 import config
 import socket
 import requests
+import datetime
 
 
 import json
@@ -77,8 +79,16 @@ class PlotterManager(object):
         # wait 5 secends to let flask run
         time.sleep(5)
         logger.info('register to manager node')
+
+        # returns the time in seconds since the epoch
+        last_reboot_ts = psutil.boot_time()
+        # coverting the date and time in readable format
+        last_reboot = datetime.datetime.fromtimestamp(last_reboot_ts)
+        
         hostname = socket.gethostname()
-        payload = {'name': hostname}
+        payload = {'name': hostname, 'boot_time':last_reboot}
+
+
         response = requests.post('http://nagios.futsystems.com:9090/server/plotter/register', json=payload)
         logger.info('status:%s data:%s' % (response.status_code, response.json()))
 
