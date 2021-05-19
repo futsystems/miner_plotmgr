@@ -6,7 +6,6 @@ import requests, socket
 from flask import Flask
 from flask import request
 from flask import render_template
-from flask_script import Manager, Server
 
 from plotter_mgr import PlotterManager
 from message import Response
