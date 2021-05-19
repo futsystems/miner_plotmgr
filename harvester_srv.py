@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
+import os
 import subprocess
 from flask import Flask
 from flask import request
@@ -23,6 +23,22 @@ nas = NasManager()
 def hello_world():
     return 'nas server'
 
+
+@app.route('/config/nagios')
+def config_nagios():
+    """
+    get nagios node config file
+    :return:
+    """
+    import socket
+    driver_list = driver.get_nas_driver_list()
+    vcpu_count = os.cpu_count()
+    data={'name': socket.gethostname(),
+          'driver_list': driver_list,
+          'driver_cnt': len(driver_list),
+          'vcpu_cnt': vcpu_count,
+          }
+    return render_template('harvester.nagios.html', data=data)
 
 @app.route('/config/frpc')
 def config_frpc():

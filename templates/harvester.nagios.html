@@ -1,0 +1,40 @@
+
+
+object Endpoint "{{ data['name'] }}" {
+  host = "192.168.56.111"
+  log_duration = 0 // Disable the replay log for command endpoint agents
+}
+
+object Zone "{{ data['name'] }}" {
+  endpoints = [ "{{ data['name'] }}" ]
+  parent = "master" //establish zone hierarchy
+}
+
+object Host "{{ data['name'] }}" {
+  check_command = "hostalive" //check is executed on the master
+  address = "nagios.futsystems.com"
+  vars.client_endpoint = name //follows the convention that host name == endpoint name
+
+  vars.cache_disks["/Cache"] = {
+    disk_partitions =  [{% for cache in data['cache_list']%}
+    "{{ cache['mount_path'] }}"{% if loop.index != data['cache_cnt'] %},{% endif %}
+{% endfor %}]
+  }
+  vars.dst_disks["/Plots"] = {
+    disk_partitions =  [{% for driver in data['driver_list']%}
+    "{{ driver['mount_path'] }}"{% if loop.index != data['driver_cnt'] %},{% endif %}
+{% endfor %}]
+}
+
+
+  vars.load_cfg={
+    load_wload1 = {{data['vcpu_cnt']*0.4}}
+    load_wload5 = {{data['vcpu_cnt']*0.4}}
+    load_wload15 = {{data['vcpu_cnt']*0.4}}
+
+    load_cload1 = {{data['vcpu_cnt']*0.7}}
+    load_cload5 = {{data['vcpu_cnt']*0.7}}
+    load_cload15 = {{data['vcpu_cnt']*0.7}}
+  }
+ }
+
