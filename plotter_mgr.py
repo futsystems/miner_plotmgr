@@ -84,7 +84,7 @@ class PlotterManager(object):
         last_reboot_ts = psutil.boot_time()
         # coverting the date and time in readable format
         last_reboot = datetime.datetime.fromtimestamp(last_reboot_ts)
-        
+
         hostname = socket.gethostname()
         payload = {'name': hostname, 'boot_time':last_reboot}
 
