@@ -51,7 +51,7 @@ def config_hpool():
     data={'name': socket.gethostname(),
           'driver_list': driver_list,
           }
-    return render_template('plotter.hpool.yaml', data=data)
+    return render_template('harvester.hpool.yaml', data=data)
 
 @app.route('/nc/start')
 def start_nc():
