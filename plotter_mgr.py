@@ -19,6 +19,8 @@ import requests
 import config
 import socket
 import requests
+
+
 import json
 
 logger = logging.getLogger('nas')
@@ -61,18 +63,30 @@ class PlotterManager(object):
             if ratio < current_ratio:
                 current_ratio = ratio
                 current_device = device
-
         return current_device
 
     @property
     def is_sending_live(self):
         return self._send_to_nas
 
+    def register(self):
+        register_thread = thread.start_new_thread(self._register, (1,))
+
+
+    def _register(self, args):
+        # wait 5 secends to let flask run
+        time.sleep(5)
+        logger.info('register to manager node')
+        hostname = socket.gethostname()
+        query = {'name': hostname}
+        response = requests.get('http://nagios.futsystems.com:9090/server/plotter/register', params=query)
+        logger.info('status:%s data:%s' % (response.status_code, response.json()))
+
+
     def start_sending_process(self, nas_name, nas_ip):
         #if self.nas_server is None:
         #    logger.info('Please set nas server first')
         #    return (False, 'Please set nas server first')
-        #
         if self._send_to_nas:
             logger.info('Sending process already started')
             return (False, 'Sending process already started')

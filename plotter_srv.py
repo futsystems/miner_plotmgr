@@ -6,6 +6,8 @@ import requests, socket
 from flask import Flask
 from flask import request
 from flask import render_template
+from flask_script import Manager, Server
+
 from plotter_mgr import PlotterManager
 from message import Response
 import driver
@@ -21,9 +23,18 @@ template_dir = os.path.join(template_dir, 'templates')
 
 logger.info('template dir:%s' % template_dir)
 
-app = Flask(__name__, template_folder=template_dir)
-
 plotter = PlotterManager()
+
+
+class PlotterFlaskApp(Flask):
+  def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
+    logger.info('run some code after flask run 0000')
+    plotter.register()
+    #if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
+    super(PlotterFlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
+
+app = PlotterFlaskApp(__name__, template_folder=template_dir)
+
 
 @app.route('/')
 def hello_world():
@@ -179,7 +190,6 @@ def update_system():
     3. /opt/nas/bin
     :return:
     """
-
     command = ['/opt/src/update.sh']
     subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return Response(0, 'update system in background').to_json()
@@ -210,8 +220,6 @@ def stop_plot_sending():
     """
     res = plotter.stop_sending_process()
     return Response(0 if res[0] else 1, res[1]).to_json()
-
-
 
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)

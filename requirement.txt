@@ -3,3 +3,4 @@ pySMART
 natsort
 requests
 flask
+flask_script
