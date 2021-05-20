@@ -842,18 +842,4 @@ else:
 cpu = cpuinfo()
 
 if __name__ == "__main__":
-
-    cpu.is_blaa()
-    cpu.is_Intel()
-    cpu.is_Alpha()
-
-    info = []
-    for name in dir(cpuinfo):
-        if name[0] == '_' and name[1] != '_':
-            r = getattr(cpu, name[1:])()
-            if r:
-                if r != 1:
-                    info.append('%s=%s' % (name[1:], r))
-                else:
-                    info.append(name[1:])
-    print('CPU information: ' + ' '.join(info))
+    print('%s x %s' % (cpuinfo.cpu.info[0]['model name'], len(cpuinfo.cpu.info)))
