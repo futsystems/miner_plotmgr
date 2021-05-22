@@ -22,6 +22,8 @@ import socket
 import requests
 import datetime
 
+from common import get_cpu_info, get_memory_info
+
 
 import json
 
@@ -86,7 +88,11 @@ class PlotterManager(object):
         last_reboot = datetime.datetime.fromtimestamp(last_reboot_ts).strftime('%Y-%m-%d %H:%M:%S')
 
         hostname = socket.gethostname()
-        payload = {'name': hostname, 'boot_time':last_reboot}
+        payload = {'name': hostname,
+                   'boot_time':last_reboot,
+                   'cpu': get_cpu_info(),
+                   'memory': get_memory_info(),
+                   }
 
 
         response = requests.post('http://nagios.futsystems.com:9090/server/plotter/register', json=payload)

@@ -56,7 +56,6 @@ def config_nagios():
           'cache_list': cache_list,
           'cache_cnt': len(cache_list),
           'vcpu_cnt': vcpu_count,
-
           }
     return render_template('plotter.nagios.html', data=data)
 
