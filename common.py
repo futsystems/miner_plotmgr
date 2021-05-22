@@ -38,6 +38,6 @@ def get_human_readable_size(num):
 
 if __name__ == '__main__':
     logging.config.fileConfig('logging.conf')
-    cpu = get_memory()
+    cpu = get_memory_info()
     logger.info('cpu:%s' % cpu)
 
