@@ -185,7 +185,9 @@ class PlotterManager(object):
                 info = self.get_local_info()
                 data = {
                     'name': self._server_name,
-                    'info': info
+                    'info': info,
+                    'cpu': get_cpu_info(),
+                    'memory': get_memory_info(),
                 }
 
                 response = requests.post('http://nagios.futsystems.com:9090/server/plotter/local-info/update', json=data)

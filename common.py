@@ -16,7 +16,7 @@ def get_cpu_info():
         'count': data['count'],
         'hz_advertised': data['hz_advertised_friendly'],
         'hz_actual': data['hz_actual_friendly'],
-
+        'used_percent': psutil.cpu_percent(),
     }
 
 
