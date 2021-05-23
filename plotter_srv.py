@@ -121,7 +121,7 @@ def config_plotman():
         if tmp['mount_path'].split('/')[-1] in config['exclude_plot_dst_path']:
             pass
         else:
-            new_driver_lsit.append(driver)
+            new_driver_lsit.append(tmp)
     data={'name': socket.gethostname(),
           'server_id': server_id,
           'driver_list': new_driver_lsit,
