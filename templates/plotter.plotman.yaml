@@ -16,7 +16,7 @@ directories:
         # reads these logs on a regular basis, so using a fast drive is
         # recommended.
         log: /opt/chia/logs
-        config_name: {{ config['config_name'] }}
+        config_name: {{config['config_name']}}
 
         # One or more directories to use as tmp dirs for plotting.  The
         # scheduler will use all of them and distribute jobs among them.
