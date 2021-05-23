@@ -1,4 +1,4 @@
-# Default/example plotman.yaml configuration file
+# plot configuration file [{{ config['config_name']}}]
 
 # Options for display and rendering
 user_interface:

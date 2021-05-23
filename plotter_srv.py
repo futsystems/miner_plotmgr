@@ -128,6 +128,7 @@ def config_plotman():
           'driver_cnt': len(new_driver_lsit),
           'cache_list': cache_list,
           'cache_cnt': len(cache_list),
+          'config_name': config['name'],
 
           }
 
