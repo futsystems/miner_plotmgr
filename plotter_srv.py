@@ -100,19 +100,12 @@ def config_plotman():
     2.get plotting/scheduling config from management system
     :return:
     """
+
     import socket
     hostname = socket.gethostname()
     server_id = hostname.split('-')[1]
     driver_list = driver.get_plotter_driver_list()
     cache_list = driver.get_plotter_cache_list()
-    data={'name': socket.gethostname(),
-          'server_id': server_id,
-          'driver_list': driver_list,
-          'driver_cnt': len(driver_list),
-          'cache_list': cache_list,
-          'cache_cnt': len(cache_list),
-
-          }
 
     import requests
     query = {'id': server_id}
@@ -122,6 +115,23 @@ def config_plotman():
 
     config = response.json()
     logger.info('plot config data:%s' % config)
+
+    new_driver_lsit = []
+    for tmp in driver_list:
+        if tmp['mount_path'].split('/')[-1] in config['exclude_plot_dst_path']:
+            pass
+        else:
+            new_driver_lsit.append(driver)
+    data={'name': socket.gethostname(),
+          'server_id': server_id,
+          'driver_list': new_driver_lsit,
+          'driver_cnt': len(new_driver_lsit),
+          'cache_list': cache_list,
+          'cache_cnt': len(cache_list),
+
+          }
+
+
 
     #data = data.update(data2)
     logger.info('data:%s' % data)
