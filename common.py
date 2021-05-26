@@ -36,6 +36,17 @@ def get_human_readable_size(num):
     return '%s %s' % (int(rounded_val), exp_str[i][1])
 
 
+def uptime():
+    raw = subprocess.check_output('uptime').decode("utf8").replace(',', '')
+    days = int(raw.split()[2])
+    if 'min' in raw:
+        hours = 0
+        minutes = int(raw[4])
+    else:
+        hours, minutes = map(int,raw.split()[4].split(':'))
+    totalsecs = ((days * 24 + hours) * 60 + minutes) * 60
+    return totalsecs
+
 if __name__ == '__main__':
     logging.config.fileConfig('logging.conf')
     cpu = get_memory_info()

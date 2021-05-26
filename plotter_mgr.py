@@ -22,7 +22,7 @@ import socket
 import requests
 import datetime
 
-from common import get_cpu_info, get_memory_info
+from common import get_cpu_info, get_memory_info, uptime
 
 
 import json
@@ -214,7 +214,8 @@ class PlotterManager(object):
             'internal_ip': internal_ip,
             'plot_cnt': plot_cnt,
             'driver_cnt': driver_cnt,
-            'is_sending_run': self._send_to_nas
+            'is_sending_run': self._send_to_nas,
+            'uptime': uptime()
         }
 
         return info
