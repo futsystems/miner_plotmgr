@@ -160,7 +160,17 @@ def get_plotter_driver_list():
 
     return dst_device_list
 
-
+def get_plotter_nvme_list():
+    """
+    获得P盘设备上的nvme设备列表
+    :return:
+    """
+    nvme_list = []
+    partitions = psutil.disk_partitions(all=False)
+    for p in partitions:
+        if p.device.startswith('/dev/nvme'):
+            nvme_list.append(p)
+    return nvme_list
 
 def get_plotter_cache_list():
     """
@@ -180,6 +190,8 @@ def get_plotter_cache_list():
                 dst_device_list.append(info)
 
     return dst_device_list
+
+
 
 def get_dst_device_info(mount_path):
     """

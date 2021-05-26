@@ -49,6 +49,7 @@ def config_nagios():
     import socket
     driver_list = driver.get_plotter_driver_list()
     cache_list = driver.get_plotter_cache_list()
+    nvme_list = driver.get_plotter_nvme_list()
     vcpu_count = os.cpu_count()
     data={'name': socket.gethostname(),
           'driver_list': driver_list,
@@ -56,6 +57,8 @@ def config_nagios():
           'cache_list': cache_list,
           'cache_cnt': len(cache_list),
           'vcpu_cnt': vcpu_count,
+          'nvme_list': nvme_list,
+          'nvme_cnt': len(nvme_list),
           }
     return render_template('plotter.nagios.html', data=data)
 

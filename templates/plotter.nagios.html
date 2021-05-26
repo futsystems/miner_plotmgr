@@ -21,9 +21,9 @@ object Host "{{ data['name'] }}" {
 {% endfor %}]
   }
 
-{% for cache in data['cache_list']%}
+{% for nvme in data['nvme_list']%}
  vars.nvme_devices["nvme-{{loop.index}}"]={
-    device_name = "{{cache['device']}}"
+    device_name = "{{nvme['device']}}"
   }
 {% endfor %}
 
