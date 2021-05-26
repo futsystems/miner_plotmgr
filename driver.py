@@ -228,7 +228,8 @@ def get_dst_device_info(mount_path):
 
 if __name__ == '__main__':
     d = linux_block_devices()
-    print(d)
+    for x in d:
+        print(d)
 
 
 
