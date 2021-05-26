@@ -23,7 +23,7 @@ object Host "{{ data['name'] }}" {
 
 {% for nvme in data['nvme_list']%}
  vars.nvme_devices["nvme-{{loop.index}}"]={
-    device_name = "{{nvme['device']}}"
+    device_name = "{{nvme}}"
   }
 {% endfor %}
 

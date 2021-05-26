@@ -166,10 +166,9 @@ def get_plotter_nvme_list():
     :return:
     """
     nvme_list = []
-    partitions = psutil.disk_partitions(all=True)
-    for p in partitions:
-        if p.device.startswith('/dev/nvme'):
-            nvme_list.append(p)
+    for device in linux_block_devices():
+        if device.startswith('nvme'):
+            nvme_list.append('/dev/%s' % device)
     return nvme_list
 
 def linux_block_devices():
@@ -181,7 +180,7 @@ def linux_block_devices():
             yield blockdev_stat.rsplit('/', 2)[-2]
             found_parts = True
         if not found_parts:
-            yield blockdev_dir
+            yield blockdev_dir.rsplit('/', 1)[-1]
 
 def get_plotter_cache_list():
     """
