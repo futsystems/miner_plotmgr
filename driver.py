@@ -166,11 +166,22 @@ def get_plotter_nvme_list():
     :return:
     """
     nvme_list = []
-    partitions = psutil.disk_partitions(all=False)
+    partitions = psutil.disk_partitions(all=True)
     for p in partitions:
         if p.device.startswith('/dev/nvme'):
             nvme_list.append(p)
     return nvme_list
+
+def linux_block_devices():
+    import glob
+    for blockdev_stat in glob.glob('/sys/block/*/stat'):
+        blockdev_dir = blockdev_stat.rsplit('/', 1)[0]
+        found_parts = False
+        for part_stat in glob.glob(blockdev_dir + '/*/stat'):
+            yield blockdev_stat.rsplit('/', 2)[-2]
+            found_parts = True
+        if not found_parts:
+            yield blockdev_dir.rsplit('/', 1)[-1]
 
 def get_plotter_cache_list():
     """
@@ -216,7 +227,7 @@ def get_dst_device_info(mount_path):
 
 
 if __name__ == '__main__':
-    d = get_list_of_plot_drives()
+    d = linux_block_devices()
     print(d)
 
 
