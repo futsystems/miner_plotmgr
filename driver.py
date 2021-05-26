@@ -181,7 +181,7 @@ def linux_block_devices():
             yield blockdev_stat.rsplit('/', 2)[-2]
             found_parts = True
         if not found_parts:
-            yield blockdev_dir.rsplit('/', 1)[-1]
+            yield blockdev_dir
 
 def get_plotter_cache_list():
     """
