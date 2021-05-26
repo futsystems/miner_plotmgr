@@ -47,13 +47,32 @@ def config_nagios():
     :return:
     """
     import socket
+    hostname = socket.gethostname()
+    server_id = hostname.split('-')[1]
+
     driver_list = driver.get_plotter_driver_list()
     cache_list = driver.get_plotter_cache_list()
     nvme_list = driver.get_plotter_nvme_list()
     vcpu_count = os.cpu_count()
+
+    query = {'id': server_id}
+    # get plot config from config center, if not setted, will return default value
+    response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
+    logger.info('response:%s' % response)
+
+    config = response.json()
+    logger.info('plot config data:%s' % config)
+
+    new_driver_lsit = []
+    for tmp in driver_list:
+        if tmp['mount_path'].split('/')[-1] in config['exclude_plot_dst_path']:
+            pass
+        else:
+            new_driver_lsit.append(tmp)
+
     data={'name': socket.gethostname(),
-          'driver_list': driver_list,
-          'driver_cnt': len(driver_list),
+          'driver_list': new_driver_lsit,
+          'driver_cnt': len(new_driver_lsit),
           'cache_list': cache_list,
           'cache_cnt': len(cache_list),
           'vcpu_cnt': vcpu_count,
