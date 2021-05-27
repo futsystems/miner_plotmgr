@@ -80,8 +80,6 @@ class PlotterManager(object):
     def _register(self, args):
         # wait 5 secends to let flask run
         time.sleep(5)
-        logger.info('register to manager node')
-
         # returns the time in seconds since the epoch
         last_reboot_ts = psutil.boot_time()
         # coverting the date and time in readable format
@@ -99,6 +97,7 @@ class PlotterManager(object):
                    'nvme_cnt': len(nvme_list),
                    'nvme_size': round(nvme_size/1000/1000/1000/1000, 1)
                    }
+        logger.info('register to manager node:%s' % payload)
 
         response = requests.post('http://nagios.futsystems.com:9090/server/plotter/register', json=payload)
         logger.info('status:%s data:%s' % (response.status_code, response.json()))
