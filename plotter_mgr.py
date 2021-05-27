@@ -22,7 +22,7 @@ import socket
 import requests
 import datetime
 
-from common import get_cpu_info, get_memory_info, uptime, get_block_device_size
+from common import get_cpu_info, get_memory_info, uptime, get_nvme_info
 
 
 import json
@@ -77,6 +77,9 @@ class PlotterManager(object):
         register_thread = thread.start_new_thread(self._register, (1,))
 
 
+
+
+
     def _register(self, args):
         # wait 5 secends to let flask run
         time.sleep(5)
@@ -84,18 +87,13 @@ class PlotterManager(object):
         last_reboot_ts = psutil.boot_time()
         # coverting the date and time in readable format
         last_reboot = datetime.datetime.fromtimestamp(last_reboot_ts).strftime('%Y-%m-%d %H:%M:%S')
-        nvme_list = driver.get_plotter_nvme_list()
-        nvme_size = 0
-        if len(nvme_list) > 0:
-            nvme_size = get_block_device_size(nvme_list[0])
 
         hostname = socket.gethostname()
         payload = {'name': hostname,
                    'boot_time':last_reboot,
                    'cpu': get_cpu_info(),
                    'memory': get_memory_info(),
-                   'nvme_cnt': len(nvme_list),
-                   'nvme_size': round(nvme_size/1000/1000/1000/1000, 1)
+                   'nvme': get_nvme_info(),
                    }
         logger.info('register to manager node:%s' % payload)
 

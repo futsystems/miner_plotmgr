@@ -4,6 +4,7 @@
 
 import os, platform, subprocess, re
 import logging, traceback
+import driver
 import logging.config
 import psutil
 from cpuinfo import get_cpu_info as _get_cpu_info
@@ -35,12 +36,21 @@ def get_human_readable_size(num):
         rounded_val = round(float(num) / 2 ** exp_str[i][0], 2)
     return '%s %s' % (int(rounded_val), exp_str[i][1])
 
-
 def uptime():
     with open('/proc/uptime', 'r') as f:
         uptime_seconds = float(f.readline().split()[0])
         return uptime_seconds
 
+def get_nvme_info():
+        nvme_list = driver.get_plotter_nvme_list()
+        nvme_size = 0
+        if len(nvme_list) > 0:
+            nvme_size = get_block_device_size(nvme_list[0])
+
+        return {
+            'nvme_cnt': len(nvme_list),
+            'nvme_size': round(nvme_size/1000/1000/1000/1000, 1)
+        }
 
 def get_block_device_size(filename):
     "Get the file size by seeking at end"
