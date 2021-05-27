@@ -41,6 +41,16 @@ def uptime():
         uptime_seconds = float(f.readline().split()[0])
         return uptime_seconds
 
+
+def get_block_device_size(filename):
+    "Get the file size by seeking at end"
+    fd= os.open(filename, os.O_RDONLY)
+    try:
+        return os.lseek(fd, 0, os.SEEK_END)
+    finally:
+        os.close(fd)
+
+
 if __name__ == '__main__':
     logging.config.fileConfig('logging.conf')
     cpu = get_memory_info()
