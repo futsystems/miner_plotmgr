@@ -50,7 +50,7 @@ def get_nvme_info():
         return {
             'nvme_cnt': len(nvme_list),
             'nvme_size': round(nvme_size/1000/1000/1000/1000, 1),
-            'is_raid': len(mdstat.parse()['devices']) > 0
+            'is_cache_raid': len(mdstat.parse()['devices']) > 0
         }
 
 def get_block_device_size(filename):
