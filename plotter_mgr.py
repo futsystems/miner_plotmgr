@@ -170,7 +170,7 @@ class PlotterManager(object):
 
                 response = requests.post('http://nagios.futsystems.com:9090/server/plotter/statistic/update', json=data)
 
-                logger.info('status:% data:%s' % (response.status_code, response.json()))
+                logger.info('status:%s data:%s' % (response.status_code, response.json()))
 
                 # sleep 10 minutes
                 time.sleep(10*60)
@@ -189,7 +189,7 @@ class PlotterManager(object):
                 }
 
                 response = requests.post('http://nagios.futsystems.com:9090/server/plotter/local-info/update', json=data)
-                logger.info('status:% data:%s' % (response.status_code, response.json()))
+                logger.info('status:%s data:%s' % (response.status_code, response.json()))
 
                 # sleep 1 minutes
                 time.sleep(1*60)
