@@ -76,10 +76,6 @@ class PlotterManager(object):
     def register(self):
         register_thread = thread.start_new_thread(self._register, (1,))
 
-
-
-
-
     def _register(self, args):
         # wait 5 secends to let flask run
         time.sleep(5)

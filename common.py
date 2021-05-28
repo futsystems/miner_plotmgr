@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 
 
-import os, platform, subprocess, re
+import os, mdstat, subprocess, re
 import logging, traceback
 import driver
 import logging.config
@@ -49,7 +49,8 @@ def get_nvme_info():
 
         return {
             'nvme_cnt': len(nvme_list),
-            'nvme_size': round(nvme_size/1000/1000/1000/1000, 1)
+            'nvme_size': round(nvme_size/1000/1000/1000/1000, 1),
+            'is_raid': len(mdstat.parse()['devices']) > 0
         }
 
 def get_block_device_size(filename):
@@ -59,7 +60,6 @@ def get_block_device_size(filename):
         return os.lseek(fd, 0, os.SEEK_END)
     finally:
         os.close(fd)
-
 
 if __name__ == '__main__':
     logging.config.fileConfig('logging.conf')
