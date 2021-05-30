@@ -154,6 +154,9 @@ class NasManager(object):
         s.connect(('8.8.8.8', 80))
         return s.getsockname()[0]
 
+    def get_file_count(path):
+        return len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
+
     def get_local_info(self):
         from driver import get_harvester_driver_list
         internal_ip = self.__get_internal_ip()
@@ -178,7 +181,7 @@ class NasManager(object):
 
 if __name__ == '__main__':
     pass
-    
+
     #df_cmd = "screen -d -m -S nc bash -c 'nc -l -q5 -p 4040 >/mnt/dst/00/test.file'"
     #process = subprocess.Popen(df_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
     #err = process.stderr.read()

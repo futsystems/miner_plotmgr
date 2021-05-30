@@ -8,7 +8,6 @@ import logging
 import logging.config
 logger = logging.getLogger('nas')
 
-from common import get_file_count
 def get_driver_info():
     print("test driver info")
 
@@ -220,6 +219,8 @@ def get_plotter_cache_list():
     return dst_device_list
 
 
+def get_file_count(path):
+    return len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
 
 def get_dst_device_info(mount_path):
     """
