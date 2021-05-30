@@ -220,7 +220,16 @@ def get_plotter_cache_list():
 
 
 def get_file_count(path):
-    return len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
+    return len([name for name in os.listdir(path) if _is_plot_file(os.path.join(path, name))])
+
+
+def _is_plot_file(file_path):
+    if not os.path.isfile(file_path):
+        return False
+    if not file_path.endswith('.plot'):
+        return False
+    return True
+
 
 def get_dst_device_info(mount_path):
     """
