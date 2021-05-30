@@ -31,7 +31,7 @@ class NasManager(object):
     def __init__(self):
         self.__current_nc = None
         self.__current_driver = None
-        self._server_name = 'harvester-001'
+        self._server_name = socket.gethostname()
         self._start_update_local_info_process()
 
 
