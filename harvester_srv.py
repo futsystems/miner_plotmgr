@@ -15,8 +15,22 @@ import driver
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
 
-app = Flask(__name__)
-nas = NasManager()
+template_dir = os.path.dirname(os.path.realpath(__file__))
+template_dir = os.path.join(template_dir, 'templates')
+
+logger.info('template dir:%s' % template_dir)
+
+harvester = NasManager()
+
+
+class HarvesterFlaskApp(Flask):
+  def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
+    logger.info('run some code after flask run 0000')
+    harvester.register()
+    #if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
+    super(HarvesterFlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
+
+app = HarvesterFlaskApp(__name__, template_folder=template_dir)
 
 
 @app.route('/')

@@ -1,9 +1,10 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, sys, time
+import os, sys, time, psutil, datetime, socket
 import subprocess
 import requests
+from common import get_memory_info, get_cpu_info
 import logging, traceback
 
 if sys.version_info.major == 2:   # Python 2
@@ -99,6 +100,29 @@ class NasManager(object):
 
     def get_current_nc(self):
         return self.__current_nc
+
+
+    def register(self):
+        register_thread = thread.start_new_thread(self._register, (1,))
+
+    def _register(self, args):
+        # wait 5 secends to let flask run
+        time.sleep(5)
+        # returns the time in seconds since the epoch
+        last_reboot_ts = psutil.boot_time()
+        # coverting the date and time in readable format
+        last_reboot = datetime.datetime.fromtimestamp(last_reboot_ts).strftime('%Y-%m-%d %H:%M:%S')
+
+        hostname = socket.gethostname()
+        payload = {'name': hostname,
+                   'boot_time':last_reboot,
+                   'cpu': get_cpu_info(),
+                   'memory': get_memory_info(),
+                   }
+        logger.info('register to manager node:%s' % payload)
+
+        response = requests.post('http://nagios.futsystems.com:9090/server/plotter/register', json=payload)
+        logger.info('status:%s data:%s' % (response.status_code, response.json()))
 
     def _start_update_local_info_process(self):
         logger.info('start update local info process')
