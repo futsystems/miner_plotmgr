@@ -14,7 +14,7 @@ object Host "{{ data['name'] }}" {
   check_command = "hostalive" //check is executed on the master
   address = "nagios.futsystems.com"
   vars.client_endpoint = name //follows the convention that host name == endpoint name
-
+  vars.server_type = "plotter"
   vars.cache_disks["/Cache"] = {
     disk_partitions =  [{% for cache in data['cache_list']%}
     "{{ cache['mount_path'] }}"{% if loop.index != data['cache_cnt'] %},{% endif %}
