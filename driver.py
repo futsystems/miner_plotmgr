@@ -147,11 +147,14 @@ def get_harvester_driver_list():
     获得harvester中挂载的磁盘列表
     :return:
     """
+    mount_point_list = []
     driver_list = []
     for part in psutil.disk_partitions(all=False):
         if part.device.startswith('/dev/sd') and part.mountpoint.startswith(nas_driver_mount_preifx):
-            info = get_dst_device_info(part.mountpoint)
-            driver_list.append(info)
+            if part.mountpoint not in mount_point_list:
+                info = get_dst_device_info(part.mountpoint)
+                driver_list.append(info)
+                mount_point_list.append(part.mountpoint)
     return driver_list
 
 
