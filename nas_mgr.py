@@ -4,7 +4,7 @@
 import os, sys, time, psutil, datetime, socket
 import subprocess
 import requests
-from common import get_memory_info, get_cpu_info
+from common import get_memory_info, get_cpu_info, uptime
 import logging, traceback
 
 if sys.version_info.major == 2:   # Python 2
@@ -153,15 +153,15 @@ class NasManager(object):
         return s.getsockname()[0]
 
     def get_local_info(self):
-
-        internal_ip  = self.__get_internal_ip()
+        internal_ip = self.__get_internal_ip()
         plot_cnt = 1
-        driver_cnt =1
+        driver_cnt = 1
 
         info = {
             'internal_ip':internal_ip,
-            'plot_cnt':plot_cnt,
-            'driver_cnt':driver_cnt
+            'plot_cnt': plot_cnt,
+            'driver_cnt': driver_cnt,
+            'uptime': uptime()
         }
 
         return  info
