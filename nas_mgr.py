@@ -121,7 +121,7 @@ class NasManager(object):
                    }
         logger.info('register to manager node:%s' % payload)
 
-        response = requests.post('http://nagios.futsystems.com:9090/server/plotter/register', json=payload)
+        response = requests.post('http://nagios.futsystems.com:9090/server/harvester/register', json=payload)
         logger.info('status:%s data:%s' % (response.status_code, response.json()))
 
     def _start_update_local_info_process(self):
