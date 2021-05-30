@@ -6,7 +6,7 @@ import subprocess
 import requests
 from common import get_memory_info, get_cpu_info, uptime
 import logging, traceback
-
+from driver import get_harvester_driver_list
 if sys.version_info.major == 2:   # Python 2
     import thread
 else:                             # Python 3
@@ -156,9 +156,12 @@ class NasManager(object):
 
     def get_local_info(self):
         internal_ip = self.__get_internal_ip()
-        plot_cnt = 1
-        driver_cnt = 1
 
+        driver_list = get_harvester_driver_list()
+        plot_cnt = 0
+        for item in driver_list:
+            plot_cnt = plot_cnt + item['total_current_plots']
+        driver_cnt = len(driver_list)
         info = {
             'internal_ip':internal_ip,
             'uptime': uptime(),
@@ -166,10 +169,7 @@ class NasManager(object):
             'driver_cnt': driver_cnt,
 
         }
-
         return  info
-
-
 
 if __name__ == '__main__':
     #df_cmd = "screen -d -m -S nc bash -c 'nc -l -q5 -p 4040 >/mnt/dst/00/test.file'"

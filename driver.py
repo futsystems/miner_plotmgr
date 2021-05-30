@@ -142,6 +142,20 @@ def get_plot_drive_to_use():
     return natsorted(available_drives)[0]
 
 
+def get_harvester_driver_list():
+    """
+    获得harvester中挂载的磁盘列表
+    :return:
+    """
+    driver_list = []
+    for part in psutil.disk_partitions(all=False):
+        if part.device.startswith('/dev/sd') and part.mountpoint.startswith(nas_driver_mount_preifx):
+            info = get_dst_device_info(part.mountpoint)
+            driver_list.append(info)
+    return driver_list
+
+
+
 def get_plotter_driver_list():
     """
     用于获得P盘目标文件储存设备列表
