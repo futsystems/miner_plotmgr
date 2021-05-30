@@ -131,13 +131,12 @@ class NasManager(object):
     def update_local_info_process(self, args):
         while True:
             try:
-                info = self.get_local_info()
                 data = {
                     'name': self._server_name,
-                    'info': info
+                    'info': self.get_local_info()
                 }
                 logger.info('send local info to manager node:%s' % data)
-                response = requests.post('http://nagios.futsystems.com:9090/server/harvester/local-info/update', json=data)
+                response = requests.post('http://nagios.futsystems.com:9090/server/harvester/local-info/update', json= data)
                 logger.info('status:%s data:%s' % (response.status_code, response.json()))
 
                 # sleep 10 minutes
