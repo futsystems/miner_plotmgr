@@ -159,10 +159,10 @@ class NasManager(object):
 
         driver_list = get_harvester_driver_list()
         plot_cnt = 0
-        files_cnt = 0
+        file_cnt = 0
         for item in driver_list:
             plot_cnt = plot_cnt + item['total_current_plots']
-            files_cnt = files_cnt + item['files_cnt']
+            file_cnt = file_cnt + item['file_cnt']
 
         driver_cnt = len(driver_list)
 
@@ -171,7 +171,7 @@ class NasManager(object):
             'uptime': uptime(),
             'plot_cnt': plot_cnt,
             'driver_cnt': driver_cnt,
-            'files_cnt': files_cnt
+            'file_cnt': file_cnt
 
         }
         return  info
