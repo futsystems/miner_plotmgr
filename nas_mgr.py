@@ -133,7 +133,10 @@ class NasManager(object):
             try:
                 data = {
                     'name': self._server_name,
-                    'info': self.get_local_info()
+                    'info': self.get_local_info(),
+                    'cpu': get_cpu_info(),
+                    'memory': get_memory_info(),
+
                 }
                 logger.info('send local info to manager node:%s' % data)
                 response = requests.post('http://nagios.futsystems.com:9090/server/harvester/local-info/update', json= data)
@@ -158,9 +161,10 @@ class NasManager(object):
 
         info = {
             'internal_ip':internal_ip,
+            'uptime': uptime(),
             'plot_cnt': plot_cnt,
             'driver_cnt': driver_cnt,
-            'uptime': uptime()
+
         }
 
         return  info
