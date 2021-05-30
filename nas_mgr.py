@@ -136,9 +136,9 @@ class NasManager(object):
                     'name': self._server_name,
                     'info': info
                 }
-
+                logger.info('send local info to manager node:%s' % data)
                 response = requests.post('http://nagios.futsystems.com:9090/server/harvester/local-info/update', json=data)
-                logger.info('status:% data:%s' % (response.status_code, response.json()))
+                logger.info('status:%s data:%s' % (response.status_code, response.json()))
 
                 # sleep 10 minutes
                 time.sleep(1*60)
