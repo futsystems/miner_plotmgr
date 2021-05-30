@@ -16,7 +16,7 @@ import logging.config
 import driver
 from message import Response
 
-
+logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
 
 
