@@ -53,6 +53,9 @@ def get_nvme_info():
             'is_cache_raid': len(mdstat.parse()['devices']) > 0
         }
 
+def get_file_count(path):
+    print len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
+
 def get_block_device_size(filename):
     "Get the file size by seeking at end"
     fd= os.open(filename, os.O_RDONLY)

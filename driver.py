@@ -8,6 +8,7 @@ import logging
 import logging.config
 logger = logging.getLogger('nas')
 
+from common import get_file_count
 def get_driver_info():
     print("test driver info")
 
@@ -237,6 +238,7 @@ def get_dst_device_info(mount_path):
         'space_free': get_device_info('space_free', device),
         'space_free_plots': get_device_info('space_free_plots', device),
         'total_current_plots': get_device_info('total_current_plots', device),
+        'total_files': get_file_count(mount_path)
 
     }
 
