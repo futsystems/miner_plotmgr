@@ -7,3 +7,4 @@ flask_script
 py-cpuinfo
 pytz
 mdstat
+flask_cors

@@ -6,6 +6,8 @@ import subprocess
 from flask import Flask
 from flask import request
 from flask import render_template
+from flask_cors import *
+
 from nas_mgr import NasManager
 from message import Response
 import logging.config
@@ -31,7 +33,7 @@ class HarvesterFlaskApp(Flask):
     super(HarvesterFlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 
 app = HarvesterFlaskApp(__name__, template_folder=template_dir)
-
+CORS(app, resources=r'/*')
 
 @app.route('/')
 def hello_world():
