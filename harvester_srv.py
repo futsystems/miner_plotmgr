@@ -175,6 +175,21 @@ def update_system():
     return Response(0, 'update system in background').to_json()
 
 
+@app.route('/api/report')
+def api_report():
+    """
+    stop sending plot to nas server
+    :return:
+    """
+    driver_report = driver.get_harvester_driver_report()
+
+    data = {
+
+        'driver':driver_report
+    }
+    return Response(0,'',driver).to_json()
+
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
 
