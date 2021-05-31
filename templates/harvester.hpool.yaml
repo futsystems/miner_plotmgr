@@ -14,7 +14,7 @@ url:
   info: ""
   submit: ""
   line: ""
-scanPath: true
+scanPath: false
 scanMinute: 60
 debug: ""
 language: ""
