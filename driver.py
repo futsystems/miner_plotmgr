@@ -3,6 +3,8 @@
 
 import os
 import psutil
+from psutil._common import bytes2human
+
 import config
 import logging
 import logging.config
@@ -118,6 +120,7 @@ def get_device_info(action, device):
     if action == 'total_current_plots':
         return int(bytesto(shutil.disk_usage(mountpoint)[1], 'g') / plot_size_g)
 
+
 def get_plot_drive_to_use():
     """
     用于获得NAS服务器可用于储存Plot的磁盘，通过排序法获得
@@ -156,6 +159,18 @@ def get_harvester_driver_list():
                 driver_list.append(info)
                 mount_point_list.append(part.mountpoint)
     return driver_list
+
+
+def get_harvester_driver_report():
+    mount_point_list = []
+    driver_report_list = []
+    for part in psutil.disk_partitions(all=False):
+        if part.device.startswith('/dev/sd') and part.mountpoint.startswith(nas_driver_mount_preifx):
+            if part.mountpoint not in mount_point_list:
+                report = get_driver_report(part.mountpoint)
+                driver_report_list.append(report)
+                mount_point_list.append(part.mountpoint)
+    return driver_report_list
 
 
 
@@ -253,9 +268,48 @@ def get_dst_device_info(mount_path):
     }
 
 
+def get_driver_report(mount_path):
+    from pySMART import Device
+    device = get_device_by_mountpoint(mount_path)
+    if device is None:
+        return None
+    device_obj = Device(device)
+    usage = psutil.disk_usage(mount_path)
+
+    total = usage[0]
+    used = usage[1]
+    free = usage[2]
+    temperature = device_obj.temperature
+    capacity = device_obj.capacity
+    health = device_obj.assessment
+    serial = device_obj.serial
+
+    space_total =bytesto(total, 'g')
+    space_used = bytesto(used, 'g')
+    space_free = bytesto(free, 'g')
+    space_free_plots = int(bytesto(free, 'g') / plot_size_g)
+    total_current_plots = int(bytesto(used, 'g') / plot_size_g)
+
+    return {
+        'mount_path': mount_path,
+        'device': device,
+        'total': total,
+        'used': used,
+        'free': free,
+        'temperature': temperature,
+        'capacity': capacity,
+        'health': health,
+        'serial': serial,
+        'space_total': space_total,
+        'space_used': space_used,
+        'space_free': space_free,
+        'space_free_plots': space_free_plots,
+        'total_current_plots': total_current_plots,
+    }
+
 
 if __name__ == '__main__':
-    d = get_plotter_nvme_list()
+    d = get_harvester_driver_report()
     for x in d:
         print(x)
 
