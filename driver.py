@@ -3,7 +3,6 @@
 
 import os
 import psutil
-from psutil._common import bytes2human
 
 import config
 import logging

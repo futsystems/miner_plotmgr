@@ -141,6 +141,15 @@ def driver_list():
     list = driver.get_nas_driver_list()
     return Response(0,'',list).to_json()
 
+@app.route('/system/shutdown')
+def system_poweroff():
+    """
+    power machine
+    :return:
+    """
+    os.system("shutdown now -h")
+    return Response(0, 'shutdown success').to_json()
+
 @app.route('/service/restart')
 def restart_service():
     """

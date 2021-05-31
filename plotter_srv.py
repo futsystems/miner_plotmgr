@@ -40,6 +40,7 @@ def hello_world():
     return 'plotter server v1.0'
 
 
+
 @app.route('/config/nagios')
 def config_nagios():
     """
@@ -188,7 +189,14 @@ def config_plotman_ISPLOTTINGRUN():
 
 
 
-
+@app.route('/system/shutdown')
+def system_poweroff():
+    """
+    power machine
+    :return:
+    """
+    os.system("shutdown now -h")
+    return Response(0, 'shutdown success').to_json()
 
 
 @app.route('/service/restart')
