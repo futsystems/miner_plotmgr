@@ -323,8 +323,7 @@ def get_driver_report(mount_path):
 
 if __name__ == '__main__':
     d = get_harvester_driver_report()
-    for x in d:
-        print(x)
+    print(d)
 
 
 
