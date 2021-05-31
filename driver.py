@@ -173,9 +173,9 @@ def get_harvester_driver_report():
     report = {
         'name': socket.gethostname(),
         'harvester': {
-            'space_total': round(sum(driver['space_total'] for driver in driver_report_list) * 0.0009765625, 2),
-            'space_used': round(sum(driver['space_used'] for driver in driver_report_list) * 0.0009765625, 2),
-            'space_free': round(sum(driver['space_free'] for driver in driver_report_list) * 0.0009765625, 2),
+            'space_total': round(sum(driver['space_total'] for driver in driver_report_list), 2),
+            'space_used': round(sum(driver['space_used'] for driver in driver_report_list), 2),
+            'space_free': round(sum(driver['space_free'] for driver in driver_report_list), 2),
             'space_free_plots': sum(driver['space_free_plots'] for driver in driver_report_list),
             'total_plots': sum(driver['total_current_plots'] for driver in driver_report_list),
             'total_plot_drives': len(driver_report_list),
