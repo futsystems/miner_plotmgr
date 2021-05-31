@@ -260,6 +260,21 @@ def stop_plot_sending():
     res = plotter.stop_sending_process()
     return Response(0 if res[0] else 1, res[1]).to_json()
 
+
+@app.route('/api/report')
+def api_report():
+    """
+    stop sending plot to nas server
+    :return:
+    """
+    driver_report = driver.get_harvester_driver_report()
+
+    data = {
+
+        'driver':driver_report
+    }
+    return Response(0,'',driver).to_json()
+
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
 
