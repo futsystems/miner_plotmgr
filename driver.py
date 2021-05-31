@@ -284,9 +284,9 @@ def get_driver_report(mount_path):
     health = device_obj.assessment
     serial = device_obj.serial
 
-    space_total =bytesto(total, 'g')
-    space_used = bytesto(used, 'g')
-    space_free = bytesto(free, 'g')
+    space_total = round(bytesto(total, 't'), 2)
+    space_used = round(bytesto(used, 't'), 2)
+    space_free = round(bytesto(free, 't'), 2)
     space_free_plots = int(bytesto(free, 'g') / plot_size_g)
     total_current_plots = int(bytesto(used, 'g') / plot_size_g)
 
