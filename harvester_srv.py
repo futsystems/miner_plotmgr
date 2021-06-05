@@ -80,10 +80,19 @@ def config_hpool():
     """
     import socket
     driver_list = driver.get_nas_driver_list()
-    data={'name': socket.gethostname(),
+    size = request.args.get('size')
+    index = request.args.get('index')
+    if size is None or index is None:
+        data = {'name': socket.gethostname(),
           'driver_list': driver_list,
           }
-    return render_template('harvester.hpool.yaml', data=data)
+        return render_template('harvester.hpool.yaml', data=data)
+    else:
+        page_list = driver_list[index*size, (index+1)*size]
+        data = {'name': socket.gethostname(),
+          'driver_list': page_list,
+          }
+        return render_template('harvester.hpool.yaml', data=data)
 
 @app.route('/nc/start')
 def start_nc():

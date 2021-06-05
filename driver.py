@@ -48,7 +48,7 @@ def get_nas_driver_list():
     #    if p.device.startswith('/dev/sd') and p.mountpoint.startswith(nas_driver_mount_preifx):
     #        mountpoint.append((p.mountpoint, p.device, p.fstype))
     #return mountpoint
-
+    from natsort import natsorted
     driver_list = []
     for sub_path in os.listdir(nas_driver_mount_preifx):
         path = '%s/%s' % (nas_driver_mount_preifx, sub_path)
@@ -56,7 +56,8 @@ def get_nas_driver_list():
             info = get_dst_device_info(path)
             if info is not None:
                 driver_list.append(info)
-
+        # '/mnt/plots/driver0' 取得磁盘序号排序
+        driver_list.sort(key=lambda x: int(x['mount_path'][17:]))
     return driver_list
 
 
