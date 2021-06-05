@@ -252,11 +252,15 @@ def get_file_count(path):
 
 
 def _is_plot_file(file_path):
-    if not os.path.isfile(file_path):
+    try:
+        if not os.path.isfile(file_path):
+            return False
+        if not file_path.endswith('.plot'):
+            return False
+        return True
+    except Exception as e:
+        logger.error('file:%s check error:%s' % (file_path, e))
         return False
-    if not file_path.endswith('.plot'):
-        return False
-    return True
 
 
 def get_dst_device_info(mount_path):
