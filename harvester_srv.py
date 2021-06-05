@@ -88,7 +88,7 @@ def config_hpool():
           }
         return render_template('harvester.hpool.yaml', data=data)
     else:
-        page_list = driver_list[index*size, (index+1)*size]
+        page_list = driver_list[int(index)*int(size), (int(index)+1)*int(size)]
         data = {'name': socket.gethostname(),
           'driver_list': page_list,
           }
