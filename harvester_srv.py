@@ -85,12 +85,14 @@ def config_hpool():
     if size is None or index is None:
         data = {'name': socket.gethostname(),
           'driver_list': driver_list,
+          'id': 0
           }
         return render_template('harvester.hpool.yaml', data=data)
     else:
         page_list = driver_list[int(index)*int(size):(int(index)+1)*int(size)]
         data = {'name': socket.gethostname(),
           'driver_list': page_list,
+          'id': index,
           }
         return render_template('harvester.hpool.yaml', data=data)
 

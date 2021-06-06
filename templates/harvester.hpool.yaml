@@ -1,7 +1,7 @@
 token: ""
 path:{% for driver in data['driver_list']%}
 - {{driver['mount_path']}}{% endfor %}
-minerName: {{ data['name'] }}
+minerName: {{ data['name'] }}-{{id}}
 apiKey: 80d7e99d-2459-4887-97d2-b5e6120f0a6e
 cachePath: ""
 deviceId: ""
