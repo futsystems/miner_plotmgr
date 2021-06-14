@@ -289,8 +289,8 @@ class PlotterManager(object):
                     #subprocess.call([cmd_send_plot, plot_file, self.nas_ip])
                     nc_cmd = 'pv "%s" | nc -q 2 %s %s' % (plot_file, self.nas_ip, result['data']['port'])
                     logger.info('Execute cmd:%s' % nc_cmd)
-                    process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-                    process.wait() #等待传输文件完毕
+                    process = subprocess.call(nc_cmd)
+                    #process.wait() #等待传输文件完毕
 
                     #os.system(nc_cmd)
                 except subprocess.CalledProcessError as e:
