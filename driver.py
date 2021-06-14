@@ -156,8 +156,9 @@ def get_harvester_driver_list():
         if part.device.startswith('/dev/sd') and part.mountpoint.startswith(nas_driver_mount_preifx):
             if part.mountpoint not in mount_point_list:
                 info = get_dst_device_info(part.mountpoint)
-                driver_list.append(info)
-                mount_point_list.append(part.mountpoint)
+                if info is not None:
+                    driver_list.append(info)
+                    mount_point_list.append(part.mountpoint)
     return driver_list
 
 
@@ -270,11 +271,21 @@ def get_dst_device_info(mount_path):
     :param mount_path:
     :return:
     """
+    # check if path is mounted
+    if not os.path.ismount(mount_path):
+        return None
+
     device = get_device_by_mountpoint(mount_path)
     if device is None:
         return None
+
+    from pySMART import Device
+    tmp_device = Device(device)
+    if tmp_device.interface is None:
+        return None
+
     return {
-        'mount_path':mount_path,
+        'mount_path': mount_path,
         'device': device,
         'space_total': get_device_info('space_total', device),
         'space_used': get_device_info('space_used', device),
