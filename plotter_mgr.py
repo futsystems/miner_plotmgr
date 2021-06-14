@@ -286,7 +286,7 @@ class PlotterManager(object):
                     cmd_send_plot = '%s/send_plot.sh' % cmd_path
                     remote_path = '%s/%s' % (result['data']['path'], filename)
                     logger.info('Execute cmd:%s arg1:%s arg2:%s arg3:%s' % (cmd_send_plot, plot_file, self.nas_ip, result['data']['port']))
-                    subprocess.call([cmd_send_plot, plot_file, self.nas_ip, int(result['data']['port'])])
+                    subprocess.call([cmd_send_plot, plot_file, self.nas_ip])
                     #os.system(nc_cmd)
                 except subprocess.CalledProcessError as e:
                     logger.warning(e.output)
