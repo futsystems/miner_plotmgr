@@ -286,11 +286,7 @@ class PlotterManager(object):
                     cmd_send_plot = '%s/send_plot.sh' % cmd_path
                     remote_path = '%s/%s' % (result['data']['path'], filename)
                     logger.info('Execute cmd:%s arg1:%s arg2:%s arg3:%s' % (cmd_send_plot, plot_file, self.nas_ip, result['data']['port']))
-                    subprocess.call([cmd_send_plot, plot_file, self.nas_ip, '4040'])
-                    #nc_cmd = 'pv "%s" | nc -q 2 %s %s' % (plot_file, self.nas_ip, result['data']['port'])
-                    #logger.info('Execute cmd:%s' % nc_cmd)
-                    #process = subprocess.call(nc_cmd)
-                    #process.wait() #等待传输文件完毕
+                    subprocess.call([cmd_send_plot, plot_file, self.nas_ip, str(result['data']['port'])])
 
                     #os.system(nc_cmd)
                 except subprocess.CalledProcessError as e:
