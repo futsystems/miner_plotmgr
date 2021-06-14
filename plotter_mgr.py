@@ -285,8 +285,13 @@ class PlotterManager(object):
                     cmd_path = os.path.split(os.path.abspath(__file__))[0]
                     cmd_send_plot = '%s/send_plot.sh' % cmd_path
                     remote_path = '%s/%s' % (result['data']['path'], filename)
-                    logger.info('Execute cmd:%s arg1:%s arg2:%s arg3:%s' % (cmd_send_plot, plot_file, self.nas_ip, result['data']['port']))
-                    subprocess.call([cmd_send_plot, plot_file, self.nas_ip])
+                    #logger.info('Execute cmd:%s arg1:%s arg2:%s arg3:%s' % (cmd_send_plot, plot_file, self.nas_ip, result['data']['port']))
+                    #subprocess.call([cmd_send_plot, plot_file, self.nas_ip])
+                    nc_cmd = 'pv "%s" | nc -q 2 %s %s' % (plot_file, self.nas_ip, result['data']['port'])
+                    logger.info('Execute cmd:%s' % nc_cmd)
+                    process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                    process.wait() #等待传输文件完毕
+
                     #os.system(nc_cmd)
                 except subprocess.CalledProcessError as e:
                     logger.warning(e.output)
