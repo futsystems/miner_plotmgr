@@ -104,7 +104,7 @@ class NasManager(object):
             process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             process.wait()
             time.sleep(2)
-            del self._nc_map[ip_addr]
+            self._nc_map.pop(ip_addr, None)
         else:
             pass
 
