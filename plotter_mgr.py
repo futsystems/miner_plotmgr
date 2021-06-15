@@ -143,6 +143,7 @@ class PlotterManager(object):
             path = ''
             if not empty_str(config['plot_file_path']):
                 path = config['plot_file_path']
+                logger.info('send plot file in path:%s' % path)
             else:
                 device = self.get_plot_dst_decive_to_send()
                 # there is no plot file driver
@@ -150,7 +151,7 @@ class PlotterManager(object):
                     logger.info('there is not plot file driver installed')
                 else:
                     path = device['mount_path']
-                    logger.info('device:%s which need to send plot, using path:%s' % (device, path))
+                    logger.info('send plot file in driver:%s via path:%s' % (device, path))
             if not empty_str(path):
                 files = os.listdir(path)
                 cnt = 0
