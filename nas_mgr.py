@@ -92,10 +92,11 @@ class NasManager(object):
         stop nc
         :return:
         """
-        logger.info('Nas server stop nc')
-        if ip_addr in self._nc_map:
-            data = self._nc_map[ip_addr]
 
+        if ip_addr in self._nc_map:
+
+            data = self._nc_map[ip_addr]
+            logger.info('Nas server stop nc ip:%s data:%s' % (ip_addr, data))
             pid = data['pid']
             logger.info('stop nc pid:%s for file:%s' % (data['pid'], data['plot_file']))
             nc_cmd = '/usr/bin/kill %s nc >/dev/null 2>&1' % pid
