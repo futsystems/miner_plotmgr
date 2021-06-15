@@ -142,7 +142,7 @@ def config_plotman():
 
     new_driver_lsit = []
     for tmp in driver_list:
-        if tmp['mount_path'].split('/')[-1] in config['exclude_plot_dst_path']:
+        if tmp['mount_path'].split('/')[-1] in config['exclude_plot_dst_path'].split(','):
             pass
         else:
             new_driver_lsit.append(tmp)
