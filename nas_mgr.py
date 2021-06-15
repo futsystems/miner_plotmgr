@@ -4,7 +4,7 @@
 import os, sys, time, psutil, datetime, socket
 import subprocess
 import requests
-from common import get_memory_info, get_cpu_info, uptime
+from common import get_memory_info, get_cpu_info, uptime, get_free_port
 import logging, traceback
 
 if sys.version_info.major == 2:   # Python 2
@@ -20,7 +20,6 @@ logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
 
 
-
 class UploadProcess(object):
     def __init__(self):
         self.__pid = None
@@ -33,7 +32,7 @@ class NasManager(object):
         self.__current_driver = None
         self._server_name = socket.gethostname()
         self._start_update_local_info_process()
-
+        self._nc_map = {}
 
     def get_next_driver(self):
         """
@@ -51,27 +50,32 @@ class NasManager(object):
         :return:
         """
         logger.info('ip:%s start nc to send file:%s' % (ip_addr, plot_name))
-        if self.__current_nc is not None:
-            return Response(101, 'nc is already started', self.__current_nc)
+        if ip_addr in self._nc_map:
+            return Response(101, 'nc is already started', self._nc_map[ip_addr])
+
+        port = get_free_port()
+        #if self.__current_nc is not None:
+        #    return Response(101, 'nc is already started', self.__current_nc)
 
         driver_to_use = driver.get_plot_drive_to_use()
         plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
 
         plot_path = '%s/%s' % (driver_to_use[0], plot_name)
-        nc_cmd = 'nc -l -q 3 -p 4040 > "%s" < /dev/null' % plot_path
+        nc_cmd = 'nc -l -q 10 -p %s > "%s" < /dev/null' % (port, plot_path)
         #screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
         logger.info('Nas server start nc to receive plot file:%s,CMD:%s' % (plot_name, nc_cmd))
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         #process.wait() 不能等待否则会导致http request一直没有返回
         time.sleep(1)
-        self.__current_nc = {
+        self._nc_map[ip_addr] =  {
             'pid': process.pid,
             'plot_file': plot_name,
             'path': driver_to_use[0],
-            'port': 4040,
+            'port': port,
         }
-        logger.info('NC started,pid:%s' % process.pid)
-        return Response(0, 'nc start success', self.__current_nc)
+
+        logger.info('NC started,pid:%s port:%s' % (process.pid, port))
+        return Response(0, 'nc start success', self._nc_map[ip_addr])
 
     def get_plot_info(self,plot_file):
         size = 0

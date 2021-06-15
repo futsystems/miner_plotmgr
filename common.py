@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-
+import socket
 import os, mdstat, subprocess, re
 import logging, traceback
 import driver
@@ -60,6 +60,16 @@ def empty_str(arg):
     if arg == '':
         return True
     return False
+
+
+
+
+def get_free_port():
+    sock = socket.socket()
+    sock.bind(('', 0))
+    ip, port = sock.getnameinfo()
+    sock.close()
+    return port
 
 def get_block_device_size(filename):
     "Get the file size by seeking at end"

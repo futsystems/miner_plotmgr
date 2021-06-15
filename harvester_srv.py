@@ -109,7 +109,7 @@ def start_nc():
 
     ip_addr = request.remote_addr
 
-    logger.info('upload plot file:%s' % plot_file)
+    #logger.info('upload plot file:%s' % plot_file)
 
     res = harvester.start_nc(ip_addr, plot_file)
     return res.to_json()
