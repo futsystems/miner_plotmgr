@@ -159,6 +159,11 @@ class PlotterManager(object):
         response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
         config = response.json()
         while True:
+            # if sending is off, exit thread
+            if not self._send_to_nas:
+                logger.info("Sending Process Thread Exit")
+                thread.exit_thread()
+
             path = ''
             if not empty_str(config['plot_file_path']):
                 path = config['plot_file_path']
@@ -179,7 +184,7 @@ class PlotterManager(object):
                 else:
                     cnt = 0
                     for plot_file in files:
-
+                        # if sending is off, exit thread while loop file
                         if not self._send_to_nas:
                             logger.info("Sending Process Thread Exit")
                             thread.exit_thread()
