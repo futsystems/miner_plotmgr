@@ -125,6 +125,14 @@ class PlotterManager(object):
     def stop_sending_process(self):
         if self._send_to_nas:
             logger.info('Stop sending process')
+
+            # stop nc local
+            nc_cmd = '/usr/bin/killall -9 nc >/dev/null 2>&1'
+            # Popen创建进程后直接返回 需要执行wait确保执行完毕
+            process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process.wait()
+
+            # stop remote nc
             url_stop = 'http://%s:8080/nc/stop' % self.nas_ip
             response = requests.get(url_stop)
             if response.status_code != 200:
@@ -149,10 +157,6 @@ class PlotterManager(object):
         response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
         config = response.json()
         while True:
-            if not self._send_to_nas:
-                logger.info("Sending Process Thread Exit")
-                thread.exit_thread()
-
             path = ''
             if not empty_str(config['plot_file_path']):
                 path = config['plot_file_path']
@@ -173,6 +177,11 @@ class PlotterManager(object):
                 else:
                     cnt = 0
                     for plot_file in files:
+
+                        if not self._send_to_nas:
+                            logger.info("Sending Process Thread Exit")
+                            thread.exit_thread()
+
                         #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
                         if plot_file.endswith('.plot'):
                             logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
