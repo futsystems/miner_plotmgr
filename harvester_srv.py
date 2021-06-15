@@ -102,13 +102,16 @@ def start_nc():
     start nc server to receive plot file
     :return:
     """
+
     plot_file = request.args.get('file')
     if plot_file is None or plot_file == '':
         return Response(100, 'file args is empty').to_json()
 
+    ip_addr = request.remote_addr
+
     logger.info('upload plot file:%s' % plot_file)
 
-    res = harvester.start_nc(plot_file)
+    res = harvester.start_nc(ip_addr, plot_file)
     return res.to_json()
 
 

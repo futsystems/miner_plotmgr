@@ -43,13 +43,14 @@ class NasManager(object):
         return driver.get_plot_drive_to_use()
 
 
-    def start_nc(self, plot_name):
+    def start_nc(self, ip_addr, plot_name):
         """
         start nc to receive plot file
         client user command nc 127.0.0.1 4040 -q2 < plot_file_name to send file
         :param plot_name:
         :return:
         """
+        logger.info('ip:%s start nc to send file:%s' % (ip_addr, plot_name))
         if self.__current_nc is not None:
             return Response(101, 'nc is already started', self.__current_nc)
 
