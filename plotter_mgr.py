@@ -22,7 +22,7 @@ import socket
 import requests
 import datetime
 
-from common import get_cpu_info, get_memory_info, uptime, get_nvme_info
+from common import get_cpu_info, get_memory_info, uptime, get_nvme_info, empty_str
 
 
 import json
@@ -131,32 +131,45 @@ class PlotterManager(object):
 
 
     def sending_process(self, args):
+        server_id = self._server_name.split('-')[1]
+        query = {'id': server_id}
+        # get plot config from config center, if not setted, will return default value
+        response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
+        config = response.json()
         while True:
             if not self._send_to_nas:
                 logger.info("Sending Process Thread Exit")
                 thread.exit_thread()
-            device = self.get_plot_dst_decive_to_send()
-            path = '/mnt/cache/00/dst'
-            # if plotter do not have driver to store plot, plot just in cache
-            if device is not None:
-                path = device['mount_path']
-            logger.info('device:%s which need to send plot, using path:%s' % (device, path))
-            files = os.listdir(path)
-            cnt = 0
-            for plot_file in files:
-                #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
-                if plot_file.endswith('.plot'):
-                    logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
-                    plot_full_name = '%s/%s' % (path, plot_file)
-                    res = self.send_plot(path, plot_file)
-                    if res[0]:
-                        logger.info('Send plot success <===')
-                        cnt = cnt+1
-                    else:
-                        logger.info('Send plot fail,%s <===' % res[1])
-                    time.sleep(10)
-                #if cnt > 5:
-                #    break
+            path = ''
+            if not empty_str(config['plot_file_path']):
+                path = config['plot_file_path']
+            else:
+                device = self.get_plot_dst_decive_to_send()
+                # there is no plot file driver
+                if device is None:
+                    logger.info('there is not plot file driver installed')
+                else:
+                    path = device['mount_path']
+                    logger.info('device:%s which need to send plot, using path:%s' % (device, path))
+            if not empty_str(path):
+                files = os.listdir(path)
+                cnt = 0
+                for plot_file in files:
+                    #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
+                    if plot_file.endswith('.plot'):
+                        logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
+                        plot_full_name = '%s/%s' % (path, plot_file)
+                        res = self.send_plot(path, plot_file)
+                        if res[0]:
+                            logger.info('Send plot success <===')
+                            cnt = cnt+1
+                        else:
+                            logger.info('Send plot fail,%s <===' % res[1])
+                        time.sleep(10)
+                    #if cnt > 5:
+                    #    break
+            else:
+                pass
             time.sleep(10)
 
     def update_statistic_process(self, args):

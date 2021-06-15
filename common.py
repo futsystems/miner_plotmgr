@@ -54,6 +54,12 @@ def get_nvme_info():
         }
 
 
+def empty_str(arg):
+    if arg is None:
+        return True
+    if arg == '':
+        return True
+    return False
 
 def get_block_device_size(filename):
     "Get the file size by seeking at end"
