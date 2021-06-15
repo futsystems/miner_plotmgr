@@ -67,7 +67,7 @@ def empty_str(arg):
 def get_free_port():
     sock = socket.socket()
     sock.bind(('', 0))
-    ip, port = sock.getnameinfo()
+    ip, port = sock.getsockname()
     sock.close()
     return port
 
