@@ -125,6 +125,18 @@ class PlotterManager(object):
     def stop_sending_process(self):
         if self._send_to_nas:
             logger.info('Stop sending process')
+            url_stop = 'http://%s:8080/nc/stop' % self.nas_ip
+            response = requests.get(url_stop)
+            if response.status_code != 200:
+                logger.warn('NAS Server response error')
+                # return (False, 'NAS Server response error')
+            else:
+                result = response.json()
+                if result['code'] != 0:
+                    logger.warn('NAS Server stop nc error:%s' % result['msg'])
+                    # return [False, result['msg']]
+                else:
+                    logger.info('Stop remote nc service success')
             self._send_to_nas = False
             return (True, '')
         return (False, 'Sending process is not started')
