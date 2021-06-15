@@ -140,6 +140,7 @@ class PlotterManager(object):
             if not self._send_to_nas:
                 logger.info("Sending Process Thread Exit")
                 thread.exit_thread()
+
             path = ''
             if not empty_str(config['plot_file_path']):
                 path = config['plot_file_path']
@@ -152,25 +153,29 @@ class PlotterManager(object):
                 else:
                     path = device['mount_path']
                     logger.info('send plot file in driver:%s via path:%s' % (device, path))
+
             if not empty_str(path):
                 files = os.listdir(path)
-                cnt = 0
-                for plot_file in files:
-                    #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
-                    if plot_file.endswith('.plot'):
-                        logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
-                        plot_full_name = '%s/%s' % (path, plot_file)
-                        res = self.send_plot(path, plot_file)
-                        if res[0]:
-                            logger.info('Send plot success <===')
-                            cnt = cnt+1
-                        else:
-                            logger.info('Send plot fail,%s <===' % res[1])
-                        time.sleep(10)
-                    #if cnt > 5:
-                    #    break
+                if (len(files)) == 0:
+                    logger.info('there is no plot file ready in path')
+                else:
+                    cnt = 0
+                    for plot_file in files:
+                        #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
+                        if plot_file.endswith('.plot'):
+                            logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
+                            plot_full_name = '%s/%s' % (path, plot_file)
+                            res = self.send_plot(path, plot_file)
+                            if res[0]:
+                                logger.info('Send plot success <===')
+                                cnt = cnt+1
+                            else:
+                                logger.info('Send plot fail,%s <===' % res[1])
+                            time.sleep(10)
+                        #if cnt > 5:
+                        #    break
             else:
-                pass
+                logger.warn('please set plot_file_path or install plot driver')
             time.sleep(10)
 
     def update_statistic_process(self, args):
