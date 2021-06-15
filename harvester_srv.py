@@ -121,8 +121,9 @@ def stop_nc():
     stop nc
     :return:
     """
-    pid = request.args.get('pid')
-    res = harvester.stop_nc(pid)
+    ip_addr = request.remote_addr
+
+    res = harvester.stop_nc(ip_addr)
     return res.to_json()
 
 @app.route('/nc/current')
