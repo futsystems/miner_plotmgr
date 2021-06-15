@@ -58,7 +58,7 @@ class PlotterManager(object):
         #    return None
 
         dst_device_list = driver.get_plotter_driver_list()
-        #logger.info('dst_device_list:%s' % dst_device_list)
+        logger.info('plotter_driver_list:%s' % dst_device_list)
         current_device = None
         current_ratio = 1
         #找出剩余空间最小的
@@ -167,7 +167,7 @@ class PlotterManager(object):
                 device = self.get_plot_dst_decive_to_send()
                 # there is no plot file driver
                 if device is None:
-                    logger.info('there is not plot file driver installed')
+                    logger.info('there is no plot file driver installed')
                 else:
                     path = device['mount_path']
                     logger.info('send plot file in driver:%s via path:%s' % (device['device'], path))
