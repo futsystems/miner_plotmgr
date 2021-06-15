@@ -57,7 +57,7 @@ class NasManager(object):
         #if self.__current_nc is not None:
         #    return Response(101, 'nc is already started', self.__current_nc)
 
-        driver_to_use = driver.get_plot_drive_to_use()
+        driver_to_use = driver.get_plot_drive_to_use([item['driver'] for item in self._nc_map.values()])
         plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
 
         plot_path = '%s/%s' % (driver_to_use[0], plot_name)
@@ -67,11 +67,12 @@ class NasManager(object):
         process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
         #process.wait() 不能等待否则会导致http request一直没有返回
         time.sleep(1)
-        self._nc_map[ip_addr] =  {
+        self._nc_map[ip_addr] = {
             'pid': process.pid,
             'plot_file': plot_name,
             'path': driver_to_use[0],
             'port': port,
+            'driver': driver_to_use[1]
         }
 
         logger.info('NC started,pid:%s port:%s' % (process.pid, port))

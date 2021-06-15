@@ -121,7 +121,7 @@ def get_device_info(action, device):
         return int(bytesto(shutil.disk_usage(mountpoint)[1], 'g') / plot_size_g)
 
 
-def get_plot_drive_to_use():
+def get_plot_drive_to_use(used_driver_list=None):
     """
     用于获得NAS服务器可用于储存Plot的磁盘，通过排序法获得
         This looks at all available plot drives that start with /dev/sd and include
@@ -141,7 +141,11 @@ def get_plot_drive_to_use():
         if part.device.startswith('/dev/sd') \
                 and part.mountpoint.startswith(nas_driver_mount_preifx) \
                 and get_device_info('space_free_plots', part.device) >= 1:
-            available_drives.append((part.mountpoint, part.device))
+            if used_driver_list is None:
+                available_drives.append((part.mountpoint, part.device))
+            else:
+                if part.device not in used_driver_list:
+                    available_drives.append((part.mountpoint, part.device))
     return natsorted(available_drives)[0]
 
 
