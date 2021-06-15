@@ -82,19 +82,28 @@ class NasManager(object):
         return {'size': size}
 
 
-    def stop_nc(self):
+    def stop_nc(self, pid=None):
         """
         stop nc
         :return:
         """
         logger.info('Nas server stop nc')
-        nc_cmd='/usr/bin/killall -9 nc >/dev/null 2>&1'
-        #Popen创建进程后直接返回 需要执行wait确保执行完毕
-        process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        process.wait()
-        #os.system(nc_cmd)
-        # wait some time to wait nc stop complete try check_out
-        time.sleep(2)
+        if pid is None:
+            nc_cmd='/usr/bin/killall -9 nc >/dev/null 2>&1'
+            #Popen创建进程后直接返回 需要执行wait确保执行完毕
+            process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process.wait()
+            #os.system(nc_cmd)
+            # wait some time to wait nc stop complete try check_out
+            time.sleep(2)
+        else:
+            nc_cmd = '/usr/bin/kill %s nc >/dev/null 2>&1' % pid
+            # Popen创建进程后直接返回 需要执行wait确保执行完毕
+            process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            process.wait()
+            # os.system(nc_cmd)
+            # wait some time to wait nc stop complete try check_out
+            time.sleep(2)
         self.__current_nc = None
         return Response(0, 'nc stop success')
 

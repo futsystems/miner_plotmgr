@@ -279,10 +279,10 @@ def get_dst_device_info(mount_path):
     if device is None:
         return None
 
-    from pySMART import Device
-    tmp_device = Device(device)
-    if tmp_device.interface is None:
-        return None
+    #from pySMART import Device
+    #tmp_device = Device(device)
+    #if tmp_device.interface is None:
+    #    return None
 
     return {
         'mount_path': mount_path,

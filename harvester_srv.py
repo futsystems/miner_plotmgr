@@ -118,7 +118,8 @@ def stop_nc():
     stop nc
     :return:
     """
-    res = harvester.stop_nc()
+    pid = request.args.get('pid')
+    res = harvester.stop_nc(pid)
     return res.to_json()
 
 @app.route('/nc/current')
