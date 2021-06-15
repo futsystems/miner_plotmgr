@@ -145,6 +145,9 @@ def config_plotman():
             pass
         else:
             new_driver_lsit.append(tmp)
+    if len(new_driver_lsit) == 0:
+        if len(cache_list) > 0:
+            new_driver_lsit.append({'mount_path': '%s/dst' % cache_list[0]['mount_path']})
     data={'name': socket.gethostname(),
           'server_id': server_id,
           'driver_list': new_driver_lsit,
