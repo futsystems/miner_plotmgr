@@ -136,7 +136,11 @@ class PlotterManager(object):
                 logger.info("Sending Process Thread Exit")
                 thread.exit_thread()
             device = self.get_plot_dst_decive_to_send()
-            files = os.listdir(device['mount_path'])
+            path = '/mnt/cache/00/dst'
+            # if plotter do not have driver to store plot, plot just in cache
+            if device is not None:
+                path = device['mount_path']
+            files = os.listdir(path)
             logger.info('device:%s which need to send plot' % device)
             cnt = 0
             if device is not None:
