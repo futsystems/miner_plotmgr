@@ -143,24 +143,20 @@ class PlotterManager(object):
             logger.info('device:%s which need to send plot, using path:%s' % (device, path))
             files = os.listdir(path)
             cnt = 0
-            if device is not None:
-                #logger.debug('files:%s' % files)
-                for plot_file in files:
-                    #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
-                    if plot_file.endswith('.plot'):
-                        logger.info('====> Will send %s/%s to harvester:%s(%s)' % (device['mount_path'],plot_file, self.nas_name, self.nas_ip))
-                        plot_full_name = '%s/%s' % (device['mount_path'], plot_file)
-                        res = self.send_plot(device['mount_path'], plot_file)
-                        if res[0]:
-                            logger.info('Send plot success <===')
-                            cnt = cnt+1
-                        else:
-                            logger.info('Send plot fail,%s <===' % res[1])
-                        time.sleep(10)
-                    #if cnt > 5:
-                    #    break
-            else:
-                logger.info("There is no plot dst device")
+            for plot_file in files:
+                #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
+                if plot_file.endswith('.plot'):
+                    logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
+                    plot_full_name = '%s/%s' % (path, plot_file)
+                    res = self.send_plot(path, plot_file)
+                    if res[0]:
+                        logger.info('Send plot success <===')
+                        cnt = cnt+1
+                    else:
+                        logger.info('Send plot fail,%s <===' % res[1])
+                    time.sleep(10)
+                #if cnt > 5:
+                #    break
             time.sleep(10)
 
     def update_statistic_process(self, args):
