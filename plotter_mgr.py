@@ -181,10 +181,7 @@ class PlotterManager(object):
 
     def sending_process(self, args):
         server_id = self._server_name.split('-')[1]
-        query = {'id': server_id}
         # get plot config from config center, if not setted, will return default value
-        response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
-        config = response.json()
         while True:
             # if sending is off, exit thread
             if not self._send_to_nas:
@@ -192,8 +189,8 @@ class PlotterManager(object):
                 thread.exit_thread()
 
             path = ''
-            if not empty_str(config['plot_file_path']):
-                path = config['plot_file_path']
+            if not empty_str(self.config['plot_file_path']):
+                path = self.config['plot_file_path']
                 logger.info('send plot file in path:%s' % path)
             else:
                 device = self.get_plot_dst_decive_to_send()
