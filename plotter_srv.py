@@ -281,9 +281,6 @@ def stop_plot_sending():
     res = plotter.stop_sending_process()
     return Response(0 if res[0] else 1, res[1]).to_json()
 
-
-
-
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=8080)
 

@@ -110,8 +110,15 @@ class PlotterManager(object):
         self.nas_name = nas_name
         self._send_to_nas = True
 
+        # stop nc local
+        logger.info('1. stop local nc process')
+        nc_cmd = '/usr/bin/killall -9 nc >/dev/null 2>&1'
+        # Popen创建进程后直接返回 需要执行wait确保执行完毕
+        process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        process.wait()
+
         # try to stop remote nc
-        logger.info('stop remote nc process')
+        logger.info('2. stop remote nc process')
         url_stop = 'http://%s:8080/nc/stop' % self.nas_ip
         response = requests.get(url_stop)
         if response.status_code != 200:
