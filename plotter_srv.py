@@ -203,6 +203,14 @@ def system_poweroff():
     os.system("shutdown now -h")
     return Response(0, 'shutdown success').to_json()
 
+@app.route('/config/change')
+def config_change():
+    """
+    restart service base on service name
+    :return:
+    """
+    logger.info('config change')
+    return Response('', 'will sync config latter').to_json()
 
 @app.route('/service/restart')
 def restart_service():
@@ -211,12 +219,8 @@ def restart_service():
     :return:
     """
     service_name = request.args.get('service_name')
-    if service_name == 'api.plotter':
-        subprocess.call(["supervisorctl", "restart", service_name])
-        return Response('', 'restart service %s success').to_json()
-    else:
-        result = subprocess.check_call(["supervisorctl", "restart", service_name])
-        return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
+    result = subprocess.check_call(["supervisorctl", "restart", service_name])
+    return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
 
 
 @app.route('/config/plotman/apply')
