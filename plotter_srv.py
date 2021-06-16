@@ -255,6 +255,7 @@ def start_plot_sending():
         return Response(100, 'nas_name ip is empty').to_json()
 
     res = plotter.start_sending_process(nas_name, nas_ip)
+    plotter.update_local_info_process()
     return Response(0 if res[0] else 1,res[1]).to_json()
 
 
@@ -265,6 +266,7 @@ def stop_plot_sending():
     :return:
     """
     res = plotter.stop_sending_process()
+    plotter.update_local_info_process()
     return Response(0 if res[0] else 1, res[1]).to_json()
 
 
