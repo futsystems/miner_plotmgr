@@ -29,12 +29,6 @@ commands:
 
 # Where to plot and log.
 directories:
-        # One directory in which to store all plot job logs (the STDOUT/
-        # STDERR of all plot jobs).  In order to monitor progress, plotman
-        # reads these logs on a regular basis, so using a fast drive is
-        # recommended.
-        log: /opt/chia/logs
-
         # One or more directories to use as tmp dirs for plotting.  The
         # scheduler will use all of them and distribute jobs among them.
         # It assumes that IO is independent for each one (i.e., that each
