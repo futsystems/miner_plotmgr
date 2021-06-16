@@ -57,13 +57,13 @@ def config_nagios():
     nvme_list = driver.get_plotter_nvme_list()
     vcpu_count = os.cpu_count()
 
-    query = {'id': server_id}
+    #query = {'id': server_id}
     # get plot config from config center, if not setted, will return default value
-    response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
-    logger.info('response:%s' % response)
+    #response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
+    #logger.info('response:%s' % response)
 
-    config = response.json()
-    logger.info('plot config data:%s' % config)
+    #config = response.json()
+    #logger.info('plot config data:%s' % config)
 
     new_driver_lsit = []
     for tmp in driver_list:
@@ -80,7 +80,7 @@ def config_nagios():
           'vcpu_cnt': vcpu_count,
           'nvme_list': nvme_list,
           'nvme_cnt': len(nvme_list),
-          'data_interface': config['data_interface']
+          'data_interface': plotter.config['data_interface']
           }
     return render_template('plotter.nagios.html', data=data)
 
