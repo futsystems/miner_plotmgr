@@ -48,10 +48,10 @@ class PlotterManager(object):
         logger.info('config:%s' % self.config)
 
         logger.info('will start statistic process')
-        #self._start_update_statistic_process()
+        self._start_update_statistic_process()
 
         logger.info('will start local info process')
-        #self._start_update_local_info_process()
+        self._start_update_local_info_process()
 
 
     def get_plot_dst_decive_to_send(self):
