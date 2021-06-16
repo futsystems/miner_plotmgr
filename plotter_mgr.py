@@ -131,7 +131,7 @@ class PlotterManager(object):
                 logger.info('Stop remote nc service success')
         self._sending_thread = thread.start_new_thread(self.sending_process, (1,))
 
-        self.update_local_info_process()
+        #self.update_local_info_process()
         return (True, '')
 
 
@@ -170,8 +170,8 @@ class PlotterManager(object):
                 else:
                     logger.info('Stop remote nc service success')
 
-            self.update_local_info_process()
-            
+            #self.update_local_info_process()
+
             self._send_to_nas = False
             return (True, '')
         return (False, 'Sending process is not started')
