@@ -101,6 +101,7 @@ class PlotterManager(object):
         #if self.nas_server is None:
         #    logger.info('Please set nas server first')
         #    return (False, 'Please set nas server first')
+
         if self._send_to_nas:
             logger.info('Sending process already started')
             return (False, 'Sending process already started')
@@ -109,7 +110,8 @@ class PlotterManager(object):
         self.nas_ip = nas_ip
         self.nas_name = nas_name
         self._send_to_nas = True
-
+        logger.info('Start sending process')
+        
         # stop nc local
         logger.info('1. stop local nc process')
         nc_cmd = '/usr/bin/killall -9 nc >/dev/null 2>&1'
@@ -131,7 +133,7 @@ class PlotterManager(object):
                 # return [False, result['msg']]
             else:
                 logger.info('Stop remote nc service success')
-        logger.info('Start sending process')
+
         self._sending_thread = thread.start_new_thread(self.sending_process, (1,))
 
         #self.update_local_info_process()
