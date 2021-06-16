@@ -221,18 +221,17 @@ class PlotterManager(object):
 
                             #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
                             if plot_file.endswith('.plot'):
-                                logger.info('1111111')
+                                plot_full_name = '%s/%s' % (path, plot_file)
                                 #check plot file
-                                if get_filesize(plot_file) < 100:
-                                    logger.info('plot:%s size less than 101G,delete it', plot_file)
-                                    delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_file
+                                if get_filesize(plot_full_name) < 100:
+                                    logger.info('plot:%s size less than 101G,delete it', plot_full_name)
+                                    delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_full_name
                                     process = subprocess.Popen(delte_file_cmd, shell=True, stdout=subprocess.PIPE,
                                                                stderr=subprocess.PIPE)
                                     process.wait()
                                 else:
-                                    logger.info('222222')
                                     logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
-                                    plot_full_name = '%s/%s' % (path, plot_file)
+
                                     res = self.send_plot(path, plot_file)
                                     if res[0]:
                                         logger.info('Send plot success <===')
