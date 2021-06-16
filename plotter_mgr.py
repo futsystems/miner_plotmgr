@@ -197,6 +197,7 @@ class PlotterManager(object):
     def sending_process(self, args):
         server_id = self._server_name.split('-')[1]
         # get plot config from config center, if not setted, will return default value
+        from driver import get_file_count
         while True:
             try:
                 # if sending is off, exit thread
@@ -205,18 +206,31 @@ class PlotterManager(object):
                     thread.exit_thread()
 
                 path = ''
-                if not empty_str(self.config['plot_file_path']):
-                    path = self.config['plot_file_path']
-                    logger.info('send plot file in path:%s' % path)
-                else:
+                has_files = False
+                if (not has_files) and (not empty_str(self.config['plot_file_path_expand'])) and os.path.exists(self.config['plot_file_path_expand']):
+                    if get_file_count(self.config['plot_file_path_expand']):
+                        path = self.config['plot_file_path_expand']
+                        has_files = True
+                        logger.info('send plot file in path:%s' % path)
+
+                if (not has_files) and (not empty_str(self.config['plot_file_path'])) and os.path.exists(self.config['plot_file_path']):
+                    if get_file_count(self.config['plot_file_path']):
+                        path = self.config['plot_file_path']
+                        has_files = True
+                        logger.info('send plot file in path:%s' % path)
+
+                if (not has_files):
                     device = self.get_plot_dst_decive_to_send()
                     # there is no plot file driver
                     if device is None:
                         logger.info('there is no plot file driver installed')
                     else:
-                        path = device['mount_path']
-                        logger.info('send plot file in driver:%s via path:%s' % (device['device'], path))
-                if not empty_str(path):
+                        if get_file_count(device['mount_path']):
+                            path = device['mount_path']
+                            has_files = True
+                            logger.info('send plot file in driver:%s via path:%s' % (device['device'], path))
+
+                if has_files:
                     files = os.listdir(path)
                     if (len(files)) == 0:
                         logger.info('there is no plot file ready in path')
@@ -251,7 +265,7 @@ class PlotterManager(object):
                             #if cnt > 5:
                             #    break
                 else:
-                    logger.warn('please set plot_file_path or install plot driver')
+                    logger.warn('there is no plot files')
             except Exception as e:
                 logger.error(traceback.format_exc())
             finally:
