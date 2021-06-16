@@ -255,7 +255,7 @@ class PlotterManager(object):
         return s.getsockname()[0]
 
     def get_local_info(self):
-
+        import driver
         internal_ip = self.__get_internal_ip()
         plot_cnt = 0
         driver_cnt = 1
@@ -263,7 +263,8 @@ class PlotterManager(object):
         if not empty_str(self.config['plot_file_path']):
             plot_cnt = driver.get_file_count(self.config['plot_file_path'])
         else:
-            pass
+            driver_list = driver.get_plotter_driver_list()
+            plot_cnt = sum(driver['file_cnt'] for driver in driver_list)
 
         info = {
             'internal_ip': internal_ip,
