@@ -94,11 +94,15 @@ def get_plot_process_count():
     pids = psutil.pids()
     plotting_cnt = 0
     for pid in pids:
-        p = psutil.Process(pid)
-        # get process name according to pid
-        process_name = p.name()
-        if process_name.startswith('chia'):
-            plotting_cnt = plotting_cnt +1
+        try:
+            p = psutil.Process(pid)
+            # get process name according to pid
+            process_name = p.name()
+            if process_name.startswith('chia'):
+                plotting_cnt = plotting_cnt +1
+        except Exception as e:
+            pass
+        
 
     return plotting_cnt
 
