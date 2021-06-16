@@ -43,7 +43,7 @@ class PlotterManager(object):
         self._server_ip = self.__get_internal_ip()
 
         query = {'id': self._server_id}
-        response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
+        response = requests.get('http://114.215.171.108:9090/server/plotter/config', params=query)
         self.config = response.json()
         logger.info('config:%s' % self.config)
 

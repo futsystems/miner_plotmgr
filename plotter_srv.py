@@ -146,7 +146,7 @@ def config_plotman():
             pass
         else:
             new_driver_lsit.append(tmp)
-
+    
     if not empty_str(config['plot_file_path']):
         new_driver_lsit = []
         new_driver_lsit.append({'mount_path': config['plot_file_path']})
