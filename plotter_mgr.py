@@ -212,6 +212,7 @@ class PlotterManager(object):
                     logger.info('files:')
                     cnt = 0
                     for plot_file in files:
+                        logger.info('file:%s' % plot_file)
                         # if sending is off, exit thread while loop file
                         if not self._send_to_nas:
                             logger.info("Sending Process Thread Exit")
