@@ -114,6 +114,21 @@ class PlotterManager(object):
         self.nas_ip = nas_ip
         self.nas_name = nas_name
         self._send_to_nas = True
+
+        # try to stop remote nc
+        logger.info('stop remote nc process')
+        url_stop = 'http://%s:8080/nc/stop' % self.nas_ip
+        response = requests.get(url_stop)
+        if response.status_code != 200:
+            logger.warn('NAS Server response error')
+            # return (False, 'NAS Server response error')
+        else:
+            result = response.json()
+            if result['code'] != 0:
+                logger.warn('NAS Server stop nc error:%s' % result['msg'])
+                # return [False, result['msg']]
+            else:
+                logger.info('Stop remote nc service success')
         self._sending_thread = thread.start_new_thread(self.sending_process, (1,))
         return (True, '')
 
