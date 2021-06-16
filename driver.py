@@ -138,15 +138,16 @@ def get_plot_drive_to_use(used_driver_list=None):
     #    offlined_drives = [current_drives.rstrip() for current_drives in offlined_drives_list.readlines()]
     available_drives = []
     for part in psutil.disk_partitions(all=False):
-        if part.device.startswith('/dev/sd') \
-                and part.mountpoint.startswith(nas_driver_mount_preifx) \
+        if part.device.startswith('/dev/sd'):
+            logger.info('part:%s %s' % (part.mountpoint, part.device))
+            if part.mountpoint.startswith(nas_driver_mount_preifx) \
                 and get_device_info('space_free_plots', part.device) >= 1:
-            logger.info('part:%s %s' % (part.mountpoint,  part.device))
-            if used_driver_list is None:
-                available_drives.append((part.mountpoint, part.device))
-            else:
-                if part.device not in used_driver_list:
+            
+                if used_driver_list is None:
                     available_drives.append((part.mountpoint, part.device))
+                else:
+                    if part.device not in used_driver_list:
+                        available_drives.append((part.mountpoint, part.device))
     return natsorted(available_drives)[0]
 
 
