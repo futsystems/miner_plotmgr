@@ -211,8 +211,12 @@ def restart_service():
     :return:
     """
     service_name = request.args.get('service_name')
-    result = subprocess.check_call(["supervisorctl", "restart", service_name])
-    return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
+    if service_name == 'api.plotter':
+        subprocess.call(["supervisorctl", "restart", service_name])
+        return Response('', 'restart service %s success').to_json()
+    else:
+        result = subprocess.check_call(["supervisorctl", "restart", service_name])
+        return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
 
 
 @app.route('/config/plotman/apply')
