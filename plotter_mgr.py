@@ -111,7 +111,7 @@ class PlotterManager(object):
         self.nas_name = nas_name
         self._send_to_nas = True
         logger.info('Start sending process')
-        
+
         # stop nc local
         logger.info('1. stop local nc process')
         nc_cmd = '/usr/bin/killall -9 nc >/dev/null 2>&1'
@@ -203,12 +203,13 @@ class PlotterManager(object):
                 else:
                     path = device['mount_path']
                     logger.info('send plot file in driver:%s via path:%s' % (device['device'], path))
-
+            logger.info('!!!!!!')
             if not empty_str(path):
                 files = os.listdir(path)
                 if (len(files)) == 0:
                     logger.info('there is no plot file ready in path')
                 else:
+                    logger.info('files:')
                     cnt = 0
                     for plot_file in files:
                         # if sending is off, exit thread while loop file
