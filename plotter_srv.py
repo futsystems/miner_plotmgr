@@ -80,6 +80,7 @@ def config_nagios():
           'vcpu_cnt': vcpu_count,
           'nvme_list': nvme_list,
           'nvme_cnt': len(nvme_list),
+          'data_interface': config['data_interface']
           }
     return render_template('plotter.nagios.html', data=data)
 
