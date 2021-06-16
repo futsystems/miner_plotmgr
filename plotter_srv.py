@@ -210,6 +210,8 @@ def config_change():
     :return:
     """
     logger.info('config change')
+    command = ['supervisorctl', 'restart', 'api.plotter']
+    result = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return Response('', 'will sync config latter').to_json()
 
 @app.route('/service/restart')
