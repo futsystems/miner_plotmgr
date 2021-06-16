@@ -67,7 +67,7 @@ def config_nagios():
 
     new_driver_lsit = []
     for tmp in driver_list:
-        if tmp['mount_path'].split('/')[-1] in config['exclude_plot_dst_path']:
+        if tmp['mount_path'].split('/')[-1] in plotter.config['exclude_plot_dst_path']:
             pass
         else:
             new_driver_lsit.append(tmp)
@@ -149,7 +149,7 @@ def config_plotman():
 
     if not empty_str(plotter.config['plot_file_path']):
         new_driver_lsit = []
-        new_driver_lsit.append({'mount_path': config['plot_file_path']})
+        new_driver_lsit.append({'mount_path': plotter.config['plot_file_path']})
     data={'name': socket.gethostname(),
           'server_id': server_id,
           'driver_list': new_driver_lsit,
