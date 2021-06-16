@@ -186,62 +186,68 @@ class PlotterManager(object):
         server_id = self._server_name.split('-')[1]
         # get plot config from config center, if not setted, will return default value
         while True:
-            # if sending is off, exit thread
-            if not self._send_to_nas:
-                logger.info("Sending Process Thread Exit")
-                thread.exit_thread()
+            try:
+                # if sending is off, exit thread
+                if not self._send_to_nas:
+                    logger.info("Sending Process Thread Exit")
+                    thread.exit_thread()
 
-            path = ''
-            if not empty_str(self.config['plot_file_path']):
-                path = self.config['plot_file_path']
-                logger.info('send plot file in path:%s' % path)
-            else:
-                device = self.get_plot_dst_decive_to_send()
-                # there is no plot file driver
-                if device is None:
-                    logger.info('there is no plot file driver installed')
+                path = ''
+                if not empty_str(self.config['plot_file_path']):
+                    path = self.config['plot_file_path']
+                    logger.info('send plot file in path:%s' % path)
                 else:
-                    path = device['mount_path']
-                    logger.info('send plot file in driver:%s via path:%s' % (device['device'], path))
-            logger.info('!!!!!!')
-            if not empty_str(path):
-                files = os.listdir(path)
-                if (len(files)) == 0:
-                    logger.info('there is no plot file ready in path')
-                else:
-                    logger.info('files:')
-                    cnt = 0
-                    for plot_file in files:
-                        logger.info('file:%s' % plot_file)
-                        # if sending is off, exit thread while loop file
-                        if not self._send_to_nas:
-                            logger.info("Sending Process Thread Exit")
-                            thread.exit_thread()
+                    device = self.get_plot_dst_decive_to_send()
+                    # there is no plot file driver
+                    if device is None:
+                        logger.info('there is no plot file driver installed')
+                    else:
+                        path = device['mount_path']
+                        logger.info('send plot file in driver:%s via path:%s' % (device['device'], path))
+                logger.info('!!!!!!')
+                if not empty_str(path):
+                    files = os.listdir(path)
+                    if (len(files)) == 0:
+                        logger.info('there is no plot file ready in path')
+                    else:
+                        logger.info('files:')
+                        cnt = 0
+                        for plot_file in files:
+                            logger.info('file:%s' % plot_file)
+                            # if sending is off, exit thread while loop file
+                            if not self._send_to_nas:
+                                logger.info("Sending Process Thread Exit")
+                                thread.exit_thread()
 
-                        #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
-                        if plot_file.endswith('.plot'):
-                            #check plot file
-                            if get_filesize(plot_file) < 100:
-                                logger.info('plot:%s size less than 101G,delete it', plot_file)
-                                delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_file
-                                process = subprocess.Popen(delte_file_cmd, shell=True, stdout=subprocess.PIPE,
-                                                           stderr=subprocess.PIPE)
-                                process.wait()
-                            else:
-                                logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
-                                plot_full_name = '%s/%s' % (path, plot_file)
-                                res = self.send_plot(path, plot_file)
-                                if res[0]:
-                                    logger.info('Send plot success <===')
-                                    cnt = cnt+1
+                            #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
+                            if plot_file.endswith('.plot'):
+                                logger.info('1111111')
+                                #check plot file
+                                if get_filesize(plot_file) < 100:
+                                    logger.info('plot:%s size less than 101G,delete it', plot_file)
+                                    delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_file
+                                    process = subprocess.Popen(delte_file_cmd, shell=True, stdout=subprocess.PIPE,
+                                                               stderr=subprocess.PIPE)
+                                    process.wait()
                                 else:
-                                    logger.info('Send plot fail,%s <===' % res[1])
-                                time.sleep(10)
-                        #if cnt > 5:
-                        #    break
-            else:
-                logger.warn('please set plot_file_path or install plot driver')
-            time.sleep(10)
+                                    logger.info('222222')
+                                    logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
+                                    plot_full_name = '%s/%s' % (path, plot_file)
+                                    res = self.send_plot(path, plot_file)
+                                    if res[0]:
+                                        logger.info('Send plot success <===')
+                                        cnt = cnt+1
+                                    else:
+                                        logger.info('Send plot fail,%s <===' % res[1])
+                                    time.sleep(10)
+                            #if cnt > 5:
+                            #    break
+                else:
+                    logger.warn('please set plot_file_path or install plot driver')
+            except Exception as e:
+                logger.error(traceback.format_exc())
+            finally:
+                time.sleep(10)
 
     def update_statistic_process(self, args):
         while True:
