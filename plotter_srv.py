@@ -84,6 +84,7 @@ def config_nagios():
           'nvme_cnt': len(nvme_list),
           'data_interface': plotter.config['data_interface']
           }
+    logger.info('/config/nagios data:%s' % data)
     return render_template('plotter.nagios.html', data=data)
 
 
