@@ -73,12 +73,25 @@ class PlotterManager(object):
     def is_sending_live(self):
         return self._send_to_nas
 
-    def register(self):
-        register_thread = thread.start_new_thread(self._register, (1,))
+    def on_start(self):
+        register_thread = thread.start_new_thread(self._on_start, (1,))
 
-    def _register(self, args):
+    def _on_start(self, args):
         # wait 5 secends to let flask run
         time.sleep(5)
+
+        # register node info
+        self.register()
+
+        # start sending process
+        if self.config['is_sending_run'] and self.config['harvester']:
+            self.start_sending_process(self.config['harvester']['name'], self.config['harvester']['ip'])
+
+        # start update info process
+        self.start_update_local_info_process()
+        self.start_update_statistic_process()
+
+    def register(self):
         # returns the time in seconds since the epoch
         last_reboot_ts = psutil.boot_time()
         # coverting the date and time in readable format
@@ -86,7 +99,7 @@ class PlotterManager(object):
 
         hostname = socket.gethostname()
         payload = {'name': hostname,
-                   'boot_time':last_reboot,
+                   'boot_time': last_reboot,
                    'cpu': get_cpu_info(),
                    'memory': get_memory_info(),
                    'nvme': get_nvme_info(),
@@ -95,11 +108,6 @@ class PlotterManager(object):
 
         response = requests.post('http://nagios.futsystems.com:9090/server/plotter/register', json=payload)
         logger.info('register status:%s data:%s' % (response.status_code, response.json()))
-
-        #start sending process
-        if self.config['is_sending_run'] and self.config['harvester']:
-            self.start_sending_process(self.config['harvester']['name'], self.config['harvester']['ip'])
-
 
     def start_sending_process(self, nas_name, nas_ip):
         #if self.nas_server is None:

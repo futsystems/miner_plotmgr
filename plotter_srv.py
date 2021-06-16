@@ -28,10 +28,7 @@ plotter = PlotterManager()
 
 class PlotterFlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
-    plotter.register()
-    plotter.start_update_local_info_process()
-    plotter.start_update_statistic_process()
-
+    plotter.on_start()
     #if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
     super(PlotterFlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 
