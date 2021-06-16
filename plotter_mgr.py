@@ -211,7 +211,6 @@ class PlotterManager(object):
                     else:
                         cnt = 0
                         for plot_file in files:
-                            logger.info('file:%s' % plot_file)
                             # if sending is off, exit thread while loop file
                             if not self._send_to_nas:
                                 logger.info("Sending Process Thread Exit")
@@ -257,7 +256,7 @@ class PlotterManager(object):
 
                 response = requests.post('http://nagios.futsystems.com:9090/server/plotter/statistic/update', json=data)
 
-                logger.info('status:%s data:%s' % (response.status_code, response.json()))
+                logger.info('update statistic status:%s data:%s' % (response.status_code, response.json()))
 
                 # sleep 10 minutes
                 time.sleep(10*60)
@@ -276,7 +275,7 @@ class PlotterManager(object):
                 }
 
                 response = requests.post('http://nagios.futsystems.com:9090/server/plotter/local-info/update', json=data)
-                logger.info('status:%s data:%s' % (response.status_code, response.json()))
+                logger.info('update local info status:%s data:%s' % (response.status_code, response.json()))
 
                 # sleep 1 minutes
                 time.sleep(1*60)
