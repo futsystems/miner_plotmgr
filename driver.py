@@ -140,7 +140,7 @@ def get_plot_drive_to_use(used_driver_list=None):
     for part in psutil.disk_partitions(all=False):
         if part.device.startswith('/dev/sd') and part.mountpoint.startswith(nas_driver_mount_preifx):
             free_plots_left = get_device_info('space_free_plots', part.device)
-            logger.info('path:%s device:%s free plots left:%s' % (part.mountpoint, part.device, free_plots_left))
+            #logger.info('path:%s device:%s free plots left:%s' % (part.mountpoint, part.device, free_plots_left))
             if free_plots_left >= 1:
                 if used_driver_list is None:
                     available_drives.append((part.mountpoint, part.device))

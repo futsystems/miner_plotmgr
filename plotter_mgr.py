@@ -32,14 +32,19 @@ logger = logging.getLogger('nas')
 
 class PlotterManager(object):
     def __init__(self):
-        self.config = config.get_plotter_setting()
+        self.path_config = config.get_plotter_setting()
         self.nas_ip = None
         self.nas_name = 'nas'
 
         self._send_to_nas = False
         self._sending_thread = None
         self._server_name = socket.gethostname()
+        self._server_id = self._server_name.split('-')[1]
         self._server_ip = self.__get_internal_ip()
+
+        query = {'id': self._server_id}
+        response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
+        self.config = response.json()
 
         logger.info('will start statistic process')
         self._start_update_statistic_process()
@@ -252,8 +257,13 @@ class PlotterManager(object):
     def get_local_info(self):
 
         internal_ip = self.__get_internal_ip()
-        plot_cnt = 1
+        plot_cnt = 0
         driver_cnt = 1
+
+        if not empty_str(self.config['plot_file_path']):
+            plot_cnt = driver.get_file_count(self.config['plot_file_path'])
+        else:
+            pass
 
         info = {
             'internal_ip': internal_ip,
