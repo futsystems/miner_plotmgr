@@ -45,13 +45,7 @@ class PlotterManager(object):
         query = {'id': self._server_id}
         response = requests.get('http://114.215.171.108:9090/server/plotter/config', params=query)
         self.config = response.json()
-        logger.info('config:%s' % self.config)
-
-        logger.info('will start statistic process')
-        self._start_update_statistic_process()
-
-        logger.info('will start local info process')
-        self._start_update_local_info_process()
+        logger.info('plotter config:%s' % self.config)
 
 
     def get_plot_dst_decive_to_send(self):
@@ -137,11 +131,11 @@ class PlotterManager(object):
         return (True, '')
 
 
-    def _start_update_statistic_process(self):
+    def start_update_statistic_process(self):
         logger.info('start update statistic process')
         self._update_statistic_thread = thread.start_new_thread(self.update_statistic_process, (1,))
 
-    def _start_update_local_info_process(self):
+    def start_update_local_info_process(self):
         logger.info('start update local info process')
         self._update_local_info_thread = thread.start_new_thread(self.update_local_info_process, (1,))
 

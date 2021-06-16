@@ -30,6 +30,9 @@ class PlotterFlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
     logger.info('run some code after flask run 0000')
     plotter.register()
+    plotter.start_update_local_info_process()
+    plotter.start_update_statistic_process()
+
     #if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
     super(PlotterFlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 
@@ -209,7 +212,7 @@ def config_change():
     restart service base on service name
     :return:
     """
-    logger.info('config change')
+    logger.info('config change, restart api.plotter')
     command = ['supervisorctl', 'restart', 'api.plotter']
     result = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
     return Response('', 'will sync config latter').to_json()
