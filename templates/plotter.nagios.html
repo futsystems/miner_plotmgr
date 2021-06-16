@@ -27,7 +27,7 @@ object Host "{{ data['name'] }}" {
   }
 {% endfor %}
 
-  vars.data_interface = {{data['data_interface']}}
+  vars.data_interface = "{{data['data_interface']}}"
 
   vars.dst_disks["/Dst"] = {
     disk_partitions =  [{% for driver in data['driver_list']%}
