@@ -102,7 +102,7 @@ def get_plot_process_count():
                 plotting_cnt = plotting_cnt +1
         except Exception as e:
             pass
-        
+
 
     return plotting_cnt
 
