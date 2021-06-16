@@ -79,6 +79,16 @@ def get_block_device_size(filename):
     finally:
         os.close(fd)
 
+def get_filesize(filePath):
+    """
+    :return sizde by GB
+    :param filePath:
+    :return:
+    """
+    fsize = os.path.getsize(filePath)
+    fsize = fsize/float(1024*1024*1024)
+    return round(fsize,2)
+
 if __name__ == '__main__':
     logging.config.fileConfig('logging.conf')
     cpu = get_memory_info()

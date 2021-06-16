@@ -22,7 +22,7 @@ import socket
 import requests
 import datetime
 
-from common import get_cpu_info, get_memory_info, uptime, get_nvme_info, empty_str
+from common import get_cpu_info, get_memory_info, uptime, get_nvme_info, empty_str, get_filesize
 
 
 import json
@@ -209,15 +209,23 @@ class PlotterManager(object):
 
                         #logger.info('plot_file:%s is file:%s isplot:%s' % (plot_file, os.path.isfile(plot_file), plot_file.endswith(".plot")))
                         if plot_file.endswith('.plot'):
-                            logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
-                            plot_full_name = '%s/%s' % (path, plot_file)
-                            res = self.send_plot(path, plot_file)
-                            if res[0]:
-                                logger.info('Send plot success <===')
-                                cnt = cnt+1
+                            #check plot file
+                            if get_filesize(plot_file) < 100:
+                                logger.info('plot:%s size less than 101G,delete it', plot_file)
+                                delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_file
+                                process = subprocess.Popen(delte_file_cmd, shell=True, stdout=subprocess.PIPE,
+                                                           stderr=subprocess.PIPE)
+                                process.wait()
                             else:
-                                logger.info('Send plot fail,%s <===' % res[1])
-                            time.sleep(10)
+                                logger.info('====> Will send %s/%s to harvester:%s(%s)' % (path,plot_file, self.nas_name, self.nas_ip))
+                                plot_full_name = '%s/%s' % (path, plot_file)
+                                res = self.send_plot(path, plot_file)
+                                if res[0]:
+                                    logger.info('Send plot success <===')
+                                    cnt = cnt+1
+                                else:
+                                    logger.info('Send plot fail,%s <===' % res[1])
+                                time.sleep(10)
                         #if cnt > 5:
                         #    break
             else:
@@ -395,7 +403,7 @@ class PlotterManager(object):
 
                             if remote_size == local_size:
                                 logger.info('Remote Size:%s Local Size:%s Plot size match,delete local file' % (remote_size, local_size))
-                                os.remove(plot_file)
+                                #os.remove(plot_file)
                                 delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_file
                                 process = subprocess.Popen(delte_file_cmd, shell=True, stdout=subprocess.PIPE,
                                                            stderr=subprocess.PIPE)
