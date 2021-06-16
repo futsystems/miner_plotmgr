@@ -94,7 +94,11 @@ class PlotterManager(object):
         logger.info('register to manager node:%s' % payload)
 
         response = requests.post('http://nagios.futsystems.com:9090/server/plotter/register', json=payload)
-        logger.info('status:%s data:%s' % (response.status_code, response.json()))
+        logger.info('register status:%s data:%s' % (response.status_code, response.json()))
+
+        #start sending process
+        if self.config['is_sending_run'] and self.config['harvester']:
+            self.start_sending_process(self.config['harvester']['name'], self.config['harvester']['ip'])
 
 
     def start_sending_process(self, nas_name, nas_ip):
