@@ -265,7 +265,7 @@ class PlotterManager(object):
                             #if cnt > 5:
                             #    break
                 else:
-                    logger.warn('there is no plot files')
+                    logger.info('there is no plot files')
             except Exception as e:
                 logger.error(traceback.format_exc())
             finally:
@@ -322,7 +322,7 @@ class PlotterManager(object):
 
         if not empty_str(self.config['plot_file_path']):
             plot_cnt = plot_cnt + driver.get_file_count(self.config['plot_file_path'])
-            
+
         if not empty_str(self.config['plot_file_path_expand']):
             plot_cnt = plot_cnt + driver.get_file_count(self.config['plot_file_path_expand'])
 
