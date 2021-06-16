@@ -321,10 +321,13 @@ class PlotterManager(object):
         driver_cnt = 1
 
         if not empty_str(self.config['plot_file_path']):
-            plot_cnt = driver.get_file_count(self.config['plot_file_path'])
-        else:
-            driver_list = driver.get_plotter_driver_list()
-            plot_cnt = sum(driver['file_cnt'] for driver in driver_list)
+            plot_cnt = plot_cnt + driver.get_file_count(self.config['plot_file_path'])
+            
+        if not empty_str(self.config['plot_file_path_expand']):
+            plot_cnt = plot_cnt + driver.get_file_count(self.config['plot_file_path_expand'])
+
+        driver_list = driver.get_plotter_driver_list()
+        plot_cnt = plot_cnt + sum(driver['file_cnt'] for driver in driver_list)
 
         info = {
             'internal_ip': internal_ip,
