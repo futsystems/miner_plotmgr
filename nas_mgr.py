@@ -220,7 +220,7 @@ class NasManager(object):
                         logger.info('file:%s' % full_name)
                         os.remove(full_name)
                         cnt = cnt + 1
-            logger.info('dlete file cnt:%s' % cnt)
+        logger.info('dlete file cnt:%s' % cnt)
 
 if __name__ == '__main__':
     pass
