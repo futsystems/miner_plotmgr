@@ -160,7 +160,7 @@ def driver_list():
     return Response(0,'',list).to_json()
 
 @app.route('/driver/clean')
-def driver_list():
+def driver_clean():
     """
     stop nc
     :return:
