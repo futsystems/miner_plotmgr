@@ -14,6 +14,8 @@ else:                             # Python 3
 
 import logging.config
 import driver
+import threading
+
 from message import Response
 
 logging.config.fileConfig('logging.conf')
@@ -30,6 +32,7 @@ class NasManager(object):
     def __init__(self):
         self._server_name = socket.gethostname()
         self._nc_map = {}
+        self._nc_map_lock = threading.Lock()
 
     def get_next_driver(self):
         """
@@ -46,6 +49,8 @@ class NasManager(object):
         :param plot_name:
         :return:
         """
+        self._nc_map_lock.acquire()
+
         logger.info('ip:%s start nc to send file:%s' % (ip_addr, plot_name))
         if ip_addr in self._nc_map:
             return Response(101, 'nc is already started', self._nc_map[ip_addr])
@@ -71,6 +76,9 @@ class NasManager(object):
         }
 
         logger.info('NC started,pid:%s port:%s' % (process.pid, port))
+
+        self._nc_map_lock.release()
+
         return Response(0, 'nc start success', self._nc_map[ip_addr])
 
     def get_plot_info(self, plot_file):
@@ -88,6 +96,8 @@ class NasManager(object):
         stop nc
         :return:
         """
+        #self._nc_map_lock.acquire()
+
         if ip_addr in self._nc_map:
             data = self._nc_map[ip_addr]
             logger.info('Nas server stop nc ip:%s data:%s' % (ip_addr, data))
@@ -101,22 +111,7 @@ class NasManager(object):
             self._nc_map.pop(ip_addr, None)
         else:
             pass
-
-        #if pid is None:
-        #    nc_cmd='/usr/bin/killall -9 nc >/dev/null 2>&1'
-        #    #Popen创建进程后直接返回 需要执行wait确保执行完毕
-        #    process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #    process.wait()
-        #    #os.system(nc_cmd)
-        #    # wait some time to wait nc stop complete try check_out
-        #    time.sleep(2)
-        #else:
-        #    nc_cmd = '/usr/bin/kill %s nc >/dev/null 2>&1' % pid
-        #    # Popen创建进程后直接返回 需要执行wait确保执行完毕
-        #    process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        #    process.wait()
-        #    # os.system(nc_cmd)
-        #    # wait some time to wait nc stop complete try check_out
+        #self._nc_map_lock.release()
 
         return Response(0, 'nc stop success')
 
@@ -226,15 +221,6 @@ class NasManager(object):
 if __name__ == '__main__':
     pass
 
-    #df_cmd = "screen -d -m -S nc bash -c 'nc -l -q5 -p 4040 >/mnt/dst/00/test.file'"
-    #process = subprocess.Popen(df_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    #err = process.stderr.read()
-    #driver_list = get_harvester_driver_list()
-    #logging.info(driver_list)
-    #driver_to_use = driver.get_plot_drive_to_use()
-    #logger.info('driver to use:%s' % driver_to_use[1])
-    #plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
-    #logger.info('plots left:%s' % plots_left)
 
 
 
