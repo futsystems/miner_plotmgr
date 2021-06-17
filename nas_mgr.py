@@ -4,7 +4,7 @@
 import os, sys, time, psutil, datetime, socket
 import subprocess
 import requests
-from common import get_memory_info, get_cpu_info, uptime, get_free_port, get_filecreatetime
+from common import get_memory_info, get_cpu_info, uptime, get_free_port, get_filecreatetime, get_filesize
 import logging, traceback
 
 if sys.version_info.major == 2:   # Python 2
@@ -213,8 +213,10 @@ class NasManager(object):
                 full_name = '%s/%s' % (driver['mount_path'], file)
                 create_time = get_filecreatetime(full_name)
                 #logger.info('file:%s time:%s' % (file, create_time))
-                if (datetime.datetime.now() - create_time).total_seconds()/3600 < 24*3:
-                    logger.info('file:%s' % full_name)
+                if (datetime.datetime.now() - create_time).total_seconds()/3600 > 24:
+                    file_size = get_filesize(full_name)
+                    if file_size < 101: # check k32 file size
+                        logger.info('file:%s' % full_name)
 
 if __name__ == '__main__':
     pass
