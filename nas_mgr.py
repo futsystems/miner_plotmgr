@@ -55,42 +55,42 @@ class NasManager(object):
         :return:
         """
         self._nc_map_lock.acquire()
+        try:
+            logger.info('ip:%s start nc to send file:%s' % (ip_addr, plot_name))
+            if ip_addr in self._nc_map:
+                return Response(101, 'nc is already started', self._nc_map[ip_addr])
 
-        logger.info('ip:%s start nc to send file:%s' % (ip_addr, plot_name))
-        if ip_addr in self._nc_map:
-            return Response(101, 'nc is already started', self._nc_map[ip_addr])
+            port = get_free_port()
 
-        port = get_free_port()
+            driver_to_use = driver.get_plot_drive_to_use([item['driver'] for item in self._nc_map.values()])
+            if len(driver_to_use) > 0:
 
-        driver_to_use = driver.get_plot_drive_to_use([item['driver'] for item in self._nc_map.values()])
-        if len(driver_to_use) > 0:
+                plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
 
-            plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
+                plot_path = '%s/%s' % (driver_to_use[0], plot_name)
+                nc_cmd = 'nc -l -q 10 -p %s > "%s" < /dev/null' % (port, plot_path)
+                #screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
+                logger.info('Nas server start nc to receive plot file:%s,CMD:%s' % (plot_name, nc_cmd))
+                process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+                #process.wait() 不能等待否则会导致http request一直没有返回
+                time.sleep(1)
+                self._nc_map[ip_addr] = {
+                    'pid': process.pid,
+                    'plot_file': plot_name,
+                    'path': driver_to_use[0],
+                    'port': port,
+                    'driver': driver_to_use[1]
+                }
 
-            plot_path = '%s/%s' % (driver_to_use[0], plot_name)
-            nc_cmd = 'nc -l -q 10 -p %s > "%s" < /dev/null' % (port, plot_path)
-            #screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
-            logger.info('Nas server start nc to receive plot file:%s,CMD:%s' % (plot_name, nc_cmd))
-            process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-            #process.wait() 不能等待否则会导致http request一直没有返回
-            time.sleep(1)
-            self._nc_map[ip_addr] = {
-                'pid': process.pid,
-                'plot_file': plot_name,
-                'path': driver_to_use[0],
-                'port': port,
-                'driver': driver_to_use[1]
-            }
-
-            logger.info('NC started,pid:%s port:%s' % (process.pid, port))
-
+                logger.info('NC started,pid:%s port:%s' % (process.pid, port))
+                return Response(0, 'nc start success', self._nc_map[ip_addr])
+            else:
+                logger.info('there is no driver to store plot,please add or replace')
+                return Response(1, 'nc start fail', None)
+        except Exception as e:
+            logger.error(traceback.format_exc())
+        finally:
             self._nc_map_lock.release()
-
-            return Response(0, 'nc start success', self._nc_map[ip_addr])
-        else:
-            logger.info('there is no driver to store plot,please add or replace')
-            self._nc_map_lock.release()
-            return Response(1, 'nc start fail',None)
 
 
     def get_plot_info(self, plot_file):
