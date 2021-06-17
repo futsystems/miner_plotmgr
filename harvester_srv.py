@@ -27,8 +27,8 @@ harvester = NasManager()
 
 class HarvesterFlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
-    logger.info('run some code after flask run 0000')
-    harvester.register()
+    harvester.on_start()
+    
     #if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
     super(HarvesterFlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 
