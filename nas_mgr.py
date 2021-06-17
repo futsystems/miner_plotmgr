@@ -4,7 +4,7 @@
 import os, sys, time, psutil, datetime, socket
 import subprocess
 import requests
-from common import get_memory_info, get_cpu_info, uptime, get_free_port
+from common import get_memory_info, get_cpu_info, uptime, get_free_port, get_filecreatetime
 import logging, traceback
 
 if sys.version_info.major == 2:   # Python 2
@@ -73,7 +73,7 @@ class NasManager(object):
         logger.info('NC started,pid:%s port:%s' % (process.pid, port))
         return Response(0, 'nc start success', self._nc_map[ip_addr])
 
-    def get_plot_info(self,plot_file):
+    def get_plot_info(self, plot_file):
         size = 0
         if not os.path.isfile(plot_file):
             size = 0
@@ -88,9 +88,7 @@ class NasManager(object):
         stop nc
         :return:
         """
-
         if ip_addr in self._nc_map:
-
             data = self._nc_map[ip_addr]
             logger.info('Nas server stop nc ip:%s data:%s' % (ip_addr, data))
             pid = data['pid']
@@ -121,7 +119,6 @@ class NasManager(object):
         #    # wait some time to wait nc stop complete try check_out
 
         return Response(0, 'nc stop success')
-
 
     def on_start(self):
         register_thread = thread.start_new_thread(self._on_start, (1,))
@@ -165,7 +162,6 @@ class NasManager(object):
                     'info': self.get_local_info(),
                     'cpu': get_cpu_info(),
                     'memory': get_memory_info(),
-
                 }
                 logger.info('send local info to manager node:%s' % data)
                 response = requests.post('http://nagios.futsystems.com:9090/server/harvester/local-info/update', json= data)
@@ -213,6 +209,10 @@ class NasManager(object):
         for driver in get_harvester_driver_list():
             files = os.listdir(driver['mount_path'])
             logger.info('driver:%s path:%s files cnt:%s' % (driver['device'], driver['mount_path'], len(files)))
+            for file in files:
+                create_time = get_filecreatetime(file)
+                if (datetime.datetime.now() - create_time).total_seconds()/3600 < 12:
+                    logger.info('file:%s' % file)
 
 if __name__ == '__main__':
     pass

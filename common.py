@@ -7,6 +7,7 @@ import logging, traceback
 import driver
 import logging.config
 import psutil
+import datetime
 from cpuinfo import get_cpu_info as _get_cpu_info
 logger = logging.getLogger('nas')
 
@@ -88,6 +89,10 @@ def get_filesize(filePath):
     fsize = os.path.getsize(filePath)
     fsize = fsize/float(1024*1024*1024)
     return round(fsize,2)
+
+def get_filecreatetime(filePath):
+    timestamp= os.path.getctime(filePath)
+    return datetime.datetime.fromtimestamp(timestamp)
 
 if __name__ == '__main__':
     logging.config.fileConfig('logging.conf')
