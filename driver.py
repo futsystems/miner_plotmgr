@@ -133,6 +133,8 @@ def get_plot_drive_to_use(used_driver_list=None):
          to make sure the drive selected has not been marked as "offline".
         #TODO incorporate in get_plot_drive_with_available_space()
         """
+    logger.info('used_driver_list:%s' % used_driver_list)
+
     from natsort import natsorted
     #with open('offlined_drives', 'r') as offlined_drives_list:
     #    offlined_drives = [current_drives.rstrip() for current_drives in offlined_drives_list.readlines()]
