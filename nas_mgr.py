@@ -210,9 +210,10 @@ class NasManager(object):
             files = os.listdir(driver['mount_path'])
             logger.info('driver:%s path:%s files cnt:%s' % (driver['device'], driver['mount_path'], len(files)))
             for file in files:
-                create_time = get_filecreatetime(file)
+                full_name = '%s/%s' % (driver['mount_path'], file)
+                create_time = get_filecreatetime(full_name)
                 if (datetime.datetime.now() - create_time).total_seconds()/3600 < 12:
-                    logger.info('file:%s' % file)
+                    logger.info('file:%s' % full_name)
 
 if __name__ == '__main__':
     pass
