@@ -82,9 +82,11 @@ def config_hpool():
     driver_list = driver.get_nas_driver_list()
     size = request.args.get('size')
     index = request.args.get('index')
+    config = harvester.config
     if size is None or index is None:
         data = {'name': socket.gethostname(),
           'driver_list': driver_list,
+          'auto_scan_plot': config['auto_scan_plot'],
           'id': 0
           }
         return render_template('harvester.hpool.yaml', data=data)
@@ -92,6 +94,7 @@ def config_hpool():
         page_list = driver_list[int(index)*int(size):(int(index)+1)*int(size)]
         data = {'name': socket.gethostname(),
           'driver_list': page_list,
+          'auto_scan_plot': config['auto_scan_plot'],
           'id': index,
           }
         return render_template('harvester.hpool.yaml', data=data)

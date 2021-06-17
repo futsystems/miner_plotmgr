@@ -21,7 +21,6 @@ from message import Response
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
 
-
 class UploadProcess(object):
     def __init__(self):
         self.__pid = None
@@ -47,7 +46,6 @@ class NasManager(object):
         :return:
         """
         return driver.get_plot_drive_to_use()
-
 
     def start_nc(self, ip_addr, plot_name):
         """

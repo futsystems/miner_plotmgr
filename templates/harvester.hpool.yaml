@@ -14,7 +14,7 @@ url:
   info: ""
   submit: ""
   line: ""
-scanPath: false
+scanPath: {{data['auto_scan_plot']}}
 scanMinute: 60
 debug: ""
 language: ""
