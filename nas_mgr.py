@@ -214,7 +214,8 @@ class NasManager(object):
                 full_name = '%s/%s' % (driver['mount_path'], file)
                 create_time = get_filecreatetime(full_name)
                 #logger.info('file:%s time:%s' % (file, create_time))
-                if (datetime.datetime.now() - create_time).total_seconds()/3600 > 24:
+                # 过滤出24小时之前创建的文件
+                if os.path.isfile(full_name)  and ((datetime.datetime.now() - create_time).total_seconds()/3600 > 24):
                     file_size = get_filesize(full_name)
                     if file_size < 101: # check k32 file size
                         logger.info('file:%s' % full_name)
