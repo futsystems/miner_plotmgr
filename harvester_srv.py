@@ -28,7 +28,7 @@ harvester = NasManager()
 class HarvesterFlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
     harvester.on_start()
-    
+
     #if not self.debug or os.getenv('WERKZEUG_RUN_MAIN') == 'true':
     super(HarvesterFlaskApp, self).run(host=host, port=port, debug=debug, load_dotenv=load_dotenv, **options)
 
