@@ -62,7 +62,11 @@ class NasManager(object):
 
             port = get_free_port()
 
-            driver_to_use = driver.get_plot_drive_to_use([item['driver'] for item in self._nc_map.values()])
+            used_driver_list = [item['driver'] for item in self._nc_map.values()]
+            driver_to_use = driver.get_plot_drive_to_use(used_driver_list)
+            logger.info('used_driver_list:%s' % used_driver_list)
+            logger.info('driver_to_use:%s' % driver_to_use)
+            
             if len(driver_to_use) > 0:
 
                 plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
