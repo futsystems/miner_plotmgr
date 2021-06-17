@@ -219,7 +219,7 @@ class NasManager(object):
                     file_size = get_filesize(full_name)
                     if file_size < 101: # check k32 file size
                         logger.info('delete file:%s' % full_name)
-                        #os.remove(full_name)
+                        os.remove(full_name)
                         cnt = cnt + 1
         logger.info('delete file cnt:%s' % cnt)
 
