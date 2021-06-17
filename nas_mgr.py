@@ -206,6 +206,7 @@ class NasManager(object):
 
     def clean_harvester_driver(self):
         from driver import get_harvester_driver_list
+        cnt=0
         for driver in get_harvester_driver_list():
             files = os.listdir(driver['mount_path'])
             logger.info('driver:%s path:%s files cnt:%s' % (driver['device'], driver['mount_path'], len(files)))
@@ -217,6 +218,8 @@ class NasManager(object):
                     file_size = get_filesize(full_name)
                     if file_size < 101: # check k32 file size
                         logger.info('file:%s' % full_name)
+                        cnt = cnt +1
+            logger.info('dlete file cnt:%s' % cnt)
 
 if __name__ == '__main__':
     pass
