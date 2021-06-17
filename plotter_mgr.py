@@ -388,9 +388,9 @@ class PlotterManager(object):
 
         url_start = 'http://%s:8080/nc/start?file=%s' % (self.nas_ip, filename)
         url_stop = 'http://%s:8080/nc/stop' % self.nas_ip
-        #logger.debug('Request Url Start:%s Stop:%s' % (url_start, url_stop))
+        logger.debug('Request Url Start:%s Stop:%s' % (url_start, url_stop))
         response = requests.get(url_start)
-        #logger.debug('response:%s' % response)
+        logger.debug('response:%s' % response)
         if response.status_code != 200:
             logger.warn('NAS Server:%s response error' % self.nas_ip)
             return (False, 'NAS Server response error')

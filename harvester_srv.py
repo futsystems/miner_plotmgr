@@ -160,7 +160,7 @@ def driver_list():
     """
     import driver
     list = driver.get_nas_driver_list()
-    return Response(0,'',list).to_json()
+    return Response(0, '', list).to_json()
 
 @app.route('/driver/clean')
 def driver_clean():
