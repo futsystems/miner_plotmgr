@@ -31,8 +31,15 @@ class UploadProcess(object):
 class NasManager(object):
     def __init__(self):
         self._server_name = socket.gethostname()
+        self._server_id = self._server_name.split('-')[1]
+
         self._nc_map = {}
         self._nc_map_lock = threading.Lock()
+
+        query = {'id': self._server_id}
+        response = requests.get('http://114.215.171.108:9090/server/harvester/config', params=query)
+        self.config = response.json()
+        logger.info('harvester config:%s' % self.config)
 
     def get_next_driver(self):
         """
