@@ -180,6 +180,17 @@ def system_poweroff():
     os.system("shutdown now -h")
     return Response(0, 'shutdown success').to_json()
 
+@app.route('/config/change')
+def config_change():
+    """
+    restart service base on service name
+    :return:
+    """
+    logger.info('----- config change, restart api.harvester -----')
+    command = ['supervisorctl', 'restart', 'api.harvester']
+    result = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    return Response('', 'will sync config latter').to_json()
+
 @app.route('/service/restart')
 def restart_service():
     """
