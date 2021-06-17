@@ -65,7 +65,7 @@ class NasManager(object):
             used_driver_list = [item['driver'] for item in self._nc_map.values()]
             driver_to_use = driver.get_plot_drive_to_use(used_driver_list)
             logger.info('used_driver_list:%s' % used_driver_list)
-            logger.info('driver_to_use:%s' % driver_to_use[1])
+            logger.info('driver_to_use:%s path:%s' % (driver_to_use[1], driver_to_use[0]))
 
             #logger.info('driver_to_use:%s' % [item['driver'] for item in driver_to_use])
 
