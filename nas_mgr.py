@@ -28,8 +28,6 @@ class UploadProcess(object):
 
 class NasManager(object):
     def __init__(self):
-        self.__current_nc = None
-        self.__current_driver = None
         self._server_name = socket.gethostname()
         self._start_update_local_info_process()
         self._nc_map = {}
@@ -54,8 +52,6 @@ class NasManager(object):
             return Response(101, 'nc is already started', self._nc_map[ip_addr])
 
         port = get_free_port()
-        #if self.__current_nc is not None:
-        #    return Response(101, 'nc is already started', self.__current_nc)
 
         driver_to_use = driver.get_plot_drive_to_use([item['driver'] for item in self._nc_map.values()])
         plots_left = driver.get_device_info("space_free_plots", driver_to_use[1])
@@ -125,11 +121,7 @@ class NasManager(object):
         #    # os.system(nc_cmd)
         #    # wait some time to wait nc stop complete try check_out
 
-        #self.__current_nc = None
         return Response(0, 'nc stop success')
-
-    def get_current_nc(self):
-        return self.__current_nc
 
 
     def register(self):
@@ -207,7 +199,13 @@ class NasManager(object):
             'file_cnt': file_cnt
 
         }
-        return  info
+        return info
+
+    def clean_harvester_driver(self):
+        from driver import get_harvester_driver_list
+        for driver in get_harvester_driver_list():
+            files = os.listdir(driver['mount_path'])
+            logger.info('driver:%s path:%s files cnt:%s' % (driver['device'], driver['mount_path'], len(files)))
 
 if __name__ == '__main__':
     pass

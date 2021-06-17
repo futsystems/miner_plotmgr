@@ -159,6 +159,15 @@ def driver_list():
     list = driver.get_nas_driver_list()
     return Response(0,'',list).to_json()
 
+@app.route('/driver/clean')
+def driver_list():
+    """
+    stop nc
+    :return:
+    """
+    harvester.clean_harvester_driver()
+    return Response(0,'','').to_json()
+
 @app.route('/system/shutdown')
 def system_poweroff():
     """
