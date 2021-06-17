@@ -64,6 +64,8 @@ class NasManager(object):
 
             used_driver_list = [item['driver'] for item in self._nc_map.values()]
             driver_to_use = driver.get_plot_drive_to_use(used_driver_list)
+            logger.info('used_driver_list:%s' % used_driver_list)
+            logger.info('driver_to_use:%s' % driver_to_use[1])
 
             #logger.info('driver_to_use:%s' % [item['driver'] for item in driver_to_use])
 
@@ -74,7 +76,7 @@ class NasManager(object):
                 plot_path = '%s/%s' % (driver_to_use[0], plot_name)
                 nc_cmd = 'nc -l -q 10 -p %s > "%s" < /dev/null' % (port, plot_path)
                 #screen_cmd = "screen -d -m -S nc bash -c '%s'" % nc_cmd
-                logger.info('Nas server start nc to receive plot file:%s,CMD:%s' % (plot_name, nc_cmd))
+                logger.info('Nas server start nc to receive plot file:%s,CMD:%s driver:%s' % (plot_name, nc_cmd, driver_to_use[1]))
                 process = subprocess.Popen(nc_cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
                 #process.wait() 不能等待否则会导致http request一直没有返回
                 time.sleep(1)
