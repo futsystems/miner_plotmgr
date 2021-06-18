@@ -231,8 +231,9 @@ class NasManager(object):
                 if os.path.isfile(full_name)  and ((datetime.datetime.now() - create_time).total_seconds()/3600 > 24):
                     file_size = get_filesize(full_name)
                     if file_size < 101.5: # check k32 file size
-                        logger.info('delete file:%s' % full_name)
-                        os.remove(full_name)
+                        logger.info('file size:%s' % file_size)
+                        #logger.info('delete file:%s' % full_name)
+                        #os.remove(full_name)
                         cnt = cnt + 1
         logger.info('delete file cnt:%s' % cnt)
 
