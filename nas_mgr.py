@@ -226,16 +226,15 @@ class NasManager(object):
             for file in files:
                 full_name = '%s/%s' % (driver['mount_path'], file)
                 create_time = get_filecreatetime(full_name)
-                #logger.info('file:%s time:%s' % (file, create_time))
                 # 过滤出24小时之前创建的文件
-                if os.path.isfile(full_name)  and ((datetime.datetime.now() - create_time).total_seconds()/3600 > 24):
+                if os.path.isfile(full_name) and ((datetime.datetime.now() - create_time).total_seconds()/3600 > 24):
                     file_size = get_filesize(full_name)
-                    if file_size < 101.5: # check k32 file size
-                        logger.info('file size:%s' % file_size)
-                        #logger.info('delete file:%s' % full_name)
-                        #os.remove(full_name)
+                    if file_size < 101.3: # check k32 file size
+                        logger.info('delete file:%s size:%s' % (full_name, file_size))
+                        os.remove(full_name)
                         cnt = cnt + 1
         logger.info('delete file cnt:%s' % cnt)
+
 
 if __name__ == '__main__':
     pass
