@@ -229,7 +229,7 @@ class NasManager(object):
                 # 过滤出24小时之前创建的文件
                 if os.path.isfile(full_name) and ((datetime.datetime.now() - create_time).total_seconds()/3600 > 24):
                     file_size = get_filesize(full_name)
-                    if file_size < 101.3: # check k32 file size
+                    if file_size < 101: # check k32 file size
                         logger.info('delete file:%s size:%s' % (full_name, file_size))
                         os.remove(full_name)
                         cnt = cnt + 1
