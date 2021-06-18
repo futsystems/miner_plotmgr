@@ -199,20 +199,14 @@ class NasManager(object):
         from driver import get_harvester_driver_list
         internal_ip = self.__get_internal_ip()
         driver_list = get_harvester_driver_list()
-        plot_cnt = 0
-        file_cnt = 0
-        for item in driver_list:
-            plot_cnt = plot_cnt + item['total_current_plots']
-            file_cnt = file_cnt + item['file_cnt']
-
-        driver_cnt = len(driver_list)
 
         info = {
-            'internal_ip':internal_ip,
+            'internal_ip': internal_ip,
             'uptime': uptime(),
-            'plot_cnt': plot_cnt,
-            'driver_cnt': driver_cnt,
-            'file_cnt': file_cnt
+            'total_current_plots': sum([item['total_current_plots'] for item in driver_list]),
+            'driver_cnt': len(driver_list),
+            'file_cnt': sum([item['file_cnt'] for item in driver_list]),
+            'space_free_plots': sum([item['space_free_plots'] for item in driver_list])
 
         }
         return info
