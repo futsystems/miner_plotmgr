@@ -108,7 +108,7 @@ def config_hpool_supervisor():
     index = request.args.get('index')
     data = {'index': index,
       }
-    return render_template('harvester.hpool.supervisor.yaml', data=data)
+    return render_template('harvester.hpool.supervisor.html', data=data)
 
 @app.route('/nc/start')
 def start_nc():
