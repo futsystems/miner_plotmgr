@@ -222,7 +222,8 @@ class NasManager(object):
             'total_current_plots': sum([item['total_current_plots'] for item in driver_list]),
             'driver_cnt': len(driver_list),
             'file_cnt': sum([item['file_cnt'] for item in driver_list]),
-            'space_free_plots': sum([item['space_free_plots'] for item in driver_list])
+            'space_free_plots': sum([item['space_free_plots'] for item in driver_list]),
+            'nc_process_cnt': sum(1 for proc in psutil.process_iter() if proc.name() == 'nc')
 
         }
         return info
