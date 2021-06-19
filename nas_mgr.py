@@ -186,7 +186,23 @@ class NasManager(object):
                 logger.error(traceback.format_exc())
 
 
-    def __get_internal_ip(self):
+    def _get_network(self):
+        data = {
+
+        }
+        from netifaces import interfaces, ifaddresses, AF_INET
+        for ifaceName in interfaces():
+            addresses = [i['addr'] for i in ifaddresses(ifaceName).setdefault(AF_INET, [{'addr': 'No IP addr'}])]
+            if len(addresses) > 1 and addresses[0] != 'No IP addr':
+                if addresses[0].startswith('10.6'):
+                    data['biz_interface'] = ifaceName
+                    data['biz_ip'] = addresses[0]
+                if addresses[0].startswith('10.8'):
+                    data['data_interface'] = ifaceName
+                    data['data_ip'] = addresses[0]
+        return data
+
+
         import socket
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(('8.8.8.8', 80))
@@ -197,11 +213,12 @@ class NasManager(object):
 
     def get_local_info(self):
         from driver import get_harvester_driver_list
-        internal_ip = self.__get_internal_ip()
+        network = self._get_network()
         driver_list = get_harvester_driver_list()
 
         info = {
-            'internal_ip': internal_ip,
+            'network': self._get_network(),
+            'internal_ip': '127.0.0.1',
             'uptime': uptime(),
             'total_current_plots': sum([item['total_current_plots'] for item in driver_list]),
             'driver_cnt': len(driver_list),

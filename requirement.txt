@@ -8,3 +8,4 @@ py-cpuinfo
 pytz
 mdstat
 flask_cors
+netifaces
