@@ -1,0 +1,14 @@
+[program:srv.hpool{{data['index']}}]
+command = /opt/src/hpool/hpool-miner-chia -config /opt/hpool/{{data['index']}}/config.yaml
+directory=/opt/hpool/{{data['index']}}
+
+numprocs=1
+numprocs_start=0
+
+logfile_maxbytes = 20MB
+logfile_backups = 10
+
+autorestart=true
+startsecs=0
+
+user=root

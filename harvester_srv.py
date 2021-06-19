@@ -99,6 +99,17 @@ def config_hpool():
           }
         return render_template('harvester.hpool.yaml', data=data)
 
+@app.route('/config/hpool/supervisor')
+def config_hpool_supervisor():
+    """
+    get hpool config file, depend on plot driver
+    :return:
+    """
+    index = request.args.get('index')
+    data = {'index': index,
+      }
+    return render_template('harvester.hpool.supervisor.yaml', data=data)
+
 @app.route('/nc/start')
 def start_nc():
     """
