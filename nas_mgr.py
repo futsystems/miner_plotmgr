@@ -187,14 +187,12 @@ class NasManager(object):
 
 
     def _get_network(self):
-        data = {
-
-        }
+        data = {}
         from netifaces import interfaces, ifaddresses, AF_INET
         for ifaceName in interfaces():
             addresses = [i['addr'] for i in ifaddresses(ifaceName).setdefault(AF_INET, [{'addr': 'No IP addr'}])]
             if len(addresses) >= 1 and addresses[0] != 'No IP addr':
-                logger.info('interface:%s address:%s' % (ifaceName, addresses))
+                #logger.info('interface:%s address:%s' % (ifaceName, addresses))
                 if addresses[0].startswith('10.6'):
                     data['biz_interface'] = ifaceName
                     data['biz_ip'] = addresses[0]
