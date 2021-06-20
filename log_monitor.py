@@ -48,6 +48,11 @@ class LogMonitor(object):
             if (now - dt).total_seconds() < 120:
                 logger.debug('event time:%s passed in 2 minutes' % time_value)
                 logger.info('====> %s' % log_line)
+                if 'capacity' in log_line:
+                    tmp = log_line.split('capacity="')
+                    capacity_data = tmp[1].split('"')[0]
+                    logger.info('capicity data:%s' % capacity_data)
+                    
 
                 #logger.info('check data:%s' % items[3])
                 #tmp_data = items[3].split('=')
