@@ -60,7 +60,7 @@ class LogMonitor(object):
                 driver_list.append(info)
             flag = flag + 1
 
-        plot_cnt = sum([driver['file_cnt'] for deriver in driver_list])
+        plot_cnt = sum([item['file_cnt'] for item in driver_list])
         power = round(plot_cnt * 101.4 * 0.0009765625, 2)
         logger.info('power:%s' % power)
 
