@@ -41,16 +41,16 @@ class LogMonitor(object):
 
     def log_process(self, log_line):
         now = datetime.datetime.now()
-        items = log_line.split('" ')
-        time_data = items[0].split('="')
-        if len(time_data) ==2 and time_data[0] == 'time' and time_data[1].endswith('Z'):
-            dt = datetime.datetime.fromisoformat(time_data[1][:-1])
+
+        if log_line.startswith('time='):
+            time_value = log_line[6:24]
+            dt = datetime.datetime.fromisoformat(time_value)
             if (now - dt).total_seconds() < 120:
-                logger.debug('event time:%s passed in 2 minutes' % time_data[1])
+                logger.debug('event time:%s passed in 2 minutes' % time_value)
                 logger.info('====> %s' % log_line)
 
-                logger.info('check data:%s' % items[3])
-                tmp_data = items[3].split('=')
-                if tmp_data[0] == 'capacity':
-                    logger.info('new capacity data received:%s' % tmp_data[1])
+                #logger.info('check data:%s' % items[3])
+                #tmp_data = items[3].split('=')
+                #if tmp_data[0] == 'capacity':
+                #    logger.info('new capacity data received:%s' % tmp_data[1])
 
