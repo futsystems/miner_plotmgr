@@ -40,22 +40,18 @@ class LogMonitor(object):
             self.log_process(line)
 
     def log_process(self, log_line):
-        logger.info('%s' % log_line)
-
+        #logger.info('%s' % log_line)
         now = datetime.datetime.now()
         items = log_line.split(' ')
         for item in items:
             data = item.split('=')
             if len(data) == 2:
                 if data[0] == 'time' and data[1].endswith('Z"'):
-
                     v = data[1][1:-2]
-                    logger.info('time:%s v2:%s' % (data[1], v))
-
                     dt = datetime.datetime.fromisoformat(data[1][1:-2])
                     if (now - dt).total_seconds() < 120:
-                        logger.info('in 2 minuts')
-                        logger.info(log_line)
+                        logger.info('time:%s v2:%s in 2 minutes' % (data[1], v))
+                        log_line.index('====> %s' % log_line)
 
                 #logger.info('key:%s value:%s' % (data[0], data[1]))
 
