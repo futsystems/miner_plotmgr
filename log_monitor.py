@@ -53,5 +53,14 @@ class LogMonitor(object):
                         logger.info('time:%s v2:%s in 2 minutes' % (data[1], v))
                         logger.info('====> %s' % log_line)
 
+                        check1 = items[3]
+                        checkv = items[3].split('=')
+                        if len(checkv) == 2:
+                            if checkv[0] =='capacity':
+                                capicity_value = float(checkv[1][1:-1])
+                                logger.info('hpool event: ----> capacity:%s' % capicity_value)
+
+
+
                 #logger.info('key:%s value:%s' % (data[0], data[1]))
 
