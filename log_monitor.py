@@ -40,27 +40,15 @@ class LogMonitor(object):
             self.log_process(line)
 
     def log_process(self, log_line):
-        #logger.info('%s' % log_line)
         now = datetime.datetime.now()
         items = log_line.split(' ')
-        for item in items:
-            data = item.split('=')
-            if len(data) == 2:
-                if data[0] == 'time' and data[1].endswith('Z"'):
-                    v = data[1][1:-2]
-                    dt = datetime.datetime.fromisoformat(data[1][1:-2])
-                    if (now - dt).total_seconds() < 120:
-                        logger.info('time:%s v2:%s in 2 minutes' % (data[1], v))
-                        logger.info('====> %s' % log_line)
-
-                        check1 = items[3]
-                        checkv = items[3].split('=')
-                        if len(checkv) == 2:
-                            if checkv[0] =='capacity':
-                                capicity_value = float(checkv[1][1:-1])
-                                logger.info('hpool event: ----> capacity:%s' % capicity_value)
-
-
-
-                #logger.info('key:%s value:%s' % (data[0], data[1]))
+        time_data = items[0].split('=')
+        if len(time_data) ==2 and time_data[0] == 'time' and time_data[1].endswith('Z"'):
+            dt = datetime.datetime.fromisoformat(time_data[1][1:-2])
+            if (now - dt).total_seconds() < 120:
+                logger.debug('event time:%s passed in 2 minutes' % time_data[1])
+                logger.info('====> %s' % log_line)
+                tmp_data = items[3].split('=')
+                if tmp_data[0] == 'capacity':
+                    logger.info('new capacity data received:%s' % tmp_data[1])
 
