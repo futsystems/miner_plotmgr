@@ -17,19 +17,18 @@ logger = logging.getLogger('nas')
 class LogMonitor(object):
     def __init__(self, index, log_file):
         self._log_file = log_file
-        self._capicity_value = 0
+        self._capicity_value = None
         self._capicity_unit = 'TB'
         self._capicity_update_time = datetime.datetime.now()
+        self._capicity_check_time = datetime.datetime.now()
+        self._capicity_check_interval = 1
         self._index = index
-
-
-
 
     def start_moniter(self):
         logger.info('start moniter process')
-        self._moniter_process = thread.start_new_thread(self.moniter_process, (1,))
+        self._moniter_process = thread.start_new_thread(self.monitor_process, (1,))
 
-    def moniter_process(self, args):
+    def monitor_process(self, args):
         while not os.path.exists(self._log_file):
             logger.info('log file:%s do not exist, wait some time' % self._log_file)
             time.sleep(1)
@@ -49,20 +48,27 @@ class LogMonitor(object):
             self.check_process()
 
     def check_process(self):
-        driver_list=[]
-        flag = self._index * 15
-        while flag < (self._index + 1)*15:
-            mount_path = '/mnt/plots/driver%s' % flag
-            logger.info('mount path:%s' % mount_path)
+        now = datetime.datetime.now()
+        # 没有执行过算力检查 或者 距离上次算力检查超过检查间隔
+        if self._capicity_check_time is None or (now-self._capicity_check_time).total_seconds() > self._capicity_check_interval*60:
+            # 获得矿池算力值
+            if self._capicity_value is not None:
+                driver_list=[]
+                flag = self._index * 15
+                while flag < (self._index + 1)*15:
+                    mount_path = '/mnt/plots/driver%s' % flag
+                    #logger.info('mount path:%s' % mount_path)
+                    info = driver.get_dst_device_info('/mnt/plots/driver%s' % flag)
+                    if info is not None:
+                        driver_list.append(info)
+                    flag = flag + 1
 
-            info = driver.get_dst_device_info('/mnt/plots/driver%s' % flag)
-            if info is not None:
-                driver_list.append(info)
-            flag = flag + 1
+                plot_cnt = sum([item['file_cnt'] for item in driver_list])
+                power = round(plot_cnt * 101.4 * 0.0009765625, 2)
+                logger.info('local power:%s remote power:%s %s' % (power, self._capicity_value, self._capicity_unit))
 
-        plot_cnt = sum([item['file_cnt'] for item in driver_list])
-        power = round(plot_cnt * 101.4 * 0.0009765625, 2)
-        logger.info('power:%s' % power)
+                self._capicity_check_time = now
+
 
 
     def log_process(self, log_line):
