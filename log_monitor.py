@@ -40,5 +40,9 @@ class LogMonitor(object):
             self.log_process(line)
 
     def log_process(self, log_line):
-        logger.info('line:%s' % log_line)
+        items = log_line.split(' ')
+        for item in items:
+            data = item.split('=')
+            if len(data) == 2:
+                logger.info('key:%s value:%s' % (data[0], data[1]))
 
