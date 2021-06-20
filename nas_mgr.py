@@ -44,7 +44,7 @@ class NasManager(object):
     def init_moniter_process(self, path='/opt/hpool/0'):
         logger.info('int logmoniter for path:%s' % path)
         from log_monitor import LogMonitor
-        log_path = '%s/log/miner.log.log'
+        log_path = '%s/log/miner.log.log' % path
         moniter = LogMonitor(log_path)
         moniter.start_moniter()
         self._hpool_map[path] = moniter
