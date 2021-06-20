@@ -85,7 +85,7 @@ def _get_driver_list_cache():
         return driver_list
     else:
         cache_time = driver_list_cache['time']
-        if (datetime.datetime.now() - cache_time).total_seconds() > 120:
+        if (datetime.datetime.now() - cache_time).total_seconds() > 60*5:
             driver_list = driver.get_nas_driver_list()
             driver_list_cache['list'] = driver_list
             driver_list_cache['time'] = datetime.datetime.now()
