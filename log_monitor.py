@@ -48,8 +48,8 @@ class LogMonitor(object):
                 if data[0] == 'time':
 
                     v = data[1][1:-2]
-                    logger.info('time:%s v2:%s' % (data[1]), v)
-                    
+                    logger.info('time:%s v2:%s' % (data[1], v))
+
                     dt = datetime.datetime.fromisoformat(data[1][1:-2])
                     if (now - dt).total_seconds() < 120:
                         logger.info('in 2 minuts')
