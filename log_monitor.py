@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, time, sys
+import os, time, sys, datetime
 
 if sys.version_info.major == 2:   # Python 2
     import thread
@@ -40,9 +40,16 @@ class LogMonitor(object):
             self.log_process(line)
 
     def log_process(self, log_line):
+        now = datetime.datetime.now()
         items = log_line.split(' ')
         for item in items:
             data = item.split('=')
             if len(data) == 2:
-                logger.info('key:%s value:%s' % (data[0], data[1]))
+                if data[0] == 'time':
+                    dt = datetime.datetime.strptime(data[1], '%Y-%m-%dT%H:%M:%SZ')
+                    if (now - dt).total_seconds() > 120:
+                        logger.info('in 2 minuts')
+                        logger.info(log_line)
+
+                #logger.info('key:%s value:%s' % (data[0], data[1]))
 
