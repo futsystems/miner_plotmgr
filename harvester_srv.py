@@ -10,6 +10,7 @@ from flask_cors import *
 
 from nas_mgr import NasManager
 from message import Response
+import datetime
 import logging.config
 
 import driver
@@ -24,6 +25,10 @@ logger.info('template dir:%s' % template_dir)
 
 harvester = NasManager()
 
+driver_list_cache ={
+    'time': datetime.datetime.now(),
+    'list': None,
+}
 
 class HarvesterFlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
@@ -72,6 +77,24 @@ def config_frpc():
     return render_template('harvester.frpc.html', data=data)
 
 
+def _get_driver_list_cache():
+    if driver_list_cache['list'] is None:
+        driver_list = driver.get_nas_driver_list()
+        driver_list_cache['list'] = driver_list
+        driver_list_cache['time'] = datetime.datetime.now()
+        return driver_list
+    else:
+        cache_time = driver_list_cache['time']
+        if (datetime.datetime.now() - cache_time).total_seconds() > 120:
+            driver_list = driver.get_nas_driver_list()
+            driver_list_cache['list'] = driver_list
+            driver_list_cache['time'] = datetime.datetime.now()
+            return driver_list
+        else:
+            return driver_list_cache['list']
+
+
+
 @app.route('/config/hpool')
 def config_hpool():
     """
@@ -79,7 +102,8 @@ def config_hpool():
     :return:
     """
     import socket
-    driver_list = driver.get_nas_driver_list()
+
+    driver_list = _get_driver_list_cache()
     size = request.args.get('size')
     index = request.args.get('index')
     config = harvester.config
