@@ -41,8 +41,6 @@ class NasManager(object):
         self.config = response.json()
         logger.info('harvester config:%s' % self.config)
 
-
-
     def init_moniter_process(self, path='/opt/hpool/0'):
         logger.info('int logmoniter for path:%s' % path)
         from log_monitor import LogMonitor
@@ -50,9 +48,6 @@ class NasManager(object):
         moniter = LogMonitor(log_path)
         moniter.start_moniter()
         self._hpool_map[path] = moniter
-
-
-
 
     def get_next_driver(self):
         """

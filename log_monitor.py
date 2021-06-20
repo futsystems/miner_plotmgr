@@ -11,7 +11,7 @@ else:                             # Python 3
 
 import logging.config
 logging.config.fileConfig('logging.conf')
-logger = logging.getLogger('log_moniter')
+logger = logging.getLogger('nas')
 
 
 class LogMonitor(object):
