@@ -47,7 +47,7 @@ class LogMonitor(object):
         for item in items:
             data = item.split('=')
             if len(data) == 2:
-                if data[0] == 'time' and data[0].endswith('Z"'):
+                if data[0] == 'time' and data[1].endswith('Z"'):
 
                     v = data[1][1:-2]
                     logger.info('time:%s v2:%s' % (data[1], v))
