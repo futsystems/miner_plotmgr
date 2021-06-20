@@ -45,7 +45,12 @@ class NasManager(object):
         logger.info('int logmoniter for path:%s' % path)
         from log_monitor import LogMonitor
         log_path = '%s/log/miner.log.log' % path
-        moniter = LogMonitor(log_path)
+
+        #driver_list = driver.get_nas_driver_list()
+        #page_list = driver_list[int(0) * int(15):(int(0) + 1) * int(15)]
+        #plot_cnt = sum(driver['file_cnt'] for driver in page_list)
+        #power = round(plot_cnt * 101.4 * 0.0009765625, 2)
+        moniter = LogMonitor(0, log_path)
         moniter.start_moniter()
         self._hpool_map[path] = moniter
 
