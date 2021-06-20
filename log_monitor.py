@@ -40,6 +40,8 @@ class LogMonitor(object):
             self.log_process(line)
 
     def log_process(self, log_line):
+        logger.info('%' % log_line)
+
         now = datetime.datetime.now()
         items = log_line.split(' ')
         for item in items:
