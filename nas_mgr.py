@@ -34,11 +34,24 @@ class NasManager(object):
 
         self._nc_map = {}
         self._nc_map_lock = threading.Lock()
+        self._hpool_map = {}
 
         query = {'id': self._server_id}
         response = requests.get('http://114.215.171.108:9090/server/harvester/config', params=query)
         self.config = response.json()
         logger.info('harvester config:%s' % self.config)
+
+        self.init_moniter_process()
+
+    def init_moniter_process(self, path='/opt/hpool/0'):
+        logger.info('int logmoniter for path:%s' % path)
+        from log_monitor import LogMonitor
+        log_path = '%s/log/miner.log.log'
+        moniter = LogMonitor(log_path)
+        self._hpool_map[path] = moniter
+
+
+
 
     def get_next_driver(self):
         """
