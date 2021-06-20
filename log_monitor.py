@@ -43,7 +43,7 @@ class LogMonitor(object):
         now = datetime.datetime.now()
 
         if log_line.startswith('time='):
-            time_value = log_line[6:24]
+            time_value = log_line[6:25]
             dt = datetime.datetime.fromisoformat(time_value)
             if (now - dt).total_seconds() < 120:
                 logger.debug('event time:%s passed in 2 minutes' % time_value)
