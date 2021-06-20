@@ -41,7 +41,7 @@ class NasManager(object):
         self.config = response.json()
         logger.info('harvester config:%s' % self.config)
 
-        self.init_moniter_process()
+
 
     def init_moniter_process(self, path='/opt/hpool/0'):
         logger.info('int logmoniter for path:%s' % path)
@@ -156,6 +156,8 @@ class NasManager(object):
         self.register()
 
         self.start_update_local_info_process()
+
+        self.init_moniter_process()
 
 
     def register(self):
