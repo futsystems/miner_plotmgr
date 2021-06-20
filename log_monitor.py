@@ -41,10 +41,10 @@ class LogMonitor(object):
 
     def log_process(self, log_line):
         now = datetime.datetime.now()
-        items = log_line.split(' ')
-        time_data = items[0].split('=')
-        if len(time_data) ==2 and time_data[0] == 'time' and time_data[1].endswith('Z"'):
-            dt = datetime.datetime.fromisoformat(time_data[1][1:-2])
+        items = log_line.split('" ')
+        time_data = items[0].split('="')
+        if len(time_data) ==2 and time_data[0] == 'time' and time_data[1].endswith('Z'):
+            dt = datetime.datetime.fromisoformat(time_data[1][:-1])
             if (now - dt).total_seconds() < 120:
                 logger.debug('event time:%s passed in 2 minutes' % time_data[1])
                 logger.info('====> %s' % log_line)
