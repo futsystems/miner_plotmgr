@@ -32,6 +32,8 @@ class LogMonitor(object):
         self._lost_power_reboot_fired = False
         self._lost_power_reboot_time = None
 
+        self._target_ratio = 1
+
 
     def start_moniter(self):
         logger.info('start moniter process')
@@ -82,7 +84,7 @@ class LogMonitor(object):
                 self._index, power, self._capicity_remote_value, self._capicity_remote_unit, raito))
 
 
-                if raito < 0.9:
+                if raito < self._target_ratio:
                     if self._lost_power is False:
                         self._lost_power = True
                         self._lost_power_time = now
@@ -97,7 +99,7 @@ class LogMonitor(object):
                                 #丢失算力超过一定时间则执行重启
                                 self._lost_power_reboot_fired = True
 
-                if raito > 0.9:
+                if raito > self._target_ratio:
                     if self._lost_power:
                         logger.info('power is recovered')
                         self._lost_power = False
