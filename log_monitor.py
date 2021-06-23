@@ -32,9 +32,20 @@ class LogMonitor(object):
         self._lost_power_reboot_fired = False
         self._lost_power_reboot_time = None
         self._lost_power_reboot_interval = 3
+        self._lost_power_reboot_fail_interval = 6
 
         self._target_ratio = 1
 
+        self._status = None
+
+    def get_info(self):
+        return {
+            'service': 'srv.hpool%s' % self._index,
+            'local_power': self._lost_power,
+            'remote_power': self._capicity_remote_value,
+            'remote_power_unit': self._capicity_remote_unit,
+            'status': self._status
+        }
 
     def start_moniter(self):
         logger.info('start moniter process')
@@ -89,6 +100,7 @@ class LogMonitor(object):
                     if self._lost_power is False:
                         self._lost_power = True
                         self._lost_power_time = now
+                        self._status = 'LOSTPOWER'
                         logger.info('[power lost],will reboot in %s minutes if not recovered' % self._lost_power_interval)
                     else:
                         if self._lost_power_reboot_fired:
@@ -101,19 +113,35 @@ class LogMonitor(object):
                                 self._lost_power_reboot_fired = True
                                 self._lost_power_reboot_time = now
                                 self._target_ratio = 0.9
+                                self._status = 'RESTART'
 
-                # 如果检测到算力丢失 并且已经触发重启 并且 超过重启时间间隔 则执行检查
-                if self._lost_power and self._lost_power_reboot_fired and (now - self._lost_power_reboot_time).total_seconds() > self._lost_power_reboot_interval * 60:
-                    if raito > self._target_ratio:
-                        logger.info('power is recovered')
-                        self._lost_power = False
-                        if self._lost_power_reboot_fired:
-                            self._lost_power_reboot_fired = False
+
+                # 如果检测到算力丢失
+                if self._lost_power:
+                    #并且已经触发重启 并且 超过重启时间间隔 则执行检查
+                    if self._lost_power_reboot_fired:
+                        if (now - self._lost_power_reboot_time).total_seconds() > self._lost_power_reboot_interval * 60:
+                            if raito > self._target_ratio:
+                                logger.info('power is recovered')
+                                self._lost_power = False
+                                self._lost_power_reboot_fired = False
+                                self._status = 'OK'
+                            else:
+                                if (now - self._lost_power_reboot_time).total_seconds() < self._lost_power_reboot_fail_interval * 60:
+                                    logger.info('power is not recovered will check later')
+                                else:
+                                    logger.warn('power do not recover after reboot in %s minutes' % self._lost_power_reboot_fail_interval)
+                                    self._status = 'LOSTPOWER(RESTART)'
+
+
+                        else:
+                            # reboot service and wait plot scan
+                            pass
                     else:
-                        logger.info('power is not recovered will check later')
-
-
-
+                        #没有重启服务 且算力恢复
+                        if raito > self._target_ratio:
+                            logger.info('power is recovered')
+                            self._status = 'OK'
 
 
     def log_process(self, log_line):

@@ -45,14 +45,25 @@ class NasManager(object):
         logger.info('int logmoniter for path:%s' % path)
         from log_monitor import LogMonitor
         log_path = '%s/log/miner.log.log' % path
-
-        #driver_list = driver.get_nas_driver_list()
-        #page_list = driver_list[int(0) * int(15):(int(0) + 1) * int(15)]
-        #plot_cnt = sum(driver['file_cnt'] for driver in page_list)
-        #power = round(plot_cnt * 101.4 * 0.0009765625, 2)
         moniter = LogMonitor(0, log_path)
         moniter.start_moniter()
         self._hpool_map[path] = moniter
+
+    def start_moniter(self):
+        driver_list = driver.get_nas_driver_list()
+        driver_cnt = len(driver_list)
+        group = driver_cnt / 15
+
+        if driver_cnt % 15 > 0:
+            group = group + 1
+
+        logger.info('harvester has %s drivers, and will service in %s groups' % (driver_cnt, group))
+
+        idx=0
+        while idx < (group-1):
+            self.init_moniter_process('/opt/hpool/%s' % idx)
+            idx = idx + 1
+
 
     def get_next_driver(self):
         """
@@ -158,7 +169,7 @@ class NasManager(object):
 
         self.start_update_local_info_process()
 
-        self.init_moniter_process()
+        self.start_moniter()
 
 
     def register(self):
