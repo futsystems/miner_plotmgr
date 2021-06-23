@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os, time, sys, datetime
+import os, time, sys, datetime, subprocess
 
 if sys.version_info.major == 2:   # Python 2
     import thread
@@ -34,7 +34,7 @@ class LogMonitor(object):
         self._lost_power_reboot_interval = 3
         self._lost_power_reboot_fail_interval = 6
 
-        self._target_ratio = 1
+        self._target_ratio = 0.9
 
         self._status = None
 
@@ -112,7 +112,7 @@ class LogMonitor(object):
                                 #丢失算力超过一定时间则执行重启
                                 self._lost_power_reboot_fired = True
                                 self._lost_power_reboot_time = now
-                                self._target_ratio = 0.9
+                                subprocess.check_call(["supervisorctl", "restart", "srv.hpool%s" % self._index])
                                 self._status = 'RESTART'
 
 
