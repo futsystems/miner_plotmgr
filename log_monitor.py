@@ -129,7 +129,7 @@ class LogMonitor(object):
                     tmp = log_line.split('capacity="')
                     capacity_data = tmp[1].split('"')[0]
                     items = capacity_data.split(' ')
-                    logger.debug('capicity data:%s' % capacity_data)
+                    #logger.debug('capicity data:%s' % capacity_data)
                     if self._capicity_remote_value is None:
                         self._capicity_remote_first_update_time = datetime.datetime.now()
                     self._capicity_remote_value = float(items[0])
