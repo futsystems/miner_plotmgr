@@ -52,7 +52,7 @@ class LogMonitor(object):
     def check_process(self):
         now = datetime.datetime.now()
         # 没有执行过算力检查 或者 距离上次算力检查超过检查间隔
-        if self._capicity_check_time is None or (now-self._capicity_check_time).total_seconds() > self._capicity_local_check_interval*60:
+        if self._capicity_local_check_time is None or (now-self._capicity_local_check_time).total_seconds() > self._capicity_local_check_interval*60:
             # 获得矿池算力值
             if self._capicity_remote_value is not None:
                 driver_list=[]
@@ -69,7 +69,7 @@ class LogMonitor(object):
                 power = round(plot_cnt * 101.4 * 0.0009765625, 2)
                 logger.info('local power:%s remote power:%s %s' % (power, self._capicity_remote_value, self._capicity_remote_unit))
 
-                self._capicity_check_time = now
+                self._capicity_local_check_time = now
 
 
     def log_process(self, log_line):
