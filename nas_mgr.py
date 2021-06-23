@@ -53,7 +53,7 @@ class NasManager(object):
     def start_moniter(self):
         driver_list = driver.get_nas_driver_list()
         driver_cnt = len(driver_list)
-        group = driver_cnt / 15
+        group = int(driver_cnt / 15)
 
         if driver_cnt % 15 > 0:
             group = group + 1

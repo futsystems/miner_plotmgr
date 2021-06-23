@@ -90,7 +90,7 @@ class LogMonitor(object):
                 power = round(plot_cnt * 101.4 * 0.0009765625, 2)
 
                 self._capicity_local_check_time = now
-                raito = self._capicity_remote_value / float(power)
+                raito = round(self._capicity_remote_value / float(power),2)
 
                 logger.info('group:%s local power:%s remote power:%s %s ratio:%s' % (
                 self._index, power, self._capicity_remote_value, self._capicity_remote_unit, raito))
@@ -163,6 +163,16 @@ class LogMonitor(object):
                     self._capicity_remote_value = float(items[0])
                     self._capicity_remote_unit = items[1]
                     self._capicity_remote_update_time = dt
+
+                if 'badbit or failbit after reading size 104' in log_line:
+                    tmp = log_line.split('file=')
+                    error_file = tmp[1].split(' ')[0]
+                    if not os.path.isfile(error_file):
+                        size = 0
+                    else:
+                        size = os.path.getsize(error_file)
+                    logger.debug('error file:%s size:%s' % (error_file, size)
+
 
                 #logger.info('check data:%s' % items[3])
                 #tmp_data = items[3].split('=')
