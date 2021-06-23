@@ -26,6 +26,13 @@ class LogMonitor(object):
         self._capicity_local_check_interval = 1
         self._index = index
 
+        self._lost_power = False
+        self._lost_power_time = None
+        self._lost_power_interval = 5
+        self._lost_power_reboot_fired = False
+        self._lost_power_reboot_time = None
+
+
     def start_moniter(self):
         logger.info('start moniter process')
         self._moniter_process = thread.start_new_thread(self.monitor_process, (1,))
@@ -55,7 +62,7 @@ class LogMonitor(object):
         if self._capicity_local_check_time is None or (now-self._capicity_local_check_time).total_seconds() > self._capicity_local_check_interval*60:
             # 获得矿池算力值
             if self._capicity_remote_value is not None:
-                driver_list=[]
+                driver_list = []
                 flag = self._index * 15
                 while flag < (self._index + 1)*15:
                     mount_path = '/mnt/plots/driver%s' % flag
@@ -67,9 +74,38 @@ class LogMonitor(object):
 
                 plot_cnt = sum([item['file_cnt'] for item in driver_list])
                 power = round(plot_cnt * 101.4 * 0.0009765625, 2)
-                logger.info('local power:%s remote power:%s %s' % (power, self._capicity_remote_value, self._capicity_remote_unit))
 
                 self._capicity_local_check_time = now
+                raito = self._capicity_remote_value / float(power)
+
+                logger.info('group:%s local power:%s remote power:%s %s ratio:%s' % (
+                self._index, power, self._capicity_remote_value, self._capicity_remote_unit, raito))
+
+
+                if raito < 0.9:
+                    if self._lost_power is False:
+                        self._lost_power = True
+                        self._lost_power_time = now
+                        logger.info('[power lost],will reboot in %s minutes if note recovered' % self._lost_power_interval)
+                    else:
+                        if self._lost_power_reboot_fired:
+                            #丢失算力已经重启
+                            pass
+                        else:
+                            if (now - self._lost_power_time).total_seconds() > self._lost_power_interval * 60:
+                                logger.warn('lost power for %s minutes, reboot service' % self._lost_power_interval)
+                                #丢失算力超过一定时间则执行重启
+                                self._lost_power_reboot_fired = True
+
+                if raito > 0.9:
+                    if self._lost_power:
+                        logger.info('power is recovered')
+                        self._lost_power = False
+                        if self._lost_power_reboot_fired:
+                            self._lost_power_reboot_fired = False
+
+
+
 
 
     def log_process(self, log_line):
@@ -85,7 +121,7 @@ class LogMonitor(object):
                     tmp = log_line.split('capacity="')
                     capacity_data = tmp[1].split('"')[0]
                     items = capacity_data.split(' ')
-                    logger.info('capicity data:%s' % capacity_data)
+                    logger.debug('capicity data:%s' % capacity_data)
                     if self._capicity_remote_value is None:
                         self._capicity_remote_first_update_time = datetime.datetime.now()
                     self._capicity_remote_value = float(items[0])
