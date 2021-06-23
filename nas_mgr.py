@@ -61,7 +61,7 @@ class NasManager(object):
         logger.info('harvester has %s drivers, and will service in %s groups' % (driver_cnt, group))
 
         idx=0
-        while idx < (group-1):
+        while idx < group:
             self.init_moniter_process(idx)
             idx = idx + 1
 
