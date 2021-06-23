@@ -28,9 +28,10 @@ class LogMonitor(object):
 
         self._lost_power = False
         self._lost_power_time = None
-        self._lost_power_interval = 5
+        self._lost_power_interval = 3
         self._lost_power_reboot_fired = False
         self._lost_power_reboot_time = None
+        self._lost_power_reboot_interval = 3
 
         self._target_ratio = 1
 
@@ -98,14 +99,18 @@ class LogMonitor(object):
                                 logger.warn('lost power for %s minutes, reboot service' % self._lost_power_interval)
                                 #丢失算力超过一定时间则执行重启
                                 self._lost_power_reboot_fired = True
+                                self._lost_power_reboot_time = now
                                 self._target_ratio = 0.9
 
-                if raito > self._target_ratio:
-                    if self._lost_power:
+                # 如果检测到算力丢失 并且已经触发重启 并且 超过重启时间间隔 则执行检查
+                if self._lost_power and self._lost_power_reboot_fired and (now - self._lost_power_reboot_time).total_seconds() > self._lost_power_reboot_interval * 60:
+                    if raito > self._target_ratio:
                         logger.info('power is recovered')
                         self._lost_power = False
                         if self._lost_power_reboot_fired:
                             self._lost_power_reboot_fired = False
+                    else:
+                        logger.info('power is not recovered will check later')
 
 
 
