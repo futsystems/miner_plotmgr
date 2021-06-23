@@ -41,11 +41,12 @@ class NasManager(object):
         self.config = response.json()
         logger.info('harvester config:%s' % self.config)
 
-    def init_moniter_process(self, path='/opt/hpool/0'):
+    def init_moniter_process(self, index=0):
+        path = '/opt/hpool/%s' % index
         logger.info('int logmoniter for path:%s' % path)
         from log_monitor import LogMonitor
         log_path = '%s/log/miner.log.log' % path
-        moniter = LogMonitor(0, log_path)
+        moniter = LogMonitor(index, log_path)
         moniter.start_moniter()
         self._hpool_map[path] = moniter
 
@@ -61,7 +62,7 @@ class NasManager(object):
 
         idx=0
         while idx < (group-1):
-            self.init_moniter_process('/opt/hpool/%s' % idx)
+            self.init_moniter_process(idx)
             idx = idx + 1
 
 
