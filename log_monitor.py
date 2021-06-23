@@ -171,7 +171,7 @@ class LogMonitor(object):
                         size = 0
                     else:
                         size = os.path.getsize(error_file)
-                    logger.debug('error file:%s size:%s' % (error_file, size)
+                    logger.debug('error file:%s size:%s' % (error_file, size))
 
 
                 #logger.info('check data:%s' % items[3])
