@@ -38,7 +38,7 @@ class LogMonitor(object):
         self._target_ratio = 0.9
         self._ratio = 1
 
-        self._status = ''
+        self._status = 'PENDING'
 
 
     def get_info(self):
