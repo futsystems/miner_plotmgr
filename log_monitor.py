@@ -22,6 +22,7 @@ class LogMonitor(object):
         self._capicity_remote_update_time = datetime.datetime.now()
         self._capicity_remote_first_update_time = None
 
+        self._capicity_local_value = None
         self._capicity_local_check_time = datetime.datetime.now()
         self._capicity_local_check_interval = 1
         self._index = index
@@ -43,7 +44,7 @@ class LogMonitor(object):
         return {
             'index': self._index,
             'service': 'srv.hpool%s' % self._index,
-            'local_power': self._lost_power,
+            'local_power': self._capicity_local_value,
             'remote_power': self._capicity_remote_value,
             'remote_power_unit': self._capicity_remote_unit,
             'status': self._status
@@ -89,13 +90,13 @@ class LogMonitor(object):
                     flag = flag + 1
 
                 plot_cnt = sum([item['file_cnt'] for item in driver_list])
-                power = round(plot_cnt * 101.4 * 0.0009765625, 2)
+                self._capicity_local_value = round(plot_cnt * 101.4 * 0.0009765625, 2)
 
                 self._capicity_local_check_time = now
-                raito = round(self._capicity_remote_value / float(power),2)
+                raito = round(self._capicity_remote_value / float(self._capicity_local_value),2)
 
                 logger.info('group:%s local power:%s remote power:%s %s ratio:%s' % (
-                self._index, power, self._capicity_remote_value, self._capicity_remote_unit, raito))
+                self._index, self._capicity_local_value, self._capicity_remote_value, self._capicity_remote_unit, raito))
 
 
                 if raito < self._target_ratio:
