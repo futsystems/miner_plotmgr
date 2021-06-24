@@ -46,6 +46,8 @@ class LogMonitor(object):
 
         self._status = 'PENDING'
 
+        self.service_name = "srv.hpool%s" % self._index
+
 
     def get_info(self):
 
@@ -61,6 +63,16 @@ class LogMonitor(object):
     def start_moniter(self):
         logger.info('start moniter process')
         self._moniter_process = thread.start_new_thread(self.monitor_process, (1,))
+
+    def restart_service(self):
+        if self._status != 'RESTART':
+            try:
+                subprocess.check_call(["supervisorctl", "restart", self.service_name])
+                self._status = 'RESTART'
+                self.log_restart("srv.hpool%s" % self._index, 'lost power')
+            except subprocess.CalledProcessError as e:
+                logger.warning(e.output)
+                self._status = 'RESTART_FAIL'
 
     def monitor_process(self, args):
         while not os.path.exists(self._log_file):
@@ -125,7 +137,7 @@ class LogMonitor(object):
                                 self._lost_power_reboot_fired = True
                                 self._lost_power_reboot_time = now
                                 try:
-                                    subprocess.check_call(["supervisorctl", "restart", "srv.hpool%s" % self._index])
+                                    subprocess.check_call(["supervisorctl", "restart", self.service_name])
                                     self._status = 'RESTART'
                                     self.log_restart( "srv.hpool%s" % self._index, 'lost power')
                                 except subprocess.CalledProcessError as e:
@@ -163,7 +175,7 @@ class LogMonitor(object):
         if self._scan_time_out:
             logger.info('scan plots time out, restart service directly')
             try:
-                subprocess.check_call(["supervisorctl", "restart", "srv.hpool%s" % self._index])
+                subprocess.check_call(["supervisorctl", "restart", self.service_name])
                 self._status = 'RESTART'
                 self.log_restart("srv.hpool%s" % self._index, 'scan time out')
             except subprocess.CalledProcessError as e:

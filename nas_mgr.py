@@ -52,7 +52,7 @@ class NasManager(object):
         log_path = '%s/log/miner.log.log' % path
         moniter = LogMonitor(self, index, log_path)
         moniter.start_moniter()
-        self._hpool_map[path] = moniter
+        self._hpool_map[moniter.service_name] = moniter
 
     def start_moniter(self):
         driver_list = driver.get_nas_driver_list()
@@ -285,6 +285,12 @@ class NasManager(object):
                         os.remove(full_name)
                         cnt = cnt + 1
         logger.info('delete file cnt:%s' % cnt)
+
+
+    def restart_service(self, service_name):
+        if service_name in self._hpool_map:
+            service = self._hpool_map[service_name]
+            service.restart_service()
 
 
 if __name__ == '__main__':

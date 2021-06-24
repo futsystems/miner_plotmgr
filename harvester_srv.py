@@ -237,6 +237,17 @@ def restart_service():
     result = subprocess.check_call(["supervisorctl", "restart", service_name])
     return Response(result,'restart service %s' % ('success' if result == 0 else 'failed')).to_json()
 
+
+@app.route('/harvester/restart')
+def restart_harvester():
+    """
+    restart service base on service name
+    :return:
+    """
+    service_name = request.args.get('service_name')
+    harvester.restart_service(service_name)
+    return Response('', 'restart service success').to_json()
+
 @app.route('/update')
 def update_system():
     """
