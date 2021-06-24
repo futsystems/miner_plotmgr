@@ -2,6 +2,7 @@
 # -*- coding: utf-8 -*-
 
 import os, time, sys, datetime, subprocess
+import requests
 
 if sys.version_info.major == 2:   # Python 2
     import thread
@@ -9,13 +10,15 @@ else:                             # Python 3
     import _thread as thread
 
 import driver
+import traceback
 import logging.config
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
 
 
 class LogMonitor(object):
-    def __init__(self, index, log_file):
+    def __init__(self, harvester_mgr, index, log_file):
+        self.harvester_mgr = harvester_mgr
         self._log_file = log_file
         self._capicity_remote_value = 0
         self._capicity_remote_unit = 'TB'
@@ -37,6 +40,9 @@ class LogMonitor(object):
 
         self._target_ratio = 0.95
         self._ratio = 1
+
+
+        self._scan_time_out = False
 
         self._status = 'PENDING'
 
@@ -121,6 +127,7 @@ class LogMonitor(object):
                                 try:
                                     subprocess.check_call(["supervisorctl", "restart", "srv.hpool%s" % self._index])
                                     self._status = 'RESTART'
+                                    self.log_restart( "srv.hpool%s" % self._index, 'lost power')
                                 except subprocess.CalledProcessError as e:
                                     logger.warning(e.output)
                                     self._status = 'RESTART_FAIL'
@@ -151,6 +158,19 @@ class LogMonitor(object):
                             self._status = 'OK'
                 else:
                     self._status = 'OK'
+
+
+        if self._scan_time_out:
+            logger.info('scan plots time out, restart service directly')
+            try:
+                subprocess.check_call(["supervisorctl", "restart", "srv.hpool%s" % self._index])
+                self._status = 'RESTART'
+                self.log_restart("srv.hpool%s" % self._index, 'scan time out')
+            except subprocess.CalledProcessError as e:
+                logger.warning(e.output)
+                self._status = 'RESTART_FAIL'
+
+
 
 
 
@@ -185,9 +205,26 @@ class LogMonitor(object):
                         size = os.path.getsize(error_file)
                     logger.debug('error file:%s size:%s' % (error_file, size))
 
+                if '扫盘超时间' in log_line:
+                    self._scan_time_out = True
+
 
                 #logger.info('check data:%s' % items[3])
                 #tmp_data = items[3].split('=')
                 #if tmp_data[0] == 'capacity':
                 #    logger.info('new capacity data received:%s' % tmp_data[1])
+
+
+    def log_restart(self,service,reason):
+        try:
+            data = {
+                'harvester': self.harvester_mgr.harvester_name,
+                'service': service,
+                'reason': reason,
+            }
+
+            response = requests.post('http://nagios.futsystems.com:9090/server/harvester/service/restart', json=data)
+            #logger.info('status:% data:%s' % (response.status_code, response.json()))
+        except Exception as e:
+            logger.error(traceback.format_exc())
 
