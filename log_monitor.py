@@ -220,7 +220,7 @@ class LogMonitor(object):
             data = {
                 'harvester': self.harvester_mgr.harvester_name,
                 'service': service,
-                'reason': reason,
+                'reason': reason
             }
 
             response = requests.post('http://nagios.futsystems.com:9090/server/harvester/service/restart', json=data)
