@@ -17,12 +17,12 @@ logger = logging.getLogger('nas')
 class LogMonitor(object):
     def __init__(self, index, log_file):
         self._log_file = log_file
-        self._capicity_remote_value = None
+        self._capicity_remote_value = 0
         self._capicity_remote_unit = 'TB'
         self._capicity_remote_update_time = datetime.datetime.now()
         self._capicity_remote_first_update_time = None
 
-        self._capicity_local_value = None
+        self._capicity_local_value = 0
         self._capicity_local_check_time = datetime.datetime.now()
         self._capicity_local_check_interval = 1
         self._index = index
