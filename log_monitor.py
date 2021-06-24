@@ -69,7 +69,7 @@ class LogMonitor(object):
             try:
                 subprocess.check_call(["supervisorctl", "restart", self.service_name])
                 self._status = 'RESTART_MANUAL'
-                self.log_restart("srv.hpool%s" % self._index, 'lost power')
+                self.log_restart("srv.hpool%s" % self._index, 'manual')
             except subprocess.CalledProcessError as e:
                 logger.warning(e.output)
                 self._status = 'RESTART_FAIL'
