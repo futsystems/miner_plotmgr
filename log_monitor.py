@@ -38,8 +38,10 @@ class LogMonitor(object):
 
         self._status = None
 
+
     def get_info(self):
         return {
+            'index': self._index,
             'service': 'srv.hpool%s' % self._index,
             'local_power': self._lost_power,
             'remote_power': self._capicity_remote_value,
@@ -112,7 +114,10 @@ class LogMonitor(object):
                                 #丢失算力超过一定时间则执行重启
                                 self._lost_power_reboot_fired = True
                                 self._lost_power_reboot_time = now
-                                subprocess.check_call(["supervisorctl", "restart", "srv.hpool%s" % self._index])
+                                try:
+                                    subprocess.check_call(["supervisorctl", "restart", "srv.hpool%s" % self._index])
+                                except subprocess.CalledProcessError as e:
+                                    logger.warning(e.output)
                                 self._status = 'RESTART'
 
 

@@ -203,6 +203,7 @@ class NasManager(object):
                     'info': self.get_local_info(),
                     'cpu': get_cpu_info(),
                     'memory': get_memory_info(),
+                    'harvester_service': self.get_harvester_service_info(),
                 }
                 logger.info('send local info to manager node:%s' % data)
                 response = requests.post('http://nagios.futsystems.com:9090/server/harvester/local-info/update', json= data)
@@ -237,6 +238,13 @@ class NasManager(object):
 
     def get_file_count(path):
         return len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
+
+
+    def get_harvester_service_info(self):
+        data = []
+        for service in self._hpool_map.values():
+            data.append(service.get_info())
+        return data
 
     def get_local_info(self):
         from driver import get_harvester_driver_list
