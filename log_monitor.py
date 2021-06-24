@@ -35,7 +35,7 @@ class LogMonitor(object):
         self._lost_power_reboot_interval = 3 #丢失书算力重启后 在这个时间之后检查算力 启动过程中算力缓慢增长 提前检查导致误报
         self._lost_power_reboot_fail_interval = 6 #如果超过这个时间 算力还没有回复 则判定为算力重启失败 需要人工干预
 
-        self._target_ratio = 0.9
+        self._target_ratio = 0.95
         self._ratio = 1
 
         self._status = 'PENDING'
@@ -47,7 +47,7 @@ class LogMonitor(object):
             'index': self._index,
             'service': 'srv.hpool%s' % self._index,
             'local_power': self._capicity_local_value,
-            'remote_power': self._capicity_remote_value,
+            'remote_power': round(float(self._capicity_remote_value),2),
             'remote_power_unit': self._capicity_remote_unit,
             'status': self._status
         }
