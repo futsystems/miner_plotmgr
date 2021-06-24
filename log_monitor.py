@@ -29,18 +29,20 @@ class LogMonitor(object):
 
         self._lost_power = False
         self._lost_power_time = None
-        self._lost_power_interval = 3
+        self._lost_power_interval = 3 #如果丢失算力后 在这个时间内没有回复 则重启服务
         self._lost_power_reboot_fired = False
-        self._lost_power_reboot_time = None
-        self._lost_power_reboot_interval = 3
-        self._lost_power_reboot_fail_interval = 6
+        self._lost_power_reboot_time = None #
+        self._lost_power_reboot_interval = 3 #丢失书算力重启后 在这个时间之后检查算力 启动过程中算力缓慢增长 提前检查导致误报
+        self._lost_power_reboot_fail_interval = 6 #如果超过这个时间 算力还没有回复 则判定为算力重启失败 需要人工干预
 
         self._target_ratio = 0.9
+        self._ratio = 1
 
         self._status = ''
 
 
     def get_info(self):
+
         return {
             'index': self._index,
             'service': 'srv.hpool%s' % self._index,
@@ -77,7 +79,7 @@ class LogMonitor(object):
         now = datetime.datetime.now()
         # 没有执行过算力检查 或者 距离上次算力检查超过检查间隔
         if self._capicity_local_check_time is None or (now-self._capicity_local_check_time).total_seconds() > self._capicity_local_check_interval*60:
-            # 获得矿池算力值
+            # 如果获得矿池算力值
             if self._capicity_remote_value is not None:
                 driver_list = []
                 flag = self._index * 15
@@ -94,6 +96,7 @@ class LogMonitor(object):
 
                 self._capicity_local_check_time = now
                 raito = round(self._capicity_remote_value / float(self._capicity_local_value),2)
+                self._ratio = raito
 
                 logger.info('group:%s local power:%s remote power:%s %s ratio:%s' % (
                 self._index, self._capicity_local_value, self._capicity_remote_value, self._capicity_remote_unit, raito))
@@ -103,7 +106,7 @@ class LogMonitor(object):
                     if self._lost_power is False:
                         self._lost_power = True
                         self._lost_power_time = now
-                        self._status = 'LOSTPOWER'
+                        self._status = 'LOST_POWER'
                         logger.info('[power lost],will reboot in %s minutes if not recovered' % self._lost_power_interval)
                     else:
                         if self._lost_power_reboot_fired:
@@ -117,10 +120,10 @@ class LogMonitor(object):
                                 self._lost_power_reboot_time = now
                                 try:
                                     subprocess.check_call(["supervisorctl", "restart", "srv.hpool%s" % self._index])
+                                    self._status = 'RESTART'
                                 except subprocess.CalledProcessError as e:
                                     logger.warning(e.output)
-                                self._status = 'RESTART'
-
+                                    self._status = 'RESTART_FAIL'
 
                 # 如果检测到算力丢失
                 if self._lost_power:
@@ -137,17 +140,20 @@ class LogMonitor(object):
                                     logger.info('power is not recovered will check later')
                                 else:
                                     logger.warn('power do not recover after reboot in %s minutes' % self._lost_power_reboot_fail_interval)
-                                    self._status = 'LOSTPOWER(RESTART)'
-
-
+                                    self._status = 'RESTART_STILL_LOST'
                         else:
                             # reboot service and wait plot scan
                             pass
                     else:
-                        #没有重启服务 且算力恢复
+                        #没有重启服务 且算力恢复 算力摇摆
                         if raito > self._target_ratio:
                             logger.info('power is recovered')
                             self._status = 'OK'
+                else:
+                    self._status = 'OK'
+
+
+
 
 
     def log_process(self, log_line):
