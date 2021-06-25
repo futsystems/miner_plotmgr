@@ -186,7 +186,7 @@ class LogMonitor(object):
 
 
         if self._remote_log_update_time is not None:
-            if (now - self._remote_log_update_time) > self._remote_log_lost_interval * 60:
+            if (now - self._remote_log_update_time).total_seconds() > self._remote_log_lost_interval * 60:
                 logger.info('%s has not got message from server in %s minutes' % (self.service_name, self._remote_log_lost_interval))
                 self._status = 'OFFLINE'
 
