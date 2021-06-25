@@ -103,7 +103,7 @@ def config_hpool():
     """
     import socket
 
-    #driver_list = _get_driver_list_cache()
+    driver_list = _get_driver_list_cache()
     logger.info('driver list:%s' % driver_list)
     size = request.args.get('size')
     index = request.args.get('index')
