@@ -101,7 +101,7 @@ class LogMonitor(object):
 
     def check_process(self,args):
         while True:
-            logger.info('check process .....')
+            #logger.info('check process .....')
             self._check_process()
             time.sleep(2)
 
@@ -110,7 +110,7 @@ class LogMonitor(object):
         # 没有执行过算力检查 或者 距离上次算力检查超过检查间隔
         if self._capicity_local_check_time is None or (now-self._capicity_local_check_time).total_seconds() > self._capicity_local_check_interval*60:
             # 如果获得矿池算力值
-            if self._capicity_remote_value is not None:
+            if self._capicity_remote_update_time is not None:
                 driver_list = []
                 flag = self._index * 15
                 while flag < (self._index + 1)*15:
