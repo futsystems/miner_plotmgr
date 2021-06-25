@@ -92,7 +92,7 @@ class LogMonitor(object):
             while len(line) == 0 or line[-1] != '\n':
                 tail = f.readline()
                 if tail == '':
-                    time.sleep(0.1)  # avoid busy waiting
+                    time.sleep(1)  # avoid busy waiting
                     # f.seek(0, io.SEEK_CUR) # appears to be unneccessary
                     continue
                 line += tail
@@ -190,6 +190,7 @@ class LogMonitor(object):
                 self._status = 'RESTART_FAIL'
 
         # 启动1分钟后 再进行时间检查
+        logger.info('now:%s start:%s secends:%s' % (now,self._start_time,(now - self._start_time).total_seconds()))
         if (now - self._start_time).total_seconds() > self._log_start_check_interval*60:
             # 如果没有获得任何远端日志时间 或者 最近的远端日志时间过去一定时间 则认为offline
             if self._log_update_time is None or (now - self._log_update_time).total_seconds() > self._log_lost_interval * 60:
