@@ -68,7 +68,8 @@ class LogMonitor(object):
 
     def start_moniter(self):
         logger.info('start moniter process')
-        self._moniter_process = thread.start_new_thread(self.monitor_process, (1,))
+        self._log_thread = thread.start_new_thread(self.log_process, (1,))
+        self._check_thread = thread.start_new_thread(self.check_process, (1,))
 
     def restart_service(self):
         if self._status != 'RESTART':
@@ -80,7 +81,7 @@ class LogMonitor(object):
                 logger.warning(e.output)
                 self._status = 'RESTART_FAIL'
 
-    def monitor_process(self, args):
+    def log_process(self, args):
         self._start_time = datetime.datetime.now()
         while not os.path.exists(self._log_file):
             logger.info('log file:%s do not exist, wait some time' % self._log_file)
@@ -96,11 +97,14 @@ class LogMonitor(object):
                     # f.seek(0, io.SEEK_CUR) # appears to be unneccessary
                     continue
                 line += tail
-            self.log_process(line)
+            self._log_process(line)
 
-            self.check_process()
+    def check_process(self,args):
+        while True:
+            self._check_process()
+            time.sleep(2)
 
-    def check_process(self):
+    def _check_process(self):
         now = datetime.datetime.now()
         # 没有执行过算力检查 或者 距离上次算力检查超过检查间隔
         if self._capicity_local_check_time is None or (now-self._capicity_local_check_time).total_seconds() > self._capicity_local_check_interval*60:
@@ -201,7 +205,7 @@ class LogMonitor(object):
 
 
 
-    def log_process(self, log_line):
+    def _log_process(self, log_line):
         now = datetime.datetime.now()
 
         if log_line.startswith('time='):
