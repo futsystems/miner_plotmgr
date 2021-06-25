@@ -24,8 +24,10 @@ class LogMonitor(object):
         self._capicity_remote_unit = 'TB'
         self._capicity_remote_update_time = datetime.datetime.now()
         self._capicity_remote_first_update_time = None
-        self._remote_log_update_time = None
-        self._remote_log_lost_interval = 3 #如果3分钟内没有日志信息 则我们认为程序掉线
+
+        self._log_update_time = None
+        self._log_lost_interval = 3 #如果3分钟内没有日志信息 则我们认为程序掉线
+        self._log_start_check_interval =1 #程序启动1分钟后执行检查
 
         self._capicity_local_value = 0
         self._capicity_local_check_time = datetime.datetime.now()
@@ -45,6 +47,8 @@ class LogMonitor(object):
 
 
         self._scan_time_out = False
+        self._start_time = None #monitor 开始时间
+
 
         self._status = 'PENDING'
 
@@ -77,6 +81,7 @@ class LogMonitor(object):
                 self._status = 'RESTART_FAIL'
 
     def monitor_process(self, args):
+        self._start_time = datetime.datetime.now()
         while not os.path.exists(self._log_file):
             logger.info('log file:%s do not exist, wait some time' % self._log_file)
             time.sleep(1)
@@ -184,10 +189,11 @@ class LogMonitor(object):
                 logger.warning(e.output)
                 self._status = 'RESTART_FAIL'
 
-
-        if self._remote_log_update_time is not None:
-            if (now - self._remote_log_update_time).total_seconds() > self._remote_log_lost_interval * 60:
-                logger.info('%s has not got message from server in %s minutes' % (self.service_name, self._remote_log_lost_interval))
+        # 启动1分钟后 再进行时间检查
+        if (now - self._start_time).total_seconds() > self._log_start_check_interval*60:
+            # 如果没有获得任何远端日志时间 或者 最近的远端日志时间过去一定时间 则认为offline
+            if self._log_update_time is None or (now - self._log_update_time).total_seconds() > self._log_lost_interval * 60:
+                logger.info('%s has not got message from server in %s minutes' % (self.service_name, self._log_lost_interval))
                 self._status = 'OFFLINE'
 
 
@@ -200,7 +206,7 @@ class LogMonitor(object):
         if log_line.startswith('time='):
             time_value = log_line[6:25]
             dt = datetime.datetime.fromisoformat(time_value)
-            self._remote_log_update_time = dt
+            self._log_update_time = dt
             if (now - dt).total_seconds() < 120:
                 #logger.debug('event time:%s passed in 2 minutes' % time_value)
                 #logger.debug('====> %s' % log_line)
