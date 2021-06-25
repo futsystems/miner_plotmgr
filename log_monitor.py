@@ -107,6 +107,16 @@ class LogMonitor(object):
 
     def _check_process(self):
         now = datetime.datetime.now()
+        # 启动1分钟后 再进行时间检查
+        if self._start_time is not None and (now - self._start_time).total_seconds() > self._log_start_check_interval*60:
+            logger.info(
+                'now:%s start:%s secends:%s' % (now, self._start_time, (now - self._start_time).total_seconds()))
+            # 如果没有获得任何远端日志时间 或者 最近的远端日志时间过去一定时间 则认为offline
+            if self._log_update_time is None or (now - self._log_update_time).total_seconds() > self._log_lost_interval * 60:
+                logger.info('%s has not got message from server in %s minutes' % (self.service_name, self._log_lost_interval))
+                self._status = 'OFFLINE'
+                return
+
         # 没有执行过算力检查 或者 距离上次算力检查超过检查间隔
         if self._capicity_local_check_time is None or (now-self._capicity_local_check_time).total_seconds() > self._capicity_local_check_interval*60:
             # 如果获得矿池算力值
@@ -194,14 +204,7 @@ class LogMonitor(object):
                 logger.warning(e.output)
                 self._status = 'RESTART_FAIL'
 
-        # 启动1分钟后 再进行时间检查
-        if self._start_time is not None and (now - self._start_time).total_seconds() > self._log_start_check_interval*60:
-            logger.info(
-                'now:%s start:%s secends:%s' % (now, self._start_time, (now - self._start_time).total_seconds()))
-            # 如果没有获得任何远端日志时间 或者 最近的远端日志时间过去一定时间 则认为offline
-            if self._log_update_time is None or (now - self._log_update_time).total_seconds() > self._log_lost_interval * 60:
-                logger.info('%s has not got message from server in %s minutes' % (self.service_name, self._log_lost_interval))
-                self._status = 'OFFLINE'
+
 
 
 
