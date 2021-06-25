@@ -101,6 +101,7 @@ class LogMonitor(object):
 
     def check_process(self,args):
         while True:
+            logger.info('check process .....')
             self._check_process()
             time.sleep(2)
 
