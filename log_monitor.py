@@ -109,8 +109,7 @@ class LogMonitor(object):
         now = datetime.datetime.now()
         # 启动1分钟后 再进行时间检查
         if self._start_time is not None and (now - self._start_time).total_seconds() > self._log_start_check_interval*60:
-            logger.info(
-                'now:%s start:%s secends:%s' % (now, self._start_time, (now - self._start_time).total_seconds()))
+            #logger.info('now:%s start:%s secends:%s' % (now, self._start_time, (now - self._start_time).total_seconds()))
             # 如果没有获得任何远端日志时间 或者 最近的远端日志时间过去一定时间 则认为offline
             if self._log_update_time is None or (now - self._log_update_time).total_seconds() > self._log_lost_interval * 60:
                 logger.info('%s has not got message from server in %s minutes' % (self.service_name, self._log_lost_interval))
