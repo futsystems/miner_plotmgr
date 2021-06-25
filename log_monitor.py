@@ -24,6 +24,8 @@ class LogMonitor(object):
         self._capicity_remote_unit = 'TB'
         self._capicity_remote_update_time = datetime.datetime.now()
         self._capicity_remote_first_update_time = None
+        self._remote_log_update_time = None
+        self._remote_log_lost_interval = 3 #如果3分钟内没有日志信息 则我们认为程序掉线
 
         self._capicity_local_value = 0
         self._capicity_local_check_time = datetime.datetime.now()
@@ -183,6 +185,10 @@ class LogMonitor(object):
                 self._status = 'RESTART_FAIL'
 
 
+        if self._remote_log_update_time is not None:
+            if (now - self._remote_log_update_time) > self._remote_log_lost_interval * 60:
+                logger.info('%s has not got message from server in %s minutes' % (self.service_name, self._remote_log_lost_interval))
+                self._status = 'OFFLINE'
 
 
 
@@ -194,6 +200,7 @@ class LogMonitor(object):
         if log_line.startswith('time='):
             time_value = log_line[6:25]
             dt = datetime.datetime.fromisoformat(time_value)
+            self._remote_log_update_time = dt
             if (now - dt).total_seconds() < 120:
                 #logger.debug('event time:%s passed in 2 minutes' % time_value)
                 #logger.debug('====> %s' % log_line)
