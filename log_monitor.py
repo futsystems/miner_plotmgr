@@ -26,7 +26,7 @@ class LogMonitor(object):
         self._capicity_remote_first_update_time = None
 
         self._log_update_time = None
-        self._log_lost_interval = 3 #如果3分钟内没有日志信息 则我们认为程序掉线
+        self._log_offline_interval = 3 #如果3分钟内没有日志信息 则我们认为程序掉线
         self._log_start_check_interval =1 #程序启动1分钟后执行检查
 
         self._capicity_local_value = 0
@@ -107,19 +107,19 @@ class LogMonitor(object):
 
     def _check_process(self):
         now = datetime.datetime.now()
-        # 启动1分钟后 再进行时间检查
+        # 启动1分钟后 再进行日志时间检查
         if self._start_time is not None and (now - self._start_time).total_seconds() > self._log_start_check_interval*60:
             #logger.info('now:%s start:%s secends:%s' % (now, self._start_time, (now - self._start_time).total_seconds()))
             # 如果没有获得任何远端日志时间 或者 最近的远端日志时间过去一定时间 则认为offline
-            if self._log_update_time is None or (now - self._log_update_time).total_seconds() > self._log_lost_interval * 60:
-                logger.info('%s has not got message from server in %s minutes' % (self.service_name, self._log_lost_interval))
+            if self._log_update_time is None or (now - self._log_update_time).total_seconds() > self._log_offline_interval * 60:
+                logger.info('%s has no log from server in %s minutes' % (self.service_name, self._log_offline_interval))
                 self._status = 'OFFLINE'
                 return
 
         # 没有执行过算力检查 或者 距离上次算力检查超过检查间隔
         if self._capicity_local_check_time is None or (now-self._capicity_local_check_time).total_seconds() > self._capicity_local_check_interval*60:
-            # 如果获得矿池算力值
-            if self._capicity_remote_update_time is not None:
+            # 获得矿池算力值
+            if self._capicity_remote_first_update_time is not None:
                 driver_list = []
                 flag = self._index * 15
                 while flag < (self._index + 1)*15:
@@ -216,6 +216,7 @@ class LogMonitor(object):
             time_value = log_line[6:25]
             dt = datetime.datetime.fromisoformat(time_value)
             self._log_update_time = dt
+            # 只处理最近2分钟之内的日志内容
             if (now - dt).total_seconds() < 120:
                 #logger.debug('event time:%s passed in 2 minutes' % time_value)
                 #logger.debug('====> %s' % log_line)
@@ -224,7 +225,8 @@ class LogMonitor(object):
                     capacity_data = tmp[1].split('"')[0]
                     items = capacity_data.split(' ')
                     #logger.debug('capicity data:%s' % capacity_data)
-                    if self._capicity_remote_value is None:
+                    # 记录第一次获得remote capicity的时间
+                    if self._capicity_remote_first_update_time is None:
                         self._capicity_remote_first_update_time = datetime.datetime.now()
                     self._capicity_remote_value = float(items[0])
                     self._capicity_remote_unit = items[1]
@@ -239,8 +241,9 @@ class LogMonitor(object):
                         size = os.path.getsize(error_file)
                     logger.debug('error file:%s size:%s' % (error_file, size))
 
-                if '扫盘超时间' in log_line:
+                if u'扫盘超时' in log_line:
                     self._scan_time_out = True
+                    logger.info('% scan time out' % self.service_name)
 
 
                 #logger.info('check data:%s' % items[3])
