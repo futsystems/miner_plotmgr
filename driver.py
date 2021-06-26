@@ -147,7 +147,9 @@ def get_plot_drive_to_use(used_driver_list=None):
                 else:
                     if part.device not in used_driver_list:
                         available_drives.append((part.mountpoint, part.device))
-    return natsorted(available_drives)[0]
+    if len(available_drives) >0:
+        return natsorted(available_drives)[0]
+    return None
 
 
 def get_harvester_driver_list():
