@@ -37,10 +37,16 @@ class LogMonitor(object):
         self._lost_power = False
         self._lost_power_time = None
         self._lost_power_interval = 3 #如果丢失算力后 在这个时间内没有回复 则重启服务
-        self._lost_power_reboot_fired = False
-        self._lost_power_reboot_time = None #
-        self._lost_power_reboot_interval = 3 #丢失书算力重启后 在这个时间之后检查算力 启动过程中算力缓慢增长 提前检查导致误报
-        self._lost_power_reboot_fail_interval = 6 #如果超过这个时间 算力还没有回复 则判定为算力重启失败 需要人工干预
+
+
+        self._reboot_fired = False
+        self._reboot_time = None
+        self._reboot_reason = None
+        self._reboot_interval = 3 #丢失书算力重启后 在这个时间之后检查算力 启动过程中算力缓慢增长 提前检查导致误报
+        self._reboot_fail_interval = 6 #如果超过这个时间 算力还没有回复 则判定为算力重启失败 需要人工干预
+
+
+
 
         self._target_ratio = 0.95
         self._ratio = 1
@@ -103,7 +109,7 @@ class LogMonitor(object):
         while True:
             #logger.info('check process .....')
             self._check_process()
-            time.sleep(2)
+            time.sleep(10)
 
     def _check_process(self):
         now = datetime.datetime.now()
@@ -140,7 +146,6 @@ class LogMonitor(object):
                 logger.info('group:%s local power:%s remote power:%s %s ratio:%s' % (
                 self._index, self._capicity_local_value, self._capicity_remote_value, self._capicity_remote_unit, raito))
 
-
                 if raito < self._target_ratio:
                     if self._lost_power is False:
                         self._lost_power = True
@@ -148,38 +153,40 @@ class LogMonitor(object):
                         self._status = 'LOST_POWER'
                         logger.info('[power lost],will reboot in %s minutes if not recovered' % self._lost_power_interval)
                     else:
-                        if self._lost_power_reboot_fired:
-                            #丢失算力已经重启
+                        if self._reboot_fired:
+                            # 正在重启过程中
                             pass
                         else:
+                            # 丢失算力超过一定时间 执行重启
                             if (now - self._lost_power_time).total_seconds() > self._lost_power_interval * 60:
                                 logger.warn('lost power for %s minutes, reboot service' % self._lost_power_interval)
-                                #丢失算力超过一定时间则执行重启
-                                self._lost_power_reboot_fired = True
-                                self._lost_power_reboot_time = now
+                                # 丢失算力超过一定时间则执行重启
+                                self._reboot_fired = True
+                                self._reboot_time = now
+                                self._reboot_reason = 'LOST_POWER'
                                 try:
                                     subprocess.check_call(["supervisorctl", "restart", self.service_name])
                                     self._status = 'RESTART'
-                                    self.log_restart( "srv.hpool%s" % self._index, 'lost power')
+                                    self.log_restart(self.service_name, 'lost power')
                                 except subprocess.CalledProcessError as e:
                                     logger.warning(e.output)
                                     self._status = 'RESTART_FAIL'
 
                 # 如果检测到算力丢失
                 if self._lost_power:
-                    #并且已经触发重启 并且 超过重启时间间隔 则执行检查
-                    if self._lost_power_reboot_fired:
-                        if (now - self._lost_power_reboot_time).total_seconds() > self._lost_power_reboot_interval * 60:
+                    # 并且已经触发重启 并且 超过重启时间间隔 则执行检查
+                    if self._reboot_fired and self._reboot_reason == 'LOST_POWER':
+                        if (now - self._reboot_time).total_seconds() > self._reboot_interval * 60:
                             if raito > self._target_ratio:
                                 logger.info('power is recovered')
                                 self._lost_power = False
                                 self._lost_power_reboot_fired = False
                                 self._status = 'OK'
                             else:
-                                if (now - self._lost_power_reboot_time).total_seconds() < self._lost_power_reboot_fail_interval * 60:
+                                if (now - self._reboot_time).total_seconds() < self._reboot_fail_interval * 60:
                                     logger.info('power is not recovered will check later')
                                 else:
-                                    logger.warn('power do not recover after reboot in %s minutes' % self._lost_power_reboot_fail_interval)
+                                    logger.warn('power do not recover after reboot in %s minutes' % self._reboot_fail_interval)
                                     self._status = 'RESTART_STILL_LOST'
                         else:
                             # reboot service and wait plot scan
@@ -191,17 +198,29 @@ class LogMonitor(object):
                             self._status = 'OK'
                 else:
                     self._status = 'OK'
-
-
+        # 扫盘超时
         if self._scan_time_out:
-            logger.info('scan plots time out, restart service directly')
-            try:
-                subprocess.check_call(["supervisorctl", "restart", self.service_name])
-                self._status = 'RESTART'
-                self.log_restart("srv.hpool%s" % self._index, 'scan time out')
-            except subprocess.CalledProcessError as e:
-                logger.warning(e.output)
-                self._status = 'RESTART_FAIL'
+            if self._reboot_fired:
+                if self._reboot_reason == 'SCAN_TIME_OUT':
+                    if (now - self._reboot_time).total_seconds() < self._reboot_interval * 60:
+                        logger.info('waiting reboot complete')
+                    else:
+                        # 重置标志位 扫盘超时 无法直接判定 需要通过后续日志读取
+                        self._scan_time_out = False
+                        self._reboot_fired = False
+            else:
+                logger.info('scan plots time out, restart service directly')
+                # 丢失算力超过一定时间则执行重启
+                self._reboot_fired = True
+                self._reboot_time = now
+                self._reboot_reason = 'SCAN_TIME_OUT'
+                try:
+                    subprocess.check_call(["supervisorctl", "restart", self.service_name])
+                    self._status = 'RESTART'
+                    self.log_restart(self.service_name, 'scan time out')
+                except subprocess.CalledProcessError as e:
+                    logger.warning(e.output)
+                    self._status = 'RESTART_FAIL'
 
 
 
