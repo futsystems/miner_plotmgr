@@ -180,7 +180,7 @@ class LogMonitor(object):
                             if raito > self._target_ratio:
                                 logger.info('power is recovered')
                                 self._lost_power = False
-                                self._lost_power_reboot_fired = False
+                                self._reboot_fired = False
                                 self._status = 'OK'
                             else:
                                 if (now - self._reboot_time).total_seconds() < self._reboot_fail_interval * 60:
