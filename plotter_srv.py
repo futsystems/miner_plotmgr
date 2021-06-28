@@ -226,11 +226,10 @@ def config_monero_running():
     """
     """
     try:
-        return plotter.config['is_monero_run']
+        return '%s' % (1 if plotter.config['is_monero_run'] else 0)
     except Exception as e:
         logger.error(traceback.format_exc())
         return '0'
-
 
 
 @app.route('/system/shutdown')
