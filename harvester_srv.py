@@ -131,13 +131,11 @@ def config_falx():
     :return:
     """
     import socket
-    driver_list = driver.get_plotter_driver_list()
-    cache_list = driver.get_plotter_cache_list()
+    driver_list = driver.get_nas_driver_list()
     data={'name': socket.gethostname(),
           'driver_list': driver_list,
-          'cache_list': cache_list,
           }
-    return render_template('plotter.hpool.yaml', data=data)
+    return render_template('harvester.flax.yaml', data=data)
 
 
 @app.route('/config/hpool/supervisor')
