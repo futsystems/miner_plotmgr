@@ -1,5 +1,5 @@
 [program:srv.monero]
-command = /opt/src/monero/xmrig -o xmr.f2pool.com:13531 -u polaris2018.{{data['worker_name']}} -p x -k
+command = /opt/src/monero/run_monero.sh
 directory=/opt/monero
 
 numprocs=1

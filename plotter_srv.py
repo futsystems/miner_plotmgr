@@ -53,7 +53,22 @@ def config_monero_superviosr():
 
     data={'worker_name': worker_name,
           }
-    return render_template('plotter.monero.html', data=data)
+    return render_template('plotter.monero.supervisor.html', data=data)
+
+@app.route('/config/monero')
+def config_monero():
+    """
+    get nagios node config file
+    :return:
+    """
+    import socket
+    hostname = socket.gethostname()
+    server_id = hostname.split('-')[1]
+    worker_name = 'p%s' % server_id
+
+    data={'worker_name': worker_name,
+          }
+    return render_template('plotter.monero.json.html', data=data)
 
 @app.route('/config/nagios')
 def config_nagios():
