@@ -40,6 +40,20 @@ def hello_world():
     return 'plotter server v1.0'
 
 
+@app.route('/config/monero/supervisor')
+def config_nagios():
+    """
+    get nagios node config file
+    :return:
+    """
+    import socket
+    hostname = socket.gethostname()
+    server_id = hostname.split('-')[1]
+    worker_name = 'p%s' % server_id
+
+    data={'worker_name': worker_name,
+          }
+    return render_template('plotter.monero.html', data=data)
 
 @app.route('/config/nagios')
 def config_nagios():

