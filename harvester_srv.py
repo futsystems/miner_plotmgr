@@ -124,6 +124,22 @@ def config_hpool():
           }
         return render_template('harvester.hpool.yaml', data=data)
 
+@app.route('/config/harvester/flax')
+def config_falx():
+    """
+    get hpool config file, depend on plot driver
+    :return:
+    """
+    import socket
+    driver_list = driver.get_plotter_driver_list()
+    cache_list = driver.get_plotter_cache_list()
+    data={'name': socket.gethostname(),
+          'driver_list': driver_list,
+          'cache_list': cache_list,
+          }
+    return render_template('plotter.hpool.yaml', data=data)
+
+
 @app.route('/config/hpool/supervisor')
 def config_hpool_supervisor():
     """
