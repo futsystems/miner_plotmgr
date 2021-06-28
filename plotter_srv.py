@@ -41,7 +41,7 @@ def hello_world():
 
 
 @app.route('/config/monero/supervisor')
-def config_nagios():
+def config_monero_superviosr():
     """
     get nagios node config file
     :return:
