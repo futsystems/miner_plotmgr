@@ -135,7 +135,7 @@ def config_falx():
     data={'name': socket.gethostname(),
           'driver_list': driver_list,
           }
-    return render_template('harvester.flax.yaml', data=data)
+    return render_template('harvester.flax.html', data=data)
 
 
 @app.route('/config/hpool/supervisor')
