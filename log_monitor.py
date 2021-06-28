@@ -231,44 +231,47 @@ class LogMonitor(object):
     def _log_process(self, log_line):
         now = datetime.datetime.now()
 
-        if log_line.startswith('time='):
-            time_value = log_line[6:25]
-            dt = datetime.datetime.fromisoformat(time_value)
-            self._log_update_time = dt
-            # 只处理最近2分钟之内的日志内容
-            if (now - dt).total_seconds() < 120:
-                #logger.debug('event time:%s passed in 2 minutes' % time_value)
-                #logger.debug('====> %s' % log_line)
-                if 'capacity' in log_line:
-                    tmp = log_line.split('capacity="')
-                    capacity_data = tmp[1].split('"')[0]
-                    items = capacity_data.split(' ')
-                    #logger.debug('capicity data:%s' % capacity_data)
-                    # 记录第一次获得remote capicity的时间
-                    if self._capicity_remote_first_update_time is None:
-                        self._capicity_remote_first_update_time = datetime.datetime.now()
-                    self._capicity_remote_value = float(items[0])
-                    self._capicity_remote_unit = items[1]
-                    self._capicity_remote_update_time = dt
+        try:
+            if log_line.startswith('time='):
+                time_value = log_line[6:25]
+                dt = datetime.datetime.fromisoformat(time_value)
+                self._log_update_time = dt
+                # 只处理最近2分钟之内的日志内容
+                if (now - dt).total_seconds() < 120:
+                    #logger.debug('event time:%s passed in 2 minutes' % time_value)
+                    #logger.debug('====> %s' % log_line)
+                    if 'capacity' in log_line:
+                        tmp = log_line.split('capacity="')
+                        capacity_data = tmp[1].split('"')[0]
+                        items = capacity_data.split(' ')
+                        #logger.debug('capicity data:%s' % capacity_data)
+                        # 记录第一次获得remote capicity的时间
+                        if self._capicity_remote_first_update_time is None:
+                            self._capicity_remote_first_update_time = datetime.datetime.now()
+                        self._capicity_remote_value = float(items[0])
+                        self._capicity_remote_unit = items[1]
+                        self._capicity_remote_update_time = dt
 
-                if 'badbit or failbit after reading size 104' in log_line:
-                    tmp = log_line.split('file=')
-                    error_file = tmp[1].split(' ')[0]
-                    if not os.path.isfile(error_file):
-                        size = 0
-                    else:
-                        size = os.path.getsize(error_file)
-                    logger.debug('error file:%s size:%s' % (error_file, size))
+                    if 'badbit or failbit after reading size 104' in log_line:
+                        tmp = log_line.split('file=')
+                        error_file = tmp[1].split(' ')[0]
+                        if not os.path.isfile(error_file):
+                            size = 0
+                        else:
+                            size = os.path.getsize(error_file)
+                        logger.debug('error file:%s size:%s' % (error_file, size))
 
-                if u'扫盘超时' in log_line:
-                    self._scan_time_out = True
-                    logger.info('% scan time out' % self.service_name)
+                    if u'扫盘超时' in log_line:
+                        self._scan_time_out = True
+                        logger.info('% scan time out' % self.service_name)
 
 
-                #logger.info('check data:%s' % items[3])
-                #tmp_data = items[3].split('=')
-                #if tmp_data[0] == 'capacity':
-                #    logger.info('new capacity data received:%s' % tmp_data[1])
+                    #logger.info('check data:%s' % items[3])
+                    #tmp_data = items[3].split('=')
+                    #if tmp_data[0] == 'capacity':
+                    #    logger.info('new capacity data received:%s' % tmp_data[1])
+        except Exception as e:
+            logger.error(traceback.format_exc())
 
 
     def log_restart(self,service,reason):
