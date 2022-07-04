@@ -21,6 +21,8 @@ from message import Response
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
 
+NMS_HOST = '114.215.171.10'
+
 class UploadProcess(object):
     def __init__(self):
         self.__pid = None
@@ -188,9 +190,11 @@ class NasManager(object):
                    'cpu': get_cpu_info(),
                    'memory': get_memory_info(),
                    }
-        logger.info('register to manager node:%s' % payload)
 
-        response = requests.post('http://nagios.futsystems.com:9090/server/harvester/register', json=payload)
+        url = 'http://%s:9090/server/harvester/register' % NMS_HOST
+        logger.info('register to manager node:%s url:%s' % (payload, url))
+
+        response = requests.post(url, json=payload)
         logger.info('register status:%s data:%s' % (response.status_code, response.json()))
 
 
@@ -209,7 +213,8 @@ class NasManager(object):
                     'harvester_service': self.get_harvester_service_info(),
                 }
                 logger.info('send local info to manager node:%s' % data)
-                response = requests.post('http://nagios.futsystems.com:9090/server/harvester/local-info/update', json= data)
+                url = 'http://%s:9090/server/harvester/local-info/update' % NMS_HOST
+                response = requests.post(url, json= data)
                 logger.info('update local info status:%s data:%s' % (response.status_code, response.json()))
 
                 # sleep 10 minutes
