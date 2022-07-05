@@ -44,7 +44,7 @@ class PlotterManager(object):
         self._server_ip = self.__get_internal_ip()
 
         query = {'id': self._server_id}
-        response = requests.get('http://114.215.171.108:9090/server/plotter/config', params=query)
+        response = requests.get('http://%s:9090/server/plotter/config' % NMS_HOST, params=query)
         self.config = response.json()
         logger.info('plotter config:%s' % self.config)
 
@@ -285,7 +285,7 @@ class PlotterManager(object):
                     'statistic': statistic
                 }
 
-                response = requests.post('http://nagios.futsystems.com:9090/server/plotter/statistic/update', json=data)
+                response = requests.post('http://%s:9090/server/plotter/statistic/update' % NMS_HOST, json=data)
 
                 logger.info('update statistic status:%s data:%s' % (response.status_code, response.json()))
 
@@ -305,7 +305,7 @@ class PlotterManager(object):
                     'memory': get_memory_info(),
                 }
 
-                response = requests.post('http://nagios.futsystems.com:9090/server/plotter/local-info/update', json=data)
+                response = requests.post('http://%s:9090/server/plotter/local-info/update' % NMS_HOST, json=data)
                 logger.info('update local info status:%s data:%s' % (response.status_code, response.json()))
 
                 # sleep 1 minutes
@@ -354,7 +354,7 @@ class PlotterManager(object):
                 'plot_check_fail_reason': reason,
             }
 
-            response = requests.post('http://nagios.futsystems.com:9090/server/transfer/stop', json=data)
+            response = requests.post('http://%s:9090/server/transfer/stop' % NMS_HOST, json=data)
             #logger.debug('start plot transfer ')
         except Exception as e:
             logger.error(traceback.format_exc())
@@ -373,7 +373,7 @@ class PlotterManager(object):
                 'nc_port': nc_port,
             }
 
-            response = requests.post('http://nagios.futsystems.com:9090/server/transfer/start', json=data)
+            response = requests.post('http://%s:9090/server/transfer/start' % NMS_HOST, json=data)
             #logger.info('status:% data:%s' % (response.status_code, response.json()))
         except Exception as e:
             logger.error(traceback.format_exc())
