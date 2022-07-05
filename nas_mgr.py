@@ -21,7 +21,7 @@ from message import Response
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
 
-NMS_HOST = '114.215.171.10'
+NMS_HOST = '114.215.171.108'
 
 class UploadProcess(object):
     def __init__(self):
