@@ -24,6 +24,7 @@ import datetime
 
 from common import get_cpu_info, get_memory_info, uptime, get_nvme_info, empty_str, get_filesize
 
+NMS_HOST = '114.215.171.108'
 
 import json
 
@@ -104,9 +105,13 @@ class PlotterManager(object):
                    'memory': get_memory_info(),
                    'nvme': get_nvme_info(),
                    }
-        logger.info('register to manager node:%s' % payload)
 
-        response = requests.post('http://nagios.futsystems.com:9090/server/plotter/register', json=payload)
+        url = 'http://%s:9090/server/plotter/register' % NMS_HOST
+        logger.info('register to manager node:%s url:%s' % (payload, url))
+
+        response = requests.post(url, json=payload)
+
+        logger.info('data:%s' % response.content)
         logger.info('register status:%s data:%s' % (response.status_code, response.json()))
 
     def start_sending_process(self, nas_name, nas_ip):
