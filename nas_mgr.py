@@ -195,6 +195,7 @@ class NasManager(object):
         logger.info('register to manager node:%s url:%s' % (payload, url))
 
         response = requests.post(url, json=payload)
+        logger.info('data:%s' % response.content)
         logger.info('register status:%s data:%s' % (response.status_code, response.json()))
 
 
