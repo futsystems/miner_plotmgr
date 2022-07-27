@@ -257,8 +257,11 @@ def get_plotter_cache_list():
 
 
 def get_file_count(path):
-    return len([name for name in os.listdir(path) if _is_plot_file(os.path.join(path, name))])
-
+    try:
+        return len([name for name in os.listdir(path) if _is_plot_file(os.path.join(path, name))])
+    except OSError as e:
+        logger.error('file:%s check os error:%s' % (file_path, e))
+        return 0
 
 def _is_plot_file(file_path):
     try:
@@ -270,8 +273,7 @@ def _is_plot_file(file_path):
     except Exception as e:
         logger.error('file:%s check error:%s' % (file_path, e))
         return False
-    except OSError as e:
-        return False
+
 
 
 def get_dst_device_info(mount_path):
