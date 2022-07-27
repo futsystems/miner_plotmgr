@@ -55,7 +55,13 @@ def get_nvme_info():
         }
 
 
-def get_cache_usage(path='/mnt/cache/00'):
+def get_cache_info():
+    return {
+        'usage': _get_cache_usage(),
+        'temperature': 0,
+    }
+
+def _get_cache_usage(path='/mnt/cache/00'):
     if os.path.ismount(path):
         return psutil.disk_usage(path).percent
     return 'Not Mounted'
