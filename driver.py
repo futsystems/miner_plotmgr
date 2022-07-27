@@ -260,7 +260,7 @@ def get_file_count(path):
     try:
         return len([name for name in os.listdir(path) if _is_plot_file(os.path.join(path, name))])
     except OSError as e:
-        logger.error('file:%s check os error:%s' % (file_path, e))
+        logger.error('file:%s check os error:%s' % (path, e))
         return 0
 
 def _is_plot_file(file_path):
