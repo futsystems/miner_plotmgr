@@ -22,7 +22,7 @@ import socket
 import requests
 import datetime
 
-from common import get_cpu_info, get_memory_info, uptime, get_nvme_info, empty_str, get_filesize
+from common import get_cpu_info, get_memory_info, get_cache_usage, uptime, get_nvme_info, empty_str, get_filesize
 
 NMS_HOST = '114.215.171.108'
 
@@ -300,6 +300,7 @@ class PlotterManager(object):
                     'info': info,
                     'cpu': get_cpu_info(),
                     'memory': get_memory_info(),
+                    'cache_usage': get_cache_usage(), #获得/mnt/cache/00的使用率
                 }
 
                 response = requests.post('http://%s:9090/server/plotter/local-info/update' % NMS_HOST, json=data)
