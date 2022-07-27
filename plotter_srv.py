@@ -200,7 +200,7 @@ def config_plotman():
     # 'global_stagger_m': 48, 'tmpdir_max_jobs': 10, 'tmpdir_stagger_phase_major': 2, 'tmpdir_stagger_phase_minor': 1,
     # 'tmpdir_stagger_phase_limit': 5}
     if version == '2':
-        render_template('plotter.plotman.v2.yaml', data=data, config=config)
+        return render_template('plotter.plotman.v2.yaml', data=data, config=config)
     else:
         return render_template('plotter.plotman.yaml', data=data, config=config)
 
