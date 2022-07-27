@@ -108,10 +108,7 @@ class PlotterManager(object):
 
         url = 'http://%s:9090/server/plotter/register' % NMS_HOST
         logger.info('register to manager node:%s url:%s' % (payload, url))
-
         response = requests.post(url, json=payload)
-
-        logger.info('data:%s' % response.content)
         logger.info('register status:%s data:%s' % (response.status_code, response.json()))
 
     def start_sending_process(self, nas_name, nas_ip):

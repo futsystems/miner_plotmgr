@@ -154,6 +154,7 @@ def config_plotman():
     2.get plotting/scheduling config from management system
     :return:
     """
+    version = request.args.get('version')
 
     import socket
     hostname = socket.gethostname()
@@ -163,10 +164,12 @@ def config_plotman():
 
     import requests
     query = {'id': server_id}
+
+    logger.info('request plotter id:%s version:%s' % (server_id, version))
     # get plot config from config center, if not setted, will return default value
     response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
     config = response.json()
-    logger.info('response:%s' % config)
+
     logger.info('plot config data:%s' % config)
 
     new_driver_lsit = []
@@ -196,7 +199,10 @@ def config_plotman():
     #{'k': '32', 'e': True, 'n_threads': 3, 'n_buckets': 128, 'job_buffer': 4200, 'global_max_jobs': 10,
     # 'global_stagger_m': 48, 'tmpdir_max_jobs': 10, 'tmpdir_stagger_phase_major': 2, 'tmpdir_stagger_phase_minor': 1,
     # 'tmpdir_stagger_phase_limit': 5}
-    return render_template('plotter.plotman.yaml', data=data, config=config)
+    if version == '2':
+        render_template('plotter.plotman.v2.yaml', data=data, config=config)
+    else:
+        return render_template('plotter.plotman.yaml', data=data, config=config)
 
 @app.route('/config/plotman/is_plotting_run')
 def config_plotman_ISPLOTTINGRUN():
