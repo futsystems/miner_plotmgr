@@ -189,10 +189,16 @@ def config_plotman():
           'cache_list': cache_list,
           'cache_cnt': len(cache_list),
           'config_name': config['name'],
-
           }
 
-
+    if config['key'] is None:
+        data['farmer_key'] = 'farmer_key'
+        data['pool_key'] = 'pool_key'
+        data['pool_contract_address'] = 'pool_contract_address'
+    else:
+        data['farmer_key'] = config['key']['farmer_key']
+        data['pool_key'] = config['key']['pool_key']
+        data['pool_contract_address'] = config['key']['pool_contract_address']
 
     #data = data.update(data2)
     logger.info('data:%s' % data)

@@ -92,9 +92,9 @@ plotting:
         # portable pool plots.  The pool public key is only for original
         # non-portable plots that can not be used with the official pooling
         # protocol.
-        # farmer_pk: ...
-        # pool_pk: ...
-        # pool_contract_address: ...
+        farmer_pk: {{data['farmer_key']}}
+        pool_pk: {{data['pool_key']}}
+        pool_contract_address: {{data['pool_contract_address']}}
 
         # If you enable Chia, plot in *parallel* with higher tmpdir_max_jobs and global_max_jobs
         type: chia
