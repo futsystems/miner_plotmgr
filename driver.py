@@ -270,6 +270,8 @@ def _is_plot_file(file_path):
     except Exception as e:
         logger.error('file:%s check error:%s' % (file_path, e))
         return False
+    except OSError as e:
+        return False
 
 
 def get_dst_device_info(mount_path):
