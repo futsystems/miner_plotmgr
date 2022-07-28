@@ -137,6 +137,32 @@ def config_falx():
           }
     return render_template('harvester.flax.html', data=data)
 
+@app.route('/config/harvester/chia')
+def config_chia():
+    """
+    get chia harvester config file
+    :return:
+    """
+    import socket
+    import requests
+
+    hostname = socket.gethostname()
+    server_id = hostname.split('-')[1]
+    driver_list = driver.get_nas_driver_list()
+
+    query = {'id': server_id}
+
+    response = requests.get('http://114.215.171.108:9090/server/harvester/config', params=query)
+    config = response.json()
+
+    logger.info('harvester config data:%s' % config)
+
+    data={'name': hostname,
+          'driver_list': driver_list,
+          'farmer_address': config['farmer_address']
+          }
+    return render_template('harvester.chia.html', data=data)
+
 
 @app.route('/config/hpool/supervisor')
 def config_hpool_supervisor():
