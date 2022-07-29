@@ -253,6 +253,32 @@ def system_poweroff():
     os.system("shutdown now -h")
     return Response(0, 'shutdown success').to_json()
 
+@app.route('/stop-plot')
+def stop_plot():
+    """
+    stop plotman
+    :return:
+    """
+    logger.info('----- stop plot -----')
+    command = ['/opt/src/scripts/stop_plotman.sh']
+    result = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    logging.info('stop plot result:%s' % result)
+
+    return Response(0, 'stop plot in background').to_json()
+
+@app.route('/start-plot')
+def start_plot():
+    """
+    start plotman
+    :return:
+    """
+    logger.info('----- start plot -----')
+    command = ['supervisorctl', 'restart', 'srv.plot']
+    result = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
+    logging.info('start plot result:%s' % result)
+
+    return Response('', 'start plot in background').to_json()
+
 @app.route('/config/change')
 def config_change():
     """
