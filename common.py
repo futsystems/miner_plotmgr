@@ -64,7 +64,7 @@ def get_cache_info():
 def _get_cache_usage(path='/mnt/cache/00'):
     if os.path.ismount(path):
         return psutil.disk_usage(path).percent
-    return 'Not Mounted'
+    return 'Not Set'
 
 
 
@@ -106,6 +106,8 @@ def get_filesize(filePath):
 def get_filecreatetime(filePath):
     timestamp= os.path.getctime(filePath)
     return datetime.datetime.fromtimestamp(timestamp)
+
+NMS_HOST = '114.215.171.108'
 
 if __name__ == '__main__':
     logging.config.fileConfig('logging.conf')

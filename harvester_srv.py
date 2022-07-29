@@ -30,6 +30,8 @@ driver_list_cache ={
     'list': None,
 }
 
+from common import NMS_HOST
+
 class HarvesterFlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
     harvester.on_start()
@@ -152,7 +154,7 @@ def config_chia():
 
     query = {'id': server_id}
 
-    response = requests.get('http://114.215.171.108:9090/server/harvester/config', params=query)
+    response = requests.get('http://%s:9090/server/harvester/config' % NMS_HOST, params=query)
     config = response.json()
 
     logger.info('harvester config data:%s' % config)

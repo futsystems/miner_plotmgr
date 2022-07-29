@@ -25,6 +25,7 @@ logger.info('template dir:%s' % template_dir)
 
 plotter = PlotterManager()
 
+from common import NMS_HOST
 
 class PlotterFlaskApp(Flask):
   def run(self, host=None, port=None, debug=None, load_dotenv=True, **options):
@@ -84,14 +85,6 @@ def config_nagios():
     cache_list = driver.get_plotter_cache_list()
     nvme_list = driver.get_plotter_nvme_list()
     vcpu_count = os.cpu_count()
-
-    #query = {'id': server_id}
-    # get plot config from config center, if not setted, will return default value
-    #response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
-    #logger.info('response:%s' % response)
-
-    #config = response.json()
-    #logger.info('plot config data:%s' % config)
 
     new_driver_lsit = []
     for tmp in driver_list:
@@ -167,7 +160,7 @@ def config_plotman():
 
     logger.info('request plotter id:%s version:%s' % (server_id, version))
     # get plot config from config center, if not setted, will return default value
-    response = requests.get('http://114.215.171.108:9090/server/plotter/plot-config', params=query)
+    response = requests.get('http://%s:9090/server/plotter/plot-config' % NMS_HOST, params=query)
     config = response.json()
 
     logger.info('plot config data:%s' % config)
@@ -222,7 +215,7 @@ def config_plotman_ISPLOTTINGRUN():
         server_id = hostname.split('-')[1]
         query = {'id': server_id}
         # get plot config from config center, if not setted, will return default value
-        response = requests.get('http://114.215.171.108:9090/server/plotter/info', params=query)
+        response = requests.get('http://%s:9090/server/plotter/info' % NMS_HOST, params=query)
         config = response.json()
         if config['code'] == 0:
             logger.info('response:%s plot info data:%s' % (response, config))

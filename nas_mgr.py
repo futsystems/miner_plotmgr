@@ -21,7 +21,7 @@ from message import Response
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
 
-NMS_HOST = '114.215.171.108'
+from common import  NMS_HOST
 
 class UploadProcess(object):
     def __init__(self):
@@ -39,7 +39,7 @@ class NasManager(object):
         self._hpool_map = {}
 
         query = {'id': self._server_id}
-        response = requests.get('http://114.215.171.108:9090/server/harvester/config', params=query)
+        response = requests.get('http://%s:9090/server/harvester/config' % NMS_HOST, params=query)
         self.config = response.json()
         logger.info('harvester config:%s' % self.config)
 

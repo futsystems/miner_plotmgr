@@ -24,7 +24,7 @@ import datetime
 
 from common import get_cpu_info, get_memory_info, get_cache_info, uptime, get_nvme_info, empty_str, get_filesize
 
-NMS_HOST = '114.215.171.108'
+from common import NMS_HOST
 
 import json
 
