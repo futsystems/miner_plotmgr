@@ -303,7 +303,7 @@ def get_dst_device_info(mount_path):
         'space_free': get_device_info('space_free', device),
         'space_free_plots': get_device_info('space_free_plots', device),
         'total_current_plots': get_device_info('total_current_plots', device),
-        'file_cnt': get_file_count(mount_path)
+        'file_cnt': get_file_count(mount_path) #获取实际文件总数
 
     }
 

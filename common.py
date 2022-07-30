@@ -107,6 +107,18 @@ def get_filecreatetime(filePath):
     timestamp= os.path.getctime(filePath)
     return datetime.datetime.fromtimestamp(timestamp)
 
+
+def get_nvme_temperature(dev='/dev/nvme0n1'):
+    try:
+        command = ['nvme', 'smart-log', dev]
+        p = subprocess.Popen(command, stdout=subprocess.PIPE)
+        out, err = p.communicate()
+        txt = str(out, encoding="utf8")
+        #txt.split('\n')[2] -> 'temperature                         : 54 C'
+        return txt.split('\n')[2].split(':')[1]
+    except Exception as e:
+        return 'NAN'
+
 NMS_HOST = '114.215.171.108'
 
 if __name__ == '__main__':
