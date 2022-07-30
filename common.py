@@ -54,11 +54,12 @@ def get_nvme_info():
             'is_cache_raid': len(mdstat.parse()['devices']) > 0
         }
 
-
 def get_cache_info():
+    nvme_list = driver.get_plotter_nvme_list()
+
     return {
         'usage': _get_cache_usage(),
-        'temperature': 0,
+        'temperature': ' '.join([get_nvme_temperature(device) for device in nvme_list]),
     }
 
 def _get_cache_usage(path='/mnt/cache/00'):
@@ -115,9 +116,9 @@ def get_nvme_temperature(dev='/dev/nvme0n1'):
         out, err = p.communicate()
         txt = str(out, encoding="utf8")
         #txt.split('\n')[2] -> 'temperature                         : 54 C'
-        return txt.split('\n')[2].split(':')[1]
+        return txt.split('\n')[2].split(':')[1].strip()
     except Exception as e:
-        return 'NAN'
+        return 'NaN'
 
 NMS_HOST = '114.215.171.108'
 
