@@ -175,7 +175,7 @@ class NasManager(object):
         self.register()
 
         self.start_update_local_info_process()
-
+        self.start_update_disk_report_process()
         self.start_moniter()
 
 
@@ -203,6 +203,9 @@ class NasManager(object):
     def start_update_local_info_process(self):
         logger.info('start update local info process')
         self._update_local_info_thread = thread.start_new_thread(self.update_local_info_process, (1,))
+
+    def start_update_disk_report_process(self):
+        logger.info('start update disk report process')
         self._update_disk_report_thread = thread.start_new_thread(self.generate_disk_report, (1,))
 
     def generate_disk_report(self):
