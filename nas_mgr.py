@@ -43,6 +43,8 @@ class NasManager(object):
         self.config = response.json()
         logger.info('harvester config:%s' % self.config)
 
+        self.driver_report = None
+
     @property
     def harvester_name(self):
         return self._server_name
@@ -198,10 +200,19 @@ class NasManager(object):
         logger.info('data:%s' % response.content)
         logger.info('register status:%s data:%s' % (response.status_code, response.json()))
 
-
     def start_update_local_info_process(self):
         logger.info('start update local info process')
         self._update_local_info_thread = thread.start_new_thread(self.update_local_info_process, (1,))
+        self._update_disk_report_thread = thread.start_new_thread(self.generate_disk_report, (1,))
+
+    def generate_disk_report(self):
+        while True:
+            try:
+                self.driver_report = driver.get_harvester_driver_report()
+                # sleep 30 minutes
+                time.sleep(30*60)
+            except Exception as e:
+                logger.error(traceback.format_exc())
 
     def update_local_info_process(self, args):
         while True:
@@ -268,9 +279,19 @@ class NasManager(object):
             'driver_cnt': len(driver_list),
             'file_cnt': sum([item['file_cnt'] for item in driver_list]),
             'space_free_plots': sum([item['space_free_plots'] for item in driver_list]),
-            'nc_process_cnt': sum(1 for proc in psutil.process_iter() if proc.name() == 'nc')
-
+            'nc_process_cnt': sum(1 for proc in psutil.process_iter() if proc.name() == 'nc'),
         }
+
+        if self.driver_report is None:
+            info['driver_unhealthy_cnt'] = 'NaN'
+            info['driver_temperature_high'] = 'NaN'
+            info['driver_temperature_low'] = 'NaN'
+        else:
+            temperature_list = [item['temperature'] for item in self.driver_report['driver']]
+            info['driver_unhealthy_cnt'] = len([item for item in self.driver_report['driver'] if item['health'] != 'PASS'])
+            info['driver_temperature_high'] = max(temperature_list)
+            info['driver_temperature_low'] = min(temperature_list)
+
         return info
 
     def clean_harvester_driver(self):
