@@ -208,6 +208,7 @@ class NasManager(object):
     def generate_disk_report(self):
         while True:
             try:
+                logger.info('==== generate harvester driver report ====')
                 self.driver_report = driver.get_harvester_driver_report()
                 # sleep 30 minutes
                 time.sleep(30*60)
@@ -250,11 +251,9 @@ class NasManager(object):
                     data['data_ip'] = addresses[0]
         return data
 
-
-        import socket
-        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        s.connect(('8.8.8.8', 80))
-        return s.getsockname()[0]
+        #s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        #s.connect(('8.8.8.8', 80))
+        #return s.getsockname()[0]
 
     def get_file_count(path):
         return len([name for name in os.listdir(path) if os.path.isfile(os.path.join(path, name))])
