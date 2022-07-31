@@ -208,7 +208,7 @@ class NasManager(object):
         logger.info('start update disk report process')
         self._update_disk_report_thread = thread.start_new_thread(self.generate_disk_report, (1,))
 
-    def generate_disk_report(self):
+    def generate_disk_report(self, args):
         while True:
             try:
                 logger.info('==== generate harvester driver report ====')
