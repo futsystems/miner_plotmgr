@@ -291,10 +291,29 @@ class NasManager(object):
         else:
             temperature_list = [item['temperature'] for item in self.driver_report['driver']]
             info['driver_unhealthy_cnt'] = len([item for item in self.driver_report['driver'] if item['health'] != 'PASS'])
-            info['driver_temperature_high'] = max(temperature_list)
-            info['driver_temperature_low'] = min(temperature_list)
+            info['driver_temperature_high'] = self.max_temperature(temperature_list)
+            info['driver_temperature_low'] = self.min_temperature(temperature_list)
 
         return info
+
+    def max_temperature(self, data):
+        t = 0
+        for item in data:
+            if item is None:
+                pass
+            if item > t:
+                t = item
+        return t
+
+    def min_temperature(self,data):
+        t = 100
+        for item in data:
+            if item is None:
+                pass
+            if item < t:
+                t = item
+        return t
+
 
     def clean_harvester_driver(self):
         from driver import get_harvester_driver_list
