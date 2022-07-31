@@ -300,7 +300,7 @@ class NasManager(object):
         t = 0
         for item in data:
             if item is None:
-                pass
+                continue
             if item > t:
                 t = item
         return t
@@ -309,7 +309,7 @@ class NasManager(object):
         t = 100
         for item in data:
             if item is None:
-                pass
+                continue
             if item < t:
                 t = item
         return t
