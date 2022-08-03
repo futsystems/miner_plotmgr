@@ -122,6 +122,7 @@ def config_hpool():
         data = {'name': socket.gethostname(),
           'driver_list': page_list,
           'auto_scan_plot': config['auto_scan_plot'],
+          'hpool_api_key': config['hpool_api_key'],
           'id': index,
           }
         return render_template('harvester.hpool.yaml', data=data)
