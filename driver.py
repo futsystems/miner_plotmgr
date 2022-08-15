@@ -204,6 +204,8 @@ def get_plotter_driver_list():
     """
     #logger.info('path:%s'% dst_path)
     dst_device_list = []
+    if not os.path.exists(plotter_driver_mount_prefix):
+        os.mkdir(plotter_driver_mount_prefix)
     for sub_path in os.listdir(plotter_driver_mount_prefix):
         path = '%s/%s' % (plotter_driver_mount_prefix, sub_path)
         if os.path.isdir(path):
