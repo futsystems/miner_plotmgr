@@ -463,17 +463,6 @@ class PlotterManager(object):
 
 
 
-if __name__ == '__main__':
-    logging.config.fileConfig('logging.conf')
-    #pm = PlotManager()
-    #logger.info(pm.config)
-    import driver
-    #driver.get_plot_dst_list('/user')
-    list = driver.get_plot_dst_device_list('/mnt/dst')
-
-    logger.info('list:%s' % list)
-    #pm.send_plot('/Users/qianbo/worktable/pyproject/plotmgr/plot_mgr.py','192.168.1.11')
-
 
 
 
