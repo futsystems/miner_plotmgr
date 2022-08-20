@@ -174,7 +174,9 @@ def config_hpool_supervisor():
     :return:
     """
     index = request.args.get('index')
+    config = harvester.config
     data = {'index': index,
+            'hpool_type': config['hpool_type']
       }
     return render_template('harvester.hpool.supervisor.html', data=data)
 

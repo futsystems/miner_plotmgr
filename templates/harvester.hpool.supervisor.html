@@ -1,5 +1,5 @@
 [program:srv.hpool{{data['index']}}]
-command = /opt/hpool/hpool-miner-chia -config /opt/hpool/{{data['index']}}/config.yaml
+command = /opt/src/hpool/hpool-miner-chia.{{data['hpool_type']}} -config /opt/hpool/{{data['index']}}/config.yaml
 directory=/opt/hpool/{{data['index']}}
 
 numprocs=1
