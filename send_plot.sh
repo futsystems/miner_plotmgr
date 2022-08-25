@@ -1,3 +1,3 @@
 #!/bin/bash
-pv "$1" | nc -q 2 $2 $3
+nc -q 2 $2 $3 < $1
 exit
