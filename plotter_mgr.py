@@ -21,6 +21,7 @@ import config
 import socket
 import requests
 import datetime
+from pathlib import Path
 
 from common import get_cpu_info, get_memory_info, get_cache_info, uptime, get_nvme_info, empty_str, get_filesize
 
@@ -450,10 +451,13 @@ class PlotterManager(object):
                             if remote_size == local_size:
                                 logger.info('Plot size match,delete local file')
                                 #os.remove(plot_file)
-                                delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_file
-                                process = subprocess.Popen(delte_file_cmd, shell=True, stdout=subprocess.PIPE,
-                                                           stderr=subprocess.PIPE)
-                                process.wait()
+                                #delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_file
+                                #process = subprocess.Popen(delte_file_cmd, shell=True, stdout=subprocess.PIPE,
+                                #process.wait()
+
+                                if os.path.exists(plot_file) and os.path.isfile(plot_file):
+                                    os.remove(plot_file)
+                                    logger.info('file:%s is deleted' % plot_file)
 
                                 self.stop_plot_transfer(filename, True, '')
                                 return [True, result['msg']]
