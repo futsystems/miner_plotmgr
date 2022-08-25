@@ -344,7 +344,7 @@ class PlotterManager(object):
 
         return info
 
-    def stop_plot_transfer(self,plot_file_name,result,reason):
+    def stop_plot_transfer(self, plot_file_name, result, reason):
         try:
             data = {
                 'plot_file_name': plot_file_name,
@@ -445,9 +445,10 @@ class PlotterManager(object):
                             return [False, result['msg']]
                         else:
                             remote_size = result['data']['size']
-
+                            logger.info('Remote Size:%s Local Size:%s' % (
+                            remote_size, local_size))
                             if remote_size == local_size:
-                                logger.info('Remote Size:%s Local Size:%s Plot size match,delete local file' % (remote_size, local_size))
+                                logger.info('Plot size match,delete local file')
                                 #os.remove(plot_file)
                                 delte_file_cmd = '/opt/src/scripts/remove_file.sh %s' % plot_file
                                 process = subprocess.Popen(delte_file_cmd, shell=True, stdout=subprocess.PIPE,
