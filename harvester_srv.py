@@ -258,7 +258,7 @@ def driver_clean():
     return Response(0,'','').to_json()
 
 @app.route('/driver/check-plot')
-def driver_clean():
+def driver_check_plot():
     """
     stop nc
     :return:
