@@ -333,6 +333,38 @@ class NasManager(object):
                         cnt = cnt + 1
         logger.info('delete file cnt:%s' % cnt)
 
+    def check_plots(self, args):
+        """
+        检查是重名以及文件大小异常的plot
+        """
+        files_cnt_map = {}
+        files_size_error_map = {}
+        from driver import get_harvester_driver_list
+        for item in get_harvester_driver_list():
+            files = os.listdir(item['mount_path'])
+            logger.info('driver:%s path:%s files cnt:%s' % (item['device'], item['mount_path'], len(files)))
+            for file in files:
+                full_name = '%s/%s' % (item['mount_path'], file)
+                if file not in files_cnt_map:
+                    files_cnt_map[file] = []
+                files_cnt_map[file].append(full_name)
+
+                ignore_today = False
+                # 过滤出24小时之前创建的文件 有可能有正在写入的文件
+                create_time = get_filecreatetime(full_name)
+                if os.path.isfile(full_name):
+                    if (ignore_today and ((datetime.datetime.now() - create_time).total_seconds()/3600 > 24)) or (not ignore_today):
+                        file_size = get_filesize(full_name)
+                        if file_size < 101:
+                            # check k32 file size
+                            logger.info('plot file:%s size:%s' % (full_name, file_size))
+                            files_size_error_map[full_name] = file_size
+
+        files_cnt_map_final = {}
+        for key in files_cnt_map:
+            if len(files_cnt_map[key]) > 1:
+                files_cnt_map_final[key] = files_cnt_map[key]
+                logger.info('plot file:%s has %s copies' % (key, len(files_cnt_map[key])))
 
     def restart_service(self, service_name):
         if service_name in self._hpool_map:

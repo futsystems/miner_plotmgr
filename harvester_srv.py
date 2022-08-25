@@ -1,7 +1,7 @@
 #!/usr/bin/python
 # -*- coding: utf-8 -*-
 
-import os
+import os, sys
 import subprocess
 from flask import Flask
 from flask import request
@@ -14,6 +14,11 @@ import datetime
 import logging.config
 
 import driver
+
+if sys.version_info.major == 2:   # Python 2
+    import thread
+else:                             # Python 3
+    import _thread as thread
 
 logging.config.fileConfig('logging.conf')
 logger = logging.getLogger('nas')
@@ -250,6 +255,15 @@ def driver_clean():
     :return:
     """
     harvester.clean_harvester_driver()
+    return Response(0,'','').to_json()
+
+@app.route('/driver/check-plot')
+def driver_clean():
+    """
+    stop nc
+    :return:
+    """
+    thread.start_new_thread(harvester.check_plots, (1,))
     return Response(0,'','').to_json()
 
 @app.route('/system/shutdown')
