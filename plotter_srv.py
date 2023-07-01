@@ -10,7 +10,7 @@ from flask import render_template
 from plotter_mgr import PlotterManager
 from message import Response
 import driver
-import logging.config,traceback
+import logging.config, traceback
 import subprocess
 from common import empty_str
 

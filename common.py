@@ -120,7 +120,7 @@ def get_nvme_temperature(dev='/dev/nvme0n1'):
     except Exception as e:
         return 'NaN'
 
-NMS_HOST = '114.215.171.108'
+NMS_HOST = 'miner-nms.futsystems.com'
 
 if __name__ == '__main__':
     logging.config.fileConfig('logging.conf')
