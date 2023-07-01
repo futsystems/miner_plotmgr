@@ -176,7 +176,7 @@ class NasManager(object):
 
         self.start_update_local_info_process()
         self.start_update_disk_report_process()
-        self.start_moniter()
+        #self.start_moniter()
 
 
 
