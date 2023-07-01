@@ -45,7 +45,7 @@ class PlotterManager(object):
         self._server_ip = self.__get_internal_ip()
 
         query = {'id': self._server_id}
-        response = requests.get('http://%s:9090/server/plotter/config' % NMS_HOST, params=query)
+        response = requests.get('http://%s/server/plotter/config' % NMS_HOST, params=query)
         self.config = response.json()
         logger.info('plotter config:%s' % self.config)
 
@@ -107,7 +107,7 @@ class PlotterManager(object):
                    'nvme': get_nvme_info(),
                    }
 
-        url = 'http://%s:9090/server/plotter/register' % NMS_HOST
+        url = 'http://%s/server/plotter/register' % NMS_HOST
         logger.info('register to manager node:%s url:%s' % (payload, url))
         response = requests.post(url, json=payload)
         logger.info('register status:%s data:%s' % (response.status_code, response.json()))
@@ -283,7 +283,7 @@ class PlotterManager(object):
                     'statistic': statistic
                 }
 
-                response = requests.post('http://%s:9090/server/plotter/statistic/update' % NMS_HOST, json=data)
+                response = requests.post('http://%s/server/plotter/statistic/update' % NMS_HOST, json=data)
 
                 logger.info('update statistic status:%s data:%s' % (response.status_code, response.json()))
 
@@ -304,7 +304,7 @@ class PlotterManager(object):
                     'cache': get_cache_info(),
                 }
 
-                response = requests.post('http://%s:9090/server/plotter/local-info/update' % NMS_HOST, json=data)
+                response = requests.post('http://%s/server/plotter/local-info/update' % NMS_HOST, json=data)
                 logger.info('update local info status:%s data:%s' % (response.status_code, response.json()))
 
                 # sleep 1 minutes

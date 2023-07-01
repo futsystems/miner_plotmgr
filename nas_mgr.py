@@ -39,7 +39,7 @@ class NasManager(object):
         self._hpool_map = {}
 
         query = {'id': self._server_id}
-        response = requests.get('http://%s:9090/server/harvester/config' % NMS_HOST, params=query)
+        response = requests.get('http://%s/server/harvester/config' % NMS_HOST, params=query)
         self.config = response.json()
         logger.info('harvester config:%s' % self.config)
 
@@ -193,7 +193,7 @@ class NasManager(object):
                    'memory': get_memory_info(),
                    }
 
-        url = 'http://%s:9090/server/harvester/register' % NMS_HOST
+        url = 'http://%s/server/harvester/register' % NMS_HOST
         logger.info('register to manager node:%s url:%s' % (payload, url))
 
         response = requests.post(url, json=payload)
@@ -229,7 +229,7 @@ class NasManager(object):
                     'harvester_service': self.get_harvester_service_info(),
                 }
                 logger.info('send local info to manager node:%s' % data)
-                url = 'http://%s:9090/server/harvester/local-info/update' % NMS_HOST
+                url = 'http://%s/server/harvester/local-info/update' % NMS_HOST
                 response = requests.post(url, json= data)
                 logger.info('update local info status:%s data:%s' % (response.status_code, response.json()))
 

@@ -160,7 +160,7 @@ def config_chia():
 
     query = {'id': server_id}
 
-    response = requests.get('http://%s:9090/server/harvester/config' % NMS_HOST, params=query)
+    response = requests.get('http://%s/server/harvester/config' % NMS_HOST, params=query)
     config = response.json()
 
     logger.info('harvester config data:%s' % config)
